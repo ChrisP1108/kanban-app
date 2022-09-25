@@ -20,14 +20,13 @@
         z-index: -1;
         flex-basis: 0;
         overflow: hidden;
-        transition: 0.5s;
+        transition: $speed-medium;
     }
 
     .sidebar-content {
         display: flex;
         flex-direction: column;
         position: absolute;
-        background: red;
         padding: 32px;
         width: 100%;
         height: 100%;
