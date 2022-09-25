@@ -1,9 +1,17 @@
 <template>
-  <b>Test</b>
+  <div class="root-full-container dark-mode">
+    <div class="root-boxed-container">
+      <Sidebar />
+      <div class="content-container">
+        <Header />
+        <Tasklist />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
-  import Vue from 'vue'
+  import Vue from 'vue';
 
   export default Vue.extend({})
 </script>
@@ -129,16 +137,10 @@
     }
   }
 
-  .button-secondary {
-    background: $color-a-10;
-    color: $color-a;
+  .button-secondary {   
     font-size: $body-l-size;
     line-height: $body-l-height;
     border-radius: $button-s-radius;
-
-    &:hover {
-      background: $color-a-25;
-    }
   }
 
   .button-destructive {
@@ -151,6 +153,59 @@
     &:hover {
       background: $color-k;
     }
+  }
+
+  /* Light Mode */
+
+  .light-mode {
+    background: $color-white;
+
+    h1, h2, h3, h4, p, b {
+      color: $color-e;
+    }
+
+    .button-secondary {
+      background: $color-a-10;
+
+      &:hover {
+        background: $color-a-25;
+      }
+    }
+  }
+
+  /* Dark Mode */
+
+  .dark-mode {
+    background: $color-e;
+
+    h1, h2, h3, h4, p, b {
+      color: $color-white;
+    }
+
+    .button-secondary {
+      background: $color-white;
+
+      &:hover {
+        background: $color-white;
+      }
+    }
+  }
+
+  .root-full-container {
+    min-width: 100vw;
+    min-height: 100vh;
+  }
+  .root-boxed-container {
+    min-height: 100vh;
+    display: flex;
+    max-width: 1920px;
+    margin: 0 auto;
+  }
+
+  .content-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
 </style>
