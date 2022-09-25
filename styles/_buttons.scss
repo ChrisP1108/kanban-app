@@ -1,0 +1,47 @@
+@use 'typography' as *;
+@use 'colors' as *;
+
+$button-l-radius: 24px;
+$button-s-radius: 20px;
+
+.button-primary-l {
+    background: $color-a;
+    color: $color-white;
+    font-size: $heading-m-size;
+    line-height: $heading-m-height;
+    border-radius: $button-l-radius;
+
+    &:hover {
+    background: $color-b;
+    }
+}
+
+.button-primary-s {
+    background: $color-a;
+    color: $color-white;
+    font-size: $body-l-size;
+    line-height: $body-l-height;
+    border-radius: $button-s-radius;
+
+    &:hover {
+    background: $color-b;
+    }
+}
+
+.button-secondary {   
+    font-size: $body-l-size;
+    line-height: $body-l-height;
+    border-radius: $button-s-radius;
+}
+
+.button-destructive {
+    background: $color-j;
+    color: $color-white;
+    font-size: $body-l-size;
+    line-height: $body-l-height;
+    border-radius: $button-s-radius;
+
+    &:hover {
+    background: $color-k;
+    }
+}

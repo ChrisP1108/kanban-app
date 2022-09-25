@@ -1,0 +1,17 @@
+@use 'colors' as *;
+
+.light-mode {
+    background: $color-white;
+
+    h1, h2, h3, h4, p, b {
+    color: $color-e;
+    }
+
+    .button-secondary {
+    background: $color-a-10;
+
+        &:hover {
+            background: $color-a-25;
+        }
+    }
+}

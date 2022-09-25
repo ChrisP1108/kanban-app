@@ -10,7 +10,7 @@
     }
 </script>
 
-<style>
+<style lang="scss" scoped>
     .tasklist-container {
         display: flex;
         align-items: center;

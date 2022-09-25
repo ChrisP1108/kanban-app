@@ -10,7 +10,7 @@
     }
 </script>
 
-<style>
+<style lang="scss" scoped>
     .header-container {
         display: flex;
         align-items: center;

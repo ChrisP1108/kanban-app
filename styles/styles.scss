@@ -1,0 +1,14 @@
+@use 'typography' as *;
+@use 'colors' as *;
+@use 'buttons' as *;
+@use 'dark_mode' as *;
+@use 'light_mode' as *;
+@use 'breakpoints' as *;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
