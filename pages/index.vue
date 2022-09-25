@@ -2,7 +2,7 @@
   <div class="root-full-container dark-mode">
     <div class="root-boxed-container">
       <Sidebar />
-      <div class="content-container">
+      <div class="header-content-container">
         <Header />
         <Tasklist />
       </div>
@@ -30,7 +30,7 @@
     margin: 0 auto;
   }
 
-  .content-container {
+  .header-content-container {
     width: 100%;
     display: flex;
     flex-direction: column;

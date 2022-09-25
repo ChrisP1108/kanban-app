@@ -1,6 +1,8 @@
 <template>
     <div class="sidebar-container">
-        <h1>Sidebar</h1>
+        <div class="sidebar-content">
+            <h1>Sidebar</h1>
+        </div>
     </div>
 </template>
 
@@ -13,18 +15,29 @@
 <style lang="scss" scoped>
     .sidebar-container {
         display: flex;
+        position: relative;
         height: 100vh;
         z-index: -1;
-        width: 0;
-        background: red;
+        flex-basis: 0;
         overflow: hidden;
         transition: 0.5s;
     }
 
-    @media (min-width: 768px) {
+    .sidebar-content {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        background: red;
+        padding: 32px;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+    }
+
+    @media (min-width: $tablet) {
         .sidebar-container {
-            padding: 32px;
-            width: 261px;
+            flex-basis: 261px;
             z-index: 1;
         }
     }
