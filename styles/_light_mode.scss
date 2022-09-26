@@ -1,10 +1,19 @@
 @use 'colors' as *;
+@use 'breakpoints' as *;
 
 .light-mode {
-    background: $color-white;
+    background: $color-h;
+
+    aside, header {
+        background: $color-white;
+    }
 
     h1, h2, h3, h4, p, b {
     color: $color-e;
+    }
+
+    h1, h2, h3, h4 {
+        font-weight: 900;
     }
 
     .button-secondary {
@@ -12,6 +21,20 @@
 
         &:hover {
             background: $color-a-25;
+        }
+    }
+
+    .tasklist-container {
+        background: $color-i;
+    }
+    
+
+    @media(min-width: $tablet) {
+        aside {
+            border-right: 1px $color-h solid; 
+        }
+        header {
+            border-bottom: 1px $color-h solid; 
         }
     }
 }

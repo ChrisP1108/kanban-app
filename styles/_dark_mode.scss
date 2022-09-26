@@ -1,7 +1,12 @@
 @use 'colors' as *;
+@use 'breakpoints' as *;
 
 .dark-mode {
-    background: $color-e;
+    background: $color-c;
+
+    aside, header {
+        background: $color-e;
+    }
 
     h1, h2, h3, h4, p, b {
     color: $color-white;
@@ -12,6 +17,23 @@
 
         &:hover {
             background: $color-white;
+        }
+    }
+
+    .tasklist-container {
+        background: $color-d;
+        border-right: 1px $color-f solid;
+    }
+    
+
+    @media(min-width: $tablet) {
+        aside {
+            border-left: 1px $color-f solid;
+            border-right: 1px $color-f solid; 
+        }
+        header {
+            border-bottom: 1px $color-f solid; 
+            border-right: 1px $color-f solid; 
         }
     }
 }

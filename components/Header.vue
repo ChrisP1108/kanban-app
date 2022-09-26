@@ -1,11 +1,11 @@
 <template>
-    <div class="header-container">
-        <img src="assets/images/logo.svg" alt="Platform Launch Logo">
+    <header>
+        <img class="logo" src="assets/images/logo.svg" alt="Logo">
         <h2>Platform Launch</h2>
         <div class="dropdown-container" @click="toggleMobileDropdown">
-            <img :class="[mobileDropdownToggled ? 'dropdown-arrow-toggled' : '', 'dropdown-arrow']" src="assets/images/dropdown-arrow.svg" alt="Platform Launch Logo"></img>
+            <img :class="[mobileDropdownToggled ? 'dropdown-arrow-toggled' : '', 'dropdown-arrow']" src="assets/images/dropdown-arrow.svg" alt="Dropdown Arrow">
         </div>
-    </div>
+    </header>
 </template>
 
 <script lang="ts">
@@ -28,12 +28,12 @@
 </script>
 
 <style lang="scss" scoped>
-    .header-container {
+    header {
         display: flex;
         align-items: center;
         min-height: 4rem;
         width: 100%;
-        padding: 1rem $padding-sides;
+        padding: $padding-top-bottom $padding-sides;
     }
     h2 {
         margin-left: 1rem;
@@ -56,8 +56,18 @@
     }
 
     @media (min-width: $tablet) {
+        header {
+            padding: $padding-top-bottom $padding-sides;
+            min-height: 5.0625rem;
+        }
         .dropdown-container {
             display: none;
+        }
+        .logo {
+            display: none;
+        }
+        h2 {
+            margin-left: 0;
         }
     }
 </style>

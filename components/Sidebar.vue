@@ -1,9 +1,12 @@
 <template>
-    <div class="sidebar-container">
+    <aside class="">
         <div class="sidebar-content">
-            <h1>Sidebar</h1>
+            <div class="logo-title-container">
+                <img class="logo" src="assets/images/logo.svg" alt="Logo">
+                <h1>kanban</h1>
+            </div>
         </div>
-    </div>
+    </aside>
 </template>
 
 <script lang="ts">
@@ -13,7 +16,7 @@
 </script>
 
 <style lang="scss" scoped>
-    .sidebar-container {
+    aside {
         display: flex;
         position: relative;
         height: 100vh;
@@ -21,6 +24,7 @@
         flex-basis: 0;
         overflow: hidden;
         transition: $speed-medium;
+        min-width: 0;
     }
 
     .sidebar-content {
@@ -34,15 +38,28 @@
         left: 0;
     }
 
+    .logo-title-container {
+        display: flex;
+        align-items: center;
+    }
+
+    h1 {
+        font-size: 1.875rem;
+        margin-left: 16px;
+    }
+
+    .sidebar-hidden {
+        min-width: 0;
+        width: 0;
+        flex-basis: 0;
+        z-index: -1;
+    }
+
     @media (min-width: $tablet) {
-        .sidebar-container {
+        aside {
+            min-width: 261px;
             flex-basis: 261px;
             z-index: 1;
         }
-    }
-
-    .hide-sidebar {
-        padding: 0;
-        width: 0;
     }
 </style>
