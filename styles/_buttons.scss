@@ -1,8 +1,19 @@
 @use 'typography' as *;
 @use 'colors' as *;
+@use 'transition' as *;
 
 $button-l-radius: 24px;
 $button-s-radius: 20px;
+$button-l-height: 3rem;
+$button-s-height: 2.5rem;
+
+button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    transition: $speed-medium;
+}
 
 .button-primary-l {
     background: $color-a;
@@ -10,6 +21,9 @@ $button-s-radius: 20px;
     font-size: $heading-m-size;
     line-height: $heading-m-height;
     border-radius: $button-l-radius;
+    min-height: $button-l-height;
+    font-weight: $semi-bold;
+    padding: 1rem 1.5rem;
 
     &:hover {
     background: $color-b;
@@ -22,6 +36,7 @@ $button-s-radius: 20px;
     font-size: $body-l-size;
     line-height: $body-l-height;
     border-radius: $button-s-radius;
+    min-height: $button-s-height;
 
     &:hover {
     background: $color-b;
@@ -32,6 +47,7 @@ $button-s-radius: 20px;
     font-size: $body-l-size;
     line-height: $body-l-height;
     border-radius: $button-s-radius;
+    min-height: $button-s-height;
 }
 
 .button-destructive {
@@ -40,6 +56,7 @@ $button-s-radius: 20px;
     font-size: $body-l-size;
     line-height: $body-l-height;
     border-radius: $button-s-radius;
+    min-height: $button-s-height;
 
     &:hover {
     background: $color-k;

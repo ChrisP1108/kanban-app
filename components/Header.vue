@@ -5,6 +5,12 @@
         <div class="dropdown-container" @click="toggleMobileDropdown">
             <img :class="[mobileDropdownToggled ? 'dropdown-arrow-toggled' : '', 'dropdown-arrow']" src="assets/images/dropdown-arrow.svg" alt="Dropdown Arrow">
         </div>
+        <button class="button-primary-l ml-auto button-mobile">
+            + <span class="add-button-text ml-1"> 
+                Add New Task
+            </span>
+        </button>
+        <img class="dot-nav" src="assets/images/dot-nav.svg">
     </header>
 </template>
 
@@ -39,6 +45,11 @@
         margin-left: 1rem;
         margin-right: 0.5rem;
     }
+
+    button {
+        margin-right: 16px;
+        max-width: 11.25rem;
+    }
     .header-title-container {
         cursor: pointer;
     }
@@ -55,10 +66,30 @@
         transform: rotate(180deg);
     }
 
+    .add-button-text {
+        display: none;
+    }
+
+    .button-mobile {
+        padding: 0 0 6px;
+        font-size: $heading-xl-size;
+        min-height: 2rem;
+        min-width: 3rem;
+    }
+
+    .dot-nav {
+        cursor: pointer;
+        padding: 1rem;
+        margin: -1rem;
+    }
+
     @media (min-width: $tablet) {
         header {
             padding: $padding-top-bottom $padding-sides;
             min-height: 5.0625rem;
+        }
+        button {
+            margin-right: 24px;
         }
         .dropdown-container {
             display: none;
@@ -68,6 +99,13 @@
         }
         h2 {
             margin-left: 0;
+        }
+        .add-button-text {
+            display: block;
+        }
+        .button-mobile {
+            padding: 1rem 1.5rem;
+            font-size: inherit;
         }
     }
 </style>
