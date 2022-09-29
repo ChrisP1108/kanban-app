@@ -1,6 +1,7 @@
 @use 'typography' as *;
 @use 'colors' as *;
 @use 'transition' as *;
+@use 'spacing' as *;
 
 $button-l-radius: 24px;
 $button-s-radius: 20px;
@@ -23,7 +24,7 @@ button {
     border-radius: $button-l-radius;
     min-height: $button-l-height;
     font-weight: $semi-bold;
-    padding: 1rem 1.5rem;
+    padding: $padding-top-bottom 24px;
 
     &:hover {
     background: $color-b;

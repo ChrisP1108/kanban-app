@@ -5,7 +5,7 @@
         <div class="dropdown-container" @click="toggleMobileDropdown">
             <img :class="[mobileDropdownToggled ? 'dropdown-arrow-toggled' : '', 'dropdown-arrow']" src="assets/images/dropdown-arrow.svg" alt="Dropdown Arrow">
         </div>
-        <button class="button-primary-l ml-auto button-mobile">
+        <button @click="toggleAddTask" class="button-primary-l ml-auto button-mobile">
             + <span class="add-button-text ml-1"> 
                 Add New Task
             </span>
@@ -19,7 +19,6 @@
         mobileDropdownToggled: boolean
     }
     export default {
-
         data(): HeaderData {
             return {
                 mobileDropdownToggled: false
@@ -28,6 +27,9 @@
         methods: {
             toggleMobileDropdown(): void {
                 this.mobileDropdownToggled = !this.mobileDropdownToggled;
+            },
+            toggleAddTask(e: any): void {
+                console.log(e)
             }
         }
     }
@@ -85,11 +87,13 @@
 
     @media (min-width: $tablet) {
         header {
-            padding: $padding-top-bottom $padding-sides;
+            padding: $padding-top-bottom $padding-sides-tablet;
             min-height: 5.0625rem;
         }
         button {
             margin-right: 24px;
+            font-size: $heading-m-size !important;
+            line-height: $heading-m-height !important;
         }
         .dropdown-container {
             display: none;
