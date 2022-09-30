@@ -1,7 +1,7 @@
 <template>
-    <div class="tasklist-container">
+    <main>
         <h1>Tasklist</h1>
-    </div>
+    </main>
 </template>
 
 <script lang="ts">
@@ -11,7 +11,7 @@
 </script>
 
 <style lang="scss" scoped>
-    .tasklist-container {
+    main {
         display: flex;
         align-items: center;
         width: 100%;

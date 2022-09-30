@@ -2,10 +2,10 @@
   <div class="root-full-container dark-mode">
     <div class="root-boxed-container">
       <Sidebar />
-      <main>
+      <div class="primary-content-container">
         <Header />
-        <Tasklist />
-      </main>
+        <Columns />
+      </div>
     </div>
     <div class="modal-overlay"></div> 
   </div>
@@ -31,7 +31,7 @@
     max-width: 1920px;
     margin: 0 auto;
   }
-  main {
+  .primary-content-container {
     width: 100%;
     display: flex;
     flex-direction: column;

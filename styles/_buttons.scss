@@ -3,10 +3,10 @@
 @use 'transition' as *;
 @use 'spacing' as *;
 
-$button-l-radius: 24px;
-$button-s-radius: 20px;
-$button-l-height: 3rem;
-$button-s-height: 2.5rem;
+$button-l-radius: 1.75em;
+$button-s-radius: 1.25em;
+$button-l-height: 3em;
+$button-s-height: 2.5em;
 
 button {
     display: flex;

@@ -44,13 +44,13 @@
         padding: $padding-top-bottom $padding-sides;
     }
     h2 {
-        margin-left: 1rem;
-        margin-right: 0.5rem;
+        margin-left: 1em;
+        margin-right: 0.5em;
     }
 
     button {
-        margin-right: 16px;
-        max-width: 11.25rem;
+        margin-right: 1rem;
+        // max-width: 11.25rem;
     }
     .header-title-container {
         cursor: pointer;
@@ -62,6 +62,7 @@
     }
     .dropdown-arrow {
         transition: $speed-fast;
+        width: 0.5rem;
     }
 
     .dropdown-arrow-toggled {
@@ -73,7 +74,7 @@
     }
 
     .button-mobile {
-        padding: 0 0 6px;
+        padding: 0 0 0.375rem;
         font-size: $heading-xl-size;
         min-height: 2rem;
         min-width: 3rem;
@@ -83,6 +84,7 @@
         cursor: pointer;
         padding: 1rem;
         margin: -1rem;
+        width: 2.3125rem;
     }
 
     @media (min-width: $tablet) {
@@ -91,7 +93,7 @@
             min-height: 5.0625rem;
         }
         button {
-            margin-right: 24px;
+            margin-right: 1rem;
             font-size: $heading-m-size !important;
             line-height: $heading-m-height !important;
         }
