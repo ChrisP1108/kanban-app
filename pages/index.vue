@@ -7,18 +7,26 @@
         <Columns />
       </div>
     </div>
-    <div class="modal-overlay"></div> 
+    <div @click="untoggleModal" :class="[modalToggled ? 'modal-toggled' : '', 'modal-overlay']"></div> 
   </div>
 </template>
 
-<script lang="ts">
+<script>
   import Vue from 'vue';
 
   export default Vue.extend({
     computed: {
-      darkModeToggled(): boolean {
+      darkModeToggled() {
         return this.$store.state.darkModeToggled
+      },
+      modalToggled() {
+        return this.$store.state.modalOverlay
       } 
+    },
+    methods: {
+      untoggleModal() {
+        this.$store.commit('toggleModal', '')
+      }
     }
   })
 </script>

@@ -11,17 +11,24 @@
                 <h3>Marketing Plan</h3>
             </li>
         </ul>
-        <div class="board-item create-board-item">
+        <button @click="toggleCreateBoard" class="board-item create-board-item">
             <BoardIcon class="board-icon" />
             <h3>+ Create New Board</h3>
-        </div>
+        </button>
         <div class="mode-toggle-outer-wrapper">
             <ModeToggle />
         </div>
     </div>
 </template>
 
-<script lang="ts">
+<script>
+    export default {
+        methods: {
+            toggleCreateBoard() {
+                this.$store.commit('toggleModal', 'createBoard')
+            }
+        }
+    }
 
 </script>
 
@@ -29,7 +36,11 @@
     h3 {
         margin-left: 0.75rem;
         color: $color-g;
+    }
 
+    button {
+        background: inherit;
+        justify-content: flex-start;
     }
 
     h4 {

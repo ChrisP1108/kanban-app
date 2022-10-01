@@ -2,8 +2,8 @@
     <header>
         <img class="logo" src="assets/images/logo.svg" alt="Logo">
         <h2>Platform Launch</h2>
-        <div class="dropdown-container" @click="toggleMobileDropdown">
-            <img :class="[mobileDropdownToggled ? 'dropdown-arrow-toggled' : '', 'dropdown-arrow']" src="assets/images/dropdown-arrow.svg" alt="Dropdown Arrow">
+        <div class="dropdown-container" @click="toggleMobileBoard">
+            <img :class="[mobileBoardToggled ? 'dropdown-arrow-toggled' : '', 'dropdown-arrow']" src="assets/images/dropdown-arrow.svg" alt="Dropdown Arrow">
         </div>
         <button @click="toggleAddTask" class="button-primary-l ml-auto button-mobile">
             + <span class="add-button-text ml-1"> 
@@ -14,22 +14,19 @@
     </header>
 </template>
 
-<script lang="ts">
-    declare interface HeaderData {
-        mobileDropdownToggled: boolean
-    }
+<script>
     export default {
-        data(): HeaderData {
-            return {
-                mobileDropdownToggled: false
+        computed: {
+            mobileBoardToggled() {
+                return this.$store.state.modals.mobileBoardsToggled
             }
         },
         methods: {
-            toggleMobileDropdown(): void {
-                this.mobileDropdownToggled = !this.mobileDropdownToggled;
+            toggleMobileBoard() {
+                this.$store.commit('toggleModal', 'mobileBoards')
             },
-            toggleAddTask(e: any): void {
-                console.log(e)
+            toggleAddTask() {
+                this.$store.commit('toggleModal', 'addTask')
             }
         }
     }

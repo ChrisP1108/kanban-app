@@ -10,15 +10,14 @@
 </template>
 
 <script>
-    import { State } from '../store/index';
     export default {
         computed: {
-            darkModeToggled(){
+            darkModeToggled() {
                 return this.$store.state.darkModeToggled
             } 
         },
         methods: {
-            modeToggleClicked(){
+            modeToggleClicked() {
                 this.$store.commit('toggleDarkMode')
             }
         }
@@ -34,6 +33,7 @@
         align-items: center;
         justify-content: center;
         transition: $speed-medium;
+        // gap: 1.25rem;
     }
     .dark-mode {
         .mode-toggle-container {
@@ -58,9 +58,9 @@
     }
     svg {
         cursor: pointer;
-        margin: 0 1.25rem;
-        width: 2.5rem;
-        height: 1.25rem;
+        width: 5rem;
+        height: 2.75rem;
+        padding: 0.75rem 0;
         rect {
             fill: $color-a;
         }

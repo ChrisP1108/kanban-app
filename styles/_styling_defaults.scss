@@ -11,3 +11,18 @@ a {
 h1, h2, h3, h4, h5, h6, p, b {
     transition: $speed-medium;
 }
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+body {
+    overflow: hidden;
+}
+
+.hide-scroll {
+    overflow: hidden!important
+}
