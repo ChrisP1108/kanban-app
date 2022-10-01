@@ -10,16 +10,27 @@ export interface State {
     }
 }
 
+// Modals Declarations
+
+const modalsInit: State['modals'] = {
+    mobileBoardsToggled: false,
+    addTaskToggled: false,
+    createBoard: false
+}
+
+// Reset Modals
+
+    function resetModals(state: State) {
+        state.modalOverlay = false;
+        state.modals = modalsInit;
+    }
+
 // State Declarations
 
 export const state = (): State => ({
     darkModeToggled: true,
     modalOverlay: false,
-    modals: {
-        mobileBoardsToggled: false,
-        addTaskToggled: false,
-        createBoard: false
-    }
+    modals: modalsInit
 });
 
 // State Mutations
@@ -42,13 +53,10 @@ export const mutations = {
                     state.modals.createBoard = true;
                     break;
                 default:
-                    state.modalOverlay = false;
-                    break;
+                    resetModals(state);
             }
         } else {
-            state.modals.mobileBoardsToggled = false;
-            state.modals.addTaskToggled = false;
-            state.modals.createBoard = false;
+            resetModals(state)
         }
     }
 }
