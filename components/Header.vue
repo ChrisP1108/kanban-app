@@ -42,6 +42,7 @@
         min-height: 4rem;
         width: 100%;
         padding: $padding-top-bottom $padding-sides;
+        transition: $speed-medium;
     }
     h2 {
         margin-left: 1em;

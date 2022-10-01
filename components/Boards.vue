@@ -1,0 +1,100 @@
+<template>
+    <div class="boards-container">
+        <h4>ALL BOARDS (3)</h4>
+        <ul>
+            <li class="board-item board-active">
+                <BoardIcon class="board-icon" />
+                <h3>Platform Launch</h3>
+            </li>
+            <li class="board-item">
+                <BoardIcon class="board-icon" />
+                <h3>Marketing Plan</h3>
+            </li>
+        </ul>
+        <div class="board-item create-board-item">
+            <BoardIcon class="board-icon" />
+            <h3>+ Create New Board</h3>
+        </div>
+        <div class="mode-toggle-outer-wrapper">
+            <ModeToggle />
+        </div>
+    </div>
+</template>
+
+<script lang="ts">
+
+</script>
+
+<style lang="scss" scoped>
+    h3 {
+        margin-left: 0.75rem;
+        color: $color-g;
+
+    }
+
+    h4 {
+        color: $color-g;
+        margin-bottom: 1.375rem;
+        padding: 0 $padding-sides-tablet;
+    }
+    .boards-container {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .dark-mode {
+        .board-item:hover:not(.board-active) {
+            background: $color-white;
+        }
+    }
+
+    .light-mode {
+        .board-item:hover:not(.board-active) {
+            background: $color-a-10;
+        }
+    }
+    .board-item {
+        display: flex;
+        align-items: center;
+        padding: $padding-top-bottom $padding-sides-tablet;
+        min-height: $button-l-height;
+        border-top-right-radius: $button-l-radius;
+        border-bottom-right-radius: $button-l-radius;
+        transition: $speed-medium;
+        cursor: pointer;
+
+        &:hover:not(.board-active) h3 {
+            color: $color-a;
+        }
+        &:hover:not(.board-active) .board-icon {
+            fill: $color-a;
+        }
+    }
+    .create-board-item {
+        .board-icon {
+            fill: $color-a;
+        }
+        h3 {
+            color: $color-a;
+        }
+    }
+    .board-icon {
+        fill: $color-g;
+        width: 1rem;
+        height: 1rem;
+    }
+    .board-active {
+        background: $color-a;
+        cursor: auto;
+        h3 {
+            color: $color-white;
+        }
+        .board-icon {
+            fill: $color-white;
+        }
+    }
+    .mode-toggle-outer-wrapper {
+        margin-top: auto;
+        padding-left: $padding-sides-tablet;
+    }
+</style>

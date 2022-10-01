@@ -1,5 +1,5 @@
 <template>
-  <div class="root-full-container dark-mode">
+  <div :class="[darkModeToggled ? 'dark-mode' : 'light-mode', 'root-full-container']">
     <div class="root-boxed-container">
       <Sidebar />
       <div class="primary-content-container">
@@ -12,10 +12,15 @@
 </template>
 
 <script lang="ts">
-  import '../styles/styles.scss';
   import Vue from 'vue';
 
-  export default Vue.extend({})
+  export default Vue.extend({
+    computed: {
+      darkModeToggled(): boolean {
+        return this.$store.state.darkModeToggled
+      } 
+    }
+  })
 </script>
 
 <style lang="scss" scoped>
