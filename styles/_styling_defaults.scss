@@ -26,3 +26,17 @@ body {
 .hide-scroll {
     overflow: hidden!important
 }
+
+.modal-styling {
+    position: fixed;
+    padding: 1rem;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 101;
+    border-radius: 0.5rem;
+    animation-name: fade-in;
+    animation-duration: $speed-fast;
+    width: calc(100vw - 2rem);
+    max-width: 30rem;
+}

@@ -41,6 +41,10 @@
         padding: $padding-top-bottom $padding-sides;
         transition: $speed-medium;
     }
+    .logo {
+        width: 1.5rem;
+        height: 1.5625rem;
+    }
     h2 {
         margin-left: 1em;
         margin-right: 0.5em;
@@ -49,6 +53,15 @@
     button {
         margin-right: 1rem;
         // max-width: 11.25rem;
+    }
+
+    .add-button-inactive {
+        opacity: 0.25;
+        cursor: auto;
+
+        &:hover {
+            background: $color-a;
+        }
     }
     .header-title-container {
         cursor: pointer;

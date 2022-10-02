@@ -24,6 +24,10 @@
         background: $color-d;
         border-right: 1px $color-f solid;
     }
+
+    .modal-styling {
+        background: $color-e;
+    }
     
 
     @media(min-width: $tablet) {

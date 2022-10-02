@@ -7,7 +7,11 @@
         <Columns />
       </div>
     </div>
-    <div @click="untoggleModal" :class="[modalToggled ? 'modal-toggled' : '', 'modal-overlay']"></div> 
+    <!-- Modal Overlay -->
+    <div @click="untoggleModal" :class="[modalOverlay ? 'modal-toggled' : '', 'modal-overlay']"></div> 
+    <!-- Modals -->
+    <MobileBoard v-if="modalToggled === 'mobileBoards'" />
+    <ModalAddEditBoard v-if="modalToggled === 'addTask' || modalToggled ==='editTask'" :mode="modalToggled" />
   </div>
 </template>
 
@@ -19,13 +23,28 @@
       darkModeToggled() {
         return this.$store.state.darkModeToggled
       },
-      modalToggled() {
+      modalOverlay() {
         return this.$store.state.modalOverlay
+      },
+      modalToggled() {
+        const { mobileBoardsToggled, addTaskToggled, editTaskToggled, createBoard } = this.$store.state.modals;
+        if (mobileBoardsToggled) {
+          return 'mobileBoards'
+        }
+        if (addTaskToggled) {
+          return 'addTask'
+        }
+        if (editTaskToggled) {
+          return 'editTask'
+        }
+        if (createBoard) {
+          return 'createBoard'
+        }
       } 
     },
     methods: {
       untoggleModal() {
-        this.$store.commit('toggleModal', '')
+        this.$store.commit('toggleModal')
       }
     }
   })
@@ -61,7 +80,7 @@
     z-index: -1;
   }
   .modal-toggled {
-    z-index: 101;
+    z-index: 100;
     animation-name: fade-in;
     animation-duration: $speed-very-fast;
   }

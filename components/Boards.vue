@@ -1,6 +1,6 @@
 <template>
-    <div class="boards-container">
-        <h4>ALL BOARDS (3)</h4>
+    <div class="boards-mode-container">
+        <h4>ALL BOARDS (3)</h4> 
         <ul>
             <li class="board-item board-active">
                 <BoardIcon class="board-icon" />
@@ -48,10 +48,12 @@
         margin-bottom: 1.375rem;
         padding: 0 $padding-sides-tablet;
     }
-    .boards-container {
-        height: 100%;
+    .boards-mode-container {
         display: flex;
         flex-direction: column;
+    }
+    ul, button {
+        margin-right: $padding-sides-tablet;
     }
     .dark-mode {
         .board-item:hover:not(.board-active) {
@@ -82,6 +84,7 @@
         }
     }
     .create-board-item {
+        margin-bottom: 1rem;
         .board-icon {
             fill: $color-a;
         }
@@ -106,6 +109,6 @@
     }
     .mode-toggle-outer-wrapper {
         margin-top: auto;
-        padding-left: $padding-sides-tablet;
+        padding: 0 0.8125rem;
     }
 </style>

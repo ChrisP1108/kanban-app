@@ -6,7 +6,7 @@
                 <h1>kanban</h1>
             </div>
         </a>
-        <Boards />
+        <Boards class="full-height" />
     </aside>
 </template>
 
@@ -58,12 +58,16 @@
         transform: rotateY(90deg);
     }
 
+    .full-height {
+        height: 100%;
+    }
+
     @media (min-width: $tablet) {
         aside {
             min-width: 16.3125rem;
             flex-basis: 16.3125rem;
             z-index: 1;
-            padding: 2rem $padding-sides-tablet 0 0;
+            padding-top: 2rem;
             position: relative;
             left: 0%;
         }
