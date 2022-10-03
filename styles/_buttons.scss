@@ -3,10 +3,10 @@
 @use 'transition' as *;
 @use 'spacing' as *;
 
-$button-l-radius: 1.75em;
-$button-s-radius: 1.25em;
-$button-l-height: 3em;
-$button-s-height: 2.5em;
+$button-l-radius: 1.75rem;
+$button-s-radius: 1.25rem;
+$button-l-height: 3rem;
+$button-s-height: 2.5rem;
 
 button {
     display: flex;
@@ -14,6 +14,7 @@ button {
     justify-content: center;
     border: 0;
     transition: $speed-medium;
+    width: 100%;
 }
 
 .button-primary-l {
@@ -27,7 +28,7 @@ button {
     padding: $padding-top-bottom 24px;
 
     &:hover {
-    background: $color-b;
+        background: $color-b;
     }
 }
 
@@ -40,11 +41,12 @@ button {
     min-height: $button-s-height;
 
     &:hover {
-    background: $color-b;
+        background: $color-b;
     }
 }
 
 .button-secondary {   
+    color: $color-a;
     font-size: $body-l-size;
     line-height: $body-l-height;
     border-radius: $button-s-radius;

@@ -1,4 +1,6 @@
 @use 'transition' as *;
+@use 'colors' as *;
+@use 'typography' as *;
 
 ul, li {
     list-style: none;
@@ -23,13 +25,33 @@ body {
     overflow: hidden;
 }
 
+input, textarea {
+    width: 100%;
+    min-height: 2.5rem;
+    padding: 0.4375rem 0.9375rem;
+    border-radius: 4px;
+    background: inherit;
+    border-style: none;
+    border: 0.0625rem $color-input-border solid;
+
+    &:focus {
+        border: 0.0625rem $color-a solid;
+        outline: 0;
+    }
+}
+
+textarea {
+    min-height: 7rem;
+    max-height: 7rem;
+}
+
 .hide-scroll {
     overflow: hidden!important
 }
 
 .modal-styling {
     position: fixed;
-    padding: 1rem;
+    padding: 1.5rem;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
@@ -39,4 +61,14 @@ body {
     animation-duration: $speed-fast;
     width: calc(100vw - 2rem);
     max-width: 30rem;
+
+    h2 {
+        margin-bottom: 1rem;
+    }
+
+    input, textarea {
+        margin: 0.5rem 0 1rem;
+        font-size: $body-l-size;
+        line-height: $body-l-height;
+    }
 }

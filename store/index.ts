@@ -24,10 +24,10 @@ function resetModals(state: State) {
 
 export const state = (): State => ({
     darkModeToggled: true,
-    modalOverlay: false,
+    modalOverlay: true,
     modals: {
         mobileBoardsToggled: false,
-        addTaskToggled: false,
+        addTaskToggled: true,
         editTaskToggled: false,
         createBoard: false
     }

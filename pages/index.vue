@@ -11,7 +11,7 @@
     <div @click="untoggleModal" :class="[modalOverlay ? 'modal-toggled' : '', 'modal-overlay']"></div> 
     <!-- Modals -->
     <MobileBoard v-if="modalToggled === 'mobileBoards'" />
-    <ModalAddEditBoard v-if="modalToggled === 'addTask' || modalToggled ==='editTask'" :mode="modalToggled" />
+    <ModalAddEditTask v-if="modalToggled === 'addTask' || modalToggled ==='editTask'" :mode="modalToggled" />
   </div>
 </template>
 

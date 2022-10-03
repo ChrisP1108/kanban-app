@@ -1,5 +1,6 @@
 @use 'colors' as *;
 @use 'breakpoints' as *;
+@use 'typography' as *;
 
 .dark-mode {
     background: $color-c;
@@ -13,7 +14,8 @@
     }
 
     .button-secondary {
-    background: $color-white;
+        background: $color-white;
+        font-weight: $bold;
 
         &:hover {
             background: $color-white;
@@ -27,6 +29,15 @@
 
     .modal-styling {
         background: $color-e;
+    }
+
+    input, textarea {
+        color: $color-white;
+        font-weight: $semi-bold;
+
+        &::placeholder {
+            opacity: 0.75;
+        }
     }
     
 

@@ -1,5 +1,6 @@
 @use 'colors' as *;
 @use 'breakpoints' as *;
+@use 'typography' as *;
 
 .light-mode {
     background: $color-h;
@@ -34,6 +35,20 @@
 
     .modal-styling {
         background: $color-white;
+
+        b {
+            color: $color-g;
+        }
+    }
+
+    input, textarea {
+        color: $color-c;
+        font-weight: $semi-bold;
+
+        &::placeholder {
+            opacity: 0.5;
+            font-weight: $medium;
+        }
     }
     
 

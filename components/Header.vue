@@ -52,7 +52,7 @@
 
     button {
         margin-right: 1rem;
-        // max-width: 11.25rem;
+        width: fit-content;
     }
 
     .add-button-inactive {
