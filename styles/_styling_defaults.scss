@@ -25,7 +25,7 @@ body {
     overflow: hidden;
 }
 
-input, textarea {
+input, textarea, .dropdown {
     width: 100%;
     min-height: 2.5rem;
     padding: 0.4375rem 0.9375rem;
@@ -33,10 +33,15 @@ input, textarea {
     background: inherit;
     border-style: none;
     border: 0.0625rem $color-input-border solid;
+    transition: $speed-fast;
 
     &:focus {
         border: 0.0625rem $color-a solid;
         outline: 0;
+    }
+
+    &:hover {
+        border: 0.0625rem $color-a solid;
     }
 }
 
@@ -59,16 +64,27 @@ textarea {
     border-radius: 0.5rem;
     animation-name: fade-in;
     animation-duration: $speed-fast;
-    width: calc(100vw - 2rem);
+    width: calc(100% - 2rem);
     max-width: 30rem;
+    transition: $speed-medium;
 
     h2 {
         margin-bottom: 1rem;
     }
 
-    input, textarea {
+    input, textarea, .dropdown {
         margin: 0.5rem 0 1rem;
         font-size: $body-l-size;
         line-height: $body-l-height;
+    }
+
+    .dropdown {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .button-secondary {
+        margin-bottom: 1rem;
     }
 }

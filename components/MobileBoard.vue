@@ -11,8 +11,7 @@
 <style lang="scss" scoped>
     .mobile-board-container {
         top: 5rem !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
+        padding: 1rem 0 !important;
         transform: translateX(-50%) !important;
         max-width: 16.5rem !important;
     }

@@ -33,7 +33,6 @@
         align-items: center;
         justify-content: center;
         transition: $speed-medium;
-        // gap: 1.25rem;
     }
     .dark-mode {
         .mode-toggle-container {

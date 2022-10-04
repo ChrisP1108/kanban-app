@@ -9,7 +9,7 @@
         background: $color-e;
     }
 
-    h1, h2, p, b {
+    h1, h2, p, b, label {
     color: $color-white;
     }
 
@@ -31,7 +31,7 @@
         background: $color-e;
     }
 
-    input, textarea {
+    input, textarea, .dropdown {
         color: $color-white;
         font-weight: $semi-bold;
 
