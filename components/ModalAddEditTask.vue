@@ -2,12 +2,12 @@
     <div class="modal-styling">
         <h2>{{ mode === 'addTask' ? 'Add New Task' : 'editTask' ? 'Edit Task' : 'Error'}}</h2>
         <label for="task-title">Title</label>
-        <input id="task-title" name="task-title" v-model="title" placeholder="e.g. Take coffee break" type="text" />
+        <input id="task-title" name="task-title" v-model="task.title" placeholder="e.g. Take coffee break" type="text" />
         <label for="task-description">Description</label>
-        <textarea id="task-description" name="task-description" v-model="description" placeholder="e.g. It’s always good to take a break. This 15 minute break will  recharge the batteries a little."  />
+        <textarea id="task-description" name="task-description" v-model="task.description" placeholder="e.g. It’s always good to take a break. This 15 minute break will recharge the batteries a little."  />
         <label for="task-subtask">Subtasks</label>
-        <div class="sub-task-item" v-for="(subtask, index) in subtasks" :key="index">
-            <input id="task-subtask" name="task-subtask" v-model="subtasks[index]" placeholder="e.g. Make coffee" type="text" />
+        <div class="sub-task-item" v-for="(subtask, index) in task.subtasks" :key="index">
+            <input id="task-subtask" name="task-subtask" v-model="task.subtasks[index]" placeholder="e.g. Make coffee" type="text" />
             <span @click="deleteSubTask(index)">
                 <SubtaskXicon class="x-icon"  />
             </span>
@@ -17,7 +17,8 @@
                 Add New Subtask
             </span>
         </button>
-        <DropdownSelect />
+        <DropdownSelect @option-selected="setTaskStatus" :options=dropdownOptions />
+        <button class="button-primary-s">{{ mode === 'addTask' ? 'Create Task' : 'Update Task'}}</button>
     </div>
 </template>
 
@@ -28,24 +29,30 @@
         },
         data() {
             return {
-                title: '',
-                description: '',
-                subtasks: [''],
-                status: ''
+                task: {
+                    title: '',
+                    description: '',
+                    subtasks: [''],
+                    status: 'Todo'
+                },
+                dropdownOptions: ['Todo', 'Doing', 'Done']
             }
         },
         methods: {
             addSubTask(e) {
-                const subtasks = this._data.subtasks;
+                const subtasks = this.task.subtasks;
                 if (subtasks[subtasks.length - 1] !== '') {
-                    this._data.subtasks.push('')
-                } else console.log(e)
+                    this.task.subtasks.push('')
+                } 
             },
             deleteSubTask(index) {
                 if (index > 0) {
-                    this._data.subtasks = this._data.subtasks.filter((item, i) => 
+                    this.task.subtasks = this.task.subtasks.filter((item, i) => 
                     i !== index);
                 }
+            },
+            setTaskStatus(option) {
+                this.task.status = option;
             }
         }
     }

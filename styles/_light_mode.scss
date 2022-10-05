@@ -21,6 +21,7 @@
         font-weight: 700;
     }
 
+
     .button-secondary {
     background: $color-a-10;
 
@@ -48,6 +49,17 @@
         &::placeholder {
             opacity: 0.5;
             font-weight: $medium;
+        }
+    }
+
+    .dropdown-toggled-container {
+        background: $color-white;
+
+        li {
+            font-weight: $medium;
+            &:hover {
+                color: $color-a;
+            }
         }
     }
     

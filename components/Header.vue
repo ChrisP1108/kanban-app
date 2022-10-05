@@ -71,10 +71,6 @@
         margin: -1rem -1rem -1rem -9.5rem;
         cursor: pointer;
     }
-    .dropdown-arrow {
-        transition: $speed-fast;
-        width: 0.5rem;
-    }
 
     .dropdown-arrow-toggled {
         transform: rotate(180deg);

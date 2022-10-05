@@ -25,23 +25,28 @@ body {
     overflow: hidden;
 }
 
-input, textarea, .dropdown {
+@function field-border-hover() {
+    @return 0.0625rem $color-a solid;
+}
+
+input, textarea, .dropdown, .dropdown-toggled-container {
     width: 100%;
     min-height: 2.5rem;
     padding: 0.4375rem 0.9375rem;
-    border-radius: 4px;
+    border-radius: 0.25rem;
     background: inherit;
     border-style: none;
     border: 0.0625rem $color-input-border solid;
     transition: $speed-fast;
+    resize: none;
 
-    &:focus {
-        border: 0.0625rem $color-a solid;
+    &:focus:not(.dropdown-toggled-container) {
+        border: field-border-hover();
         outline: 0;
     }
 
-    &:hover {
-        border: 0.0625rem $color-a solid;
+    &:hover:not(.dropdown-toggled-container) {
+        border: field-border-hover();
     }
 }
 
@@ -52,6 +57,10 @@ textarea {
 
 .hide-scroll {
     overflow: hidden!important
+}
+
+button {
+    font-weight: $bold;
 }
 
 .modal-styling {
@@ -72,7 +81,7 @@ textarea {
         margin-bottom: 1rem;
     }
 
-    input, textarea, .dropdown {
+    input, textarea, .dropdown, .dropdown-toggled-container {
         margin: 0.5rem 0 1rem;
         font-size: $body-l-size;
         line-height: $body-l-height;
@@ -87,4 +96,9 @@ textarea {
     .button-secondary {
         margin-bottom: 1rem;
     }
+}
+
+.dropdown-arrow {
+    transition: $speed-fast;
+    width: 0.625rem;
 }

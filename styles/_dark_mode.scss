@@ -40,6 +40,13 @@
         }
     }
     
+    .dropdown-toggled-container {
+        background: $color-d;
+
+        li:hover {
+            color: $color-white;
+        }
+    }
 
     @media(min-width: $tablet) {
         aside {
