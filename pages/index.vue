@@ -10,8 +10,10 @@
     <!-- Modal Overlay -->
     <div @click="untoggleModal" :class="[modalOverlay ? 'modal-toggled' : '', 'modal-overlay']"></div> 
     <!-- Modals -->
-    <MobileBoard v-if="modalToggled === 'mobileBoards'" />
-    <ModalAddEditTask v-if="modalToggled === 'addTask' || modalToggled ==='editTask'" :mode="modalToggled" />
+    <div v-if="modalOverlay" class="modals-container">
+      <MobileBoard v-if="modalToggled === 'mobileBoards'" />
+      <ModalAddEditTask v-if="modalToggled === 'addTask' || modalToggled ==='editTask'" :mode="modalToggled" />
+    </div>
   </div>
 </template>
 
@@ -53,12 +55,12 @@
 <style lang="scss" scoped>
 
   .root-full-container {
-    min-width: 100vw;
-    min-height: 100vh;
+    min-width: 100%;
+    min-height: 100%;
     transition: $speed-fast;
   }
   .root-boxed-container {
-    min-height: 100vh;
+    min-height: 100%;
     display: flex;
     max-width: 1920px;
     margin: 0 auto;
@@ -83,6 +85,15 @@
     z-index: 100;
     animation-name: fade-in;
     animation-duration: $speed-very-fast;
+  }
+  .modals-container {
+    position: absolute;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
 </style>

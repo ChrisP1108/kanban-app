@@ -48,6 +48,10 @@
         }
     }
 
+    .dropdown-item-active {
+        color: $color-white;
+    }
+
     @media(min-width: $tablet) {
         aside {
             border-left: 1px $color-f solid;

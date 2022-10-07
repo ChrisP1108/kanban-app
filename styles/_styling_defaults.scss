@@ -29,6 +29,10 @@ body {
     @return 0.0625rem $color-a solid;
 }
 
+@function field-border-error() {
+    @return 0.0625rem $color-j solid;
+}
+
 input, textarea, .dropdown, .dropdown-toggled-container {
     width: 100%;
     min-height: 2.5rem;
@@ -55,8 +59,21 @@ textarea {
     max-height: 7rem;
 }
 
+.field-error-border {
+    border: field-border-error();
+
+    &:hover {
+        border: field-border-error();
+    }
+
+    &:focus {
+        border: field-border-error();
+    }
+}
+
 .hide-scroll {
-    overflow: hidden!important
+    overflow: hidden!important;
+    color: $color-j;
 }
 
 button {
@@ -64,11 +81,7 @@ button {
 }
 
 .modal-styling {
-    position: fixed;
     padding: 1.5rem;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
     z-index: 101;
     border-radius: 0.5rem;
     animation-name: fade-in;
@@ -81,8 +94,9 @@ button {
         margin-bottom: 1rem;
     }
 
-    input, textarea, .dropdown, .dropdown-toggled-container {
-        margin: 0.5rem 0 1rem;
+    .field-container, .dropdown-toggled-container {
+        width: 100%;
+        margin: 0.25rem 0 1rem;
         font-size: $body-l-size;
         line-height: $body-l-height;
     }

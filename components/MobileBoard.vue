@@ -14,6 +14,9 @@
         padding: 1rem 0 !important;
         transform: translateX(-50%) !important;
         max-width: 16.5rem !important;
+        width: calc(100% - 2rem);
+        position: absolute;
+        left: 50%;
     }
 
     .mobile-boards {

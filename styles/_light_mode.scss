@@ -62,6 +62,10 @@
             }
         }
     }
+
+    .dropdown-item-active {
+        color: $color-a;
+    }
     
 
     @media(min-width: $tablet) {

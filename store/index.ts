@@ -8,7 +8,8 @@ export interface State {
         addTaskToggled: boolean;
         editTaskToggled: boolean;
         createBoard: boolean;
-    }
+    },
+    fieldErrorMsg: string;
 }
 
 // Reset Modals
@@ -30,7 +31,8 @@ export const state = (): State => ({
         addTaskToggled: true,
         editTaskToggled: false,
         createBoard: false
-    }
+    },
+    fieldErrorMsg: "Can't be empty"
 });
 
 // State Mutations

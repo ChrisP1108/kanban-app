@@ -1,12 +1,13 @@
 <template>
     <div class="dropdown-select-container">
-        <label for="task-status" class="select-heading">Status</label>
         <div @click="toggleDropdown" id="task-status" name="task-status" class="dropdown">
             <span>{{ optionSelected }}</span>
             <img :class="[dropdownToggled ? 'dropdown-rotate-arrow' : '', 'dropdown-arrow']" src="assets/images/dropdown-arrow.svg" alt="Dropdown Arrow">
         </div>
         <ul @click="toggleDropdown" :class="[dropdownToggled ? 'dropdown-active' : '' ,'dropdown-toggled-container']">
-            <li @click="setOptionSelected(option)" v-for="option in options" :key="option">{{ option }}</li>
+            <li @click="setOptionSelected(option)" v-for="option in options" :key="option"
+                :class="[optionSelected === option ? 'dropdown-item-active' : '']">{{ option }}
+            </li>
         </ul>
     </div>
 </template>
@@ -14,12 +15,13 @@
 <script>
     export default {
         props: {
-            options: Array[String]
+            options: Array[String],
+            optionActive: String
         },
         data() {
             return {
                 dropdownToggled: false,
-                optionSelected: this.options[0]
+                optionSelected: ''
             }
         },
         methods: {
@@ -30,6 +32,9 @@
                 this.optionSelected = option;
                 this.$emit('option-selected', option)
             }
+        },
+        created() {
+            this.setOptionSelected(this.optionActive)
         },
         mounted() {
             window.addEventListener('click', (e) => {
