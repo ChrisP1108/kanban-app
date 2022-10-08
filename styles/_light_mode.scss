@@ -2,6 +2,10 @@
 @use 'breakpoints' as *;
 @use 'typography' as *;
 
+@function light-sidebar-border() {
+    @return 0.0625rem $color-h solid;
+}
+
 .light-mode {
     background: $color-h;
 
@@ -70,10 +74,10 @@
 
     @media(min-width: $tablet) {
         aside {
-            border-right: 1px $color-h solid; 
+            border-right: light-sidebar-border(); 
         }
         header {
-            border-bottom: 1px $color-h solid; 
+            border-bottom: light-sidebar-border(); 
         }
     }
 }

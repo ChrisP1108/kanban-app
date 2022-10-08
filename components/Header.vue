@@ -50,6 +50,15 @@
         margin-right: 0.5em;
     }
 
+    @media (max-width: 340px) {
+        .logo {
+            width: 7vw;
+        }
+        h2 {
+            font-size: 5vw;
+        }
+    }
+
     button {
         margin-right: 1rem;
         width: fit-content;

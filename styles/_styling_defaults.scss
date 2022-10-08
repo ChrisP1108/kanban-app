@@ -86,7 +86,7 @@ button {
     border-radius: 0.5rem;
     animation-name: fade-in;
     animation-duration: $speed-fast;
-    width: calc(100% - 2rem);
+    width: 100%;
     max-width: 30rem;
     transition: $speed-medium;
 
@@ -107,8 +107,61 @@ button {
         align-items: center;
     }
 
+    .list-items-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        max-height: 25vh;
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding-right: 1rem;
+        margin: 0.25rem -1rem 0.5rem 0;
+
+        .field-container {
+            margin: 0 !important;
+        }
+    }
+    .list-item-container {
+        display: flex;
+        align-items: center;
+
+        &:nth-of-type(1) .x-icon {
+            cursor: auto;
+        }
+
+        input {
+            margin: 0;
+        }
+
+        .x-icon {
+            cursor: pointer;
+            margin-right: -1rem;
+            height: 2.5rem;
+            width: 3.0rem;
+            padding: 0 1rem;
+        }
+    }
     .button-secondary {
+        margin-top: 0.75rem;
         margin-bottom: 1rem;
+
+        span {
+            font-weight: $bold;
+        }
+    }
+
+    .field-container {
+        position: relative;
+        p {
+            position: absolute;
+            left: calc(100% - 12ch);
+            top: 50%;
+            transform: translateY(-50%);
+            color: $color-j;
+        }
+        .list-item-error-indent {
+            left: calc(100% - 15.5ch) !important;
+        }
     }
 }
 

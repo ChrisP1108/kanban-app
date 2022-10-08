@@ -34,6 +34,7 @@
         padding: 0 $padding-sides-tablet;
         align-items: center;
         margin-bottom: 3.5rem;
+        gap: 1rem;
     }
 
     .logo {
@@ -43,7 +44,6 @@
 
     h1 {
         font-size: 1.875rem;
-        margin-left: 16px;
     }
 
     .sidebar-hidden {

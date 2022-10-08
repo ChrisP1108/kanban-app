@@ -13,6 +13,8 @@
     <div v-if="modalOverlay" class="modals-container">
       <MobileBoard v-if="modalToggled === 'mobileBoards'" />
       <ModalAddEditTask v-if="modalToggled === 'addTask' || modalToggled ==='editTask'" :mode="modalToggled" />
+      <ModalAddEditBoard v-if="modalToggled === 'addBoard' || modalToggled ==='editBoard'" :mode="modalToggled" />
+      <ModalDeleteTaskBoard v-if="modalToggled === 'deleteTask' || modalToggled ==='deleteBoard'" :mode="modalToggled" />
     </div>
   </div>
 </template>
@@ -29,7 +31,8 @@
         return this.$store.state.modalOverlay
       },
       modalToggled() {
-        const { mobileBoardsToggled, addTaskToggled, editTaskToggled, createBoard } = this.$store.state.modals;
+        const { mobileBoardsToggled, addTaskToggled, editTaskToggled, 
+          addBoardToggled, editBoardToggled, deleteTaskToggled, deleteBoardToggled } = this.$store.state.modals;
         if (mobileBoardsToggled) {
           return 'mobileBoards'
         }
@@ -39,8 +42,17 @@
         if (editTaskToggled) {
           return 'editTask'
         }
-        if (createBoard) {
-          return 'createBoard'
+        if (addBoardToggled) {
+          return 'addBoard'
+        }
+        if (editBoardToggled) {
+          return 'editBoard'
+        }
+        if (deleteTaskToggled) {
+          return 'deleteTask'
+        }
+        if (deleteBoardToggled) {
+          return 'deleteBoard'
         }
       } 
     },
@@ -88,6 +100,7 @@
   }
   .modals-container {
     position: absolute;
+    padding: 0 1rem;
     top: 0;
     width: 100vw;
     height: 100vh;

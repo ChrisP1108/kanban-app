@@ -11,7 +11,7 @@
                 <h3>Marketing Plan</h3>
             </li>
         </ul>
-        <button @click="toggleCreateBoard" class="board-item create-board-item">
+        <button @click="toggleAddBoard" class="board-item create-board-item">
             <BoardIcon class="board-icon" />
             <h3>+ Create New Board</h3>
         </button>
@@ -24,8 +24,8 @@
 <script>
     export default {
         methods: {
-            toggleCreateBoard() {
-                this.$store.commit('toggleModal', 'createBoard')
+            toggleAddBoard() {
+                this.$store.commit('toggleModal', 'addBoard')
             }
         }
     }

@@ -2,6 +2,10 @@
 @use 'breakpoints' as *;
 @use 'typography' as *;
 
+@function dark-sidebar-border() {
+    @return 0.0625rem $color-f solid;
+}
+
 .dark-mode {
     background: $color-c;
 
@@ -54,12 +58,12 @@
 
     @media(min-width: $tablet) {
         aside {
-            border-left: 1px $color-f solid;
-            border-right: 1px $color-f solid; 
+            border-left: dark-sidebar-border();
+            border-right: dark-sidebar-border(); 
         }
         header {
-            border-bottom: 1px $color-f solid; 
-            border-right: 1px $color-f solid; 
+            border-bottom: dark-sidebar-border(); 
+            border-right: dark-sidebar-border(); 
         }
     }
 }

@@ -7,7 +7,10 @@ export interface State {
         mobileBoardsToggled: boolean;
         addTaskToggled: boolean;
         editTaskToggled: boolean;
-        createBoard: boolean;
+        addBoardToggled: boolean;
+        editBoardToggled: boolean;
+        deleteTaskToggled: boolean;
+        deleteBoardToggled: boolean;
     },
     fieldErrorMsg: string;
 }
@@ -18,19 +21,25 @@ function resetModals(state: State) {
     state.modals.mobileBoardsToggled = false;
     state.modals.addTaskToggled = false;
     state.modals.editTaskToggled = false;
-    state.modals.createBoard = false;
+    state.modals.addBoardToggled = false;
+    state.modals.editBoardToggled = false;
+    state.modals.deleteTaskToggled = false;
+    state.modals.deleteBoardToggled = false;
 }
 
 // State Declarations
 
 export const state = (): State => ({
     darkModeToggled: true,
-    modalOverlay: true,
+    modalOverlay: false,
     modals: {
         mobileBoardsToggled: false,
-        addTaskToggled: true,
+        addTaskToggled: false,
         editTaskToggled: false,
-        createBoard: false
+        addBoardToggled: false,
+        editBoardToggled: false,
+        deleteTaskToggled: false,
+        deleteBoardToggled: false
     },
     fieldErrorMsg: "Can't be empty"
 });
@@ -54,8 +63,17 @@ export const mutations = {
             case 'editTask':
                 state.modals.editTaskToggled = true;
                 break;
-            case 'createBoard':
-                state.modals.createBoard = true;
+            case 'addBoard':
+                state.modals.addBoardToggled = true;
+                break;
+            case 'editBoard':
+                state.modals.editBoardToggled = true;
+                break;
+            case 'deleteTask':
+                state.modals.deleteTaskToggled = true;
+                break;
+            case 'deleteBoard':
+                state.modals.deleteBoardToggled = true;
                 break;
             default:
                 resetModals(state);
