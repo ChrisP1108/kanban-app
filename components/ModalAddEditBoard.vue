@@ -1,25 +1,10 @@
 <template>
     <div class="modal-styling">
         <h2>{{ mode === 'addBoard' ? 'Add New Board' : mode === 'editBoard' ? 'Edit Board' : 'Error'}}</h2>
-        <label for="board-name">Board Name</label>
-        <div class="field-container">
-            <p v-if="fieldEmpty(board.name)">{{ errorMsg }}</p>
-            <input :class="[fieldEmpty(board.name) ? 'field-error-border' : '']"
-                id="board-name" name="board-name" v-model="board.name" placeholder="e.g. Web Design" type="text" />
-        </div>
-        <label for="list-item">Board Columns</label>
-        <div class="list-items-container">
-            <div class="list-item-container" v-for="(column, index) in board.columns" :key="index">
-                <div class="field-container d-flex">
-                    <p class="list-item-error-indent" v-if="fieldEmpty(column) && index === 0">{{ errorMsg }}</p>
-                    <input id="board-column" :class="[fieldEmpty(column) && index === 0 ? 'field-error-border' : '']" 
-                        name="list-item" v-model="board.columns[index]" placeholder="e.g. Todo" type="text" />
-                    <span @click="deleteColumn(index)">
-                        <ListItemXicon class="x-icon"  />
-                    </span>
-                </div>
-            </div>
-        </div>
+        <FieldInput @value-change="(value) => board.name = value" label="Board Name" type="text"
+            :input="board.name" placeholder="e.g. Web Design" :errorCheck="fieldErrors" />
+        <FieldInput @value-change="(value) => board.columns = value" label="Board Columns" type="list"
+            :input="board.columns" placeholder="e.g. Todo" :errorCheck="fieldErrors" />
         <button v-if="board.columns.length <= 8" @click="addColumn" class="button-secondary">
             + <span class="ml-1"> 
                 Add New Column

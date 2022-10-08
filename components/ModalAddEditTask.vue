@@ -1,40 +1,20 @@
 <template>
     <div class="modal-styling">
         <h2>{{ mode === 'addTask' ? 'Add New Task' : mode === 'editTask' ? 'Edit Task' : 'Error'}}</h2>
-        <label for="task-title">Title</label>
-        <div class="field-container">
-            <p v-if="fieldEmpty(task.title)">{{ errorMsg }}</p>
-            <input :class="[fieldEmpty(task.title) ? 'field-error-border' : '']"
-                id="task-title" name="task-title" v-model="task.title" placeholder="e.g. Take coffee break" type="text" />
-        </div>
-        <label for="task-description">Description</label>
-        <div class="field-container">
-            <p v-if="fieldEmpty(task.description)">{{ errorMsg }}</p>
-            <textarea :class="[fieldEmpty(task.description) ? 'field-error-border' : '']" 
-                id="task-description" name="task-description" v-model="task.description" placeholder="e.g. It’s always good to take a break. This 15 minute break will recharge the batteries a little."  />
-        </div>
-        <label for="list-item">Subtasks</label>
-        <div class="list-items-container">
-            <div class="list-item-container" v-for="(subtask, index) in task.subtasks" :key="index">
-                <div class="field-container d-flex">
-                    <p class="list-item-error-indent" v-if="fieldEmpty(subtask) && index === 0">{{ errorMsg }}</p>
-                    <input id="list-item" :class="[fieldEmpty(subtask) && index === 0 ? 'field-error-border' : '']" 
-                        name="list-item" v-model="task.subtasks[index]" placeholder="e.g. Make coffee" type="text" />
-                    <span @click="deleteSubTask(index)">
-                        <ListItemXicon class="x-icon"  />
-                    </span>
-                </div>
-            </div>
-        </div>
+        <FieldInput @value-change="(value) => task.title = value" label="Title" type="text"
+            :input="task.title" placeholder="e.g. Take coffee break" :errorCheck="fieldErrors" />
+        <FieldInput @value-change="(value) => task.description = value" label="Description" type="textarea"
+            :input="task.description" placeholder="e.g. It’s always good to take a break. This 15 minute break will recharge the batteries a little." 
+            :errorCheck="fieldErrors" />
+        <FieldInput @value-change="(value) => task.subtasks = value" label="Subtasks" type="list"
+            :input="task.subtasks" placeholder="e.g. Make coffee" :errorCheck="fieldErrors" />
         <button v-if="task.subtasks.length <= 8" @click="addSubTask" class="button-secondary">
             + <span class="ml-1"> 
                 Add New Subtask
             </span>
         </button>
-        <label for="task-status" class="select-heading">Status</label>
-        <div class="field-container">
-            <DropdownSelect @option-selected="setTaskStatus" :options=dropdownOptions :optionActive=task.status />
-        </div>
+        <FieldInput @value-change="(value) => task.status = value" label="Status" type="dropdown"
+            :input="task.status" :dropdownOptions="dropdownOptions" :errorCheck="fieldErrors" />
         <button @click="taskSubmit" class="button-primary-s">{{ mode === 'addTask' ? 'Create Task' : 'Update Task'}}</button>
     </div>
 </template>
@@ -43,11 +23,6 @@
     export default {
         props: {
             mode: String
-        },
-        computed: {
-            errorMsg() {
-                return this.$store.state.fieldErrorMsg
-            }
         },
         data() {
             return {
@@ -88,6 +63,7 @@
                     this.fieldErrors = true;
                     return
                 } else this.fieldErrors = false;
+                this.task.subtasks = this.task.subtasks.filter(task => task !== '');
                 alert(JSON.stringify(this.task));
             }
         }

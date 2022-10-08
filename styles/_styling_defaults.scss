@@ -160,7 +160,22 @@ button {
             color: $color-j;
         }
         .list-item-error-indent {
-            left: calc(100% - 15.5ch) !important;
+            left: calc(100% - 15.5ch);
+        }
+    }
+
+    @media(max-width: 365px) {
+        .field-container p {
+            width: 8ch;
+            left: calc(100% - 23vw);
+            text-align: center;
+            line-height: 1.1em;
+        }
+        .textarea-err-msg {
+            top: 75% !important;
+        }
+        .list-item-error-indent {
+            left: calc(100% - 34vw) !important;
         }
     }
 }

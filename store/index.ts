@@ -11,8 +11,7 @@ export interface State {
         editBoardToggled: boolean;
         deleteTaskToggled: boolean;
         deleteBoardToggled: boolean;
-    },
-    fieldErrorMsg: string;
+    }
 }
 
 // Reset Modals
@@ -40,8 +39,7 @@ export const state = (): State => ({
         editBoardToggled: false,
         deleteTaskToggled: false,
         deleteBoardToggled: false
-    },
-    fieldErrorMsg: "Can't be empty"
+    }
 });
 
 // State Mutations
