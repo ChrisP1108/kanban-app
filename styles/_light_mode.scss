@@ -70,7 +70,10 @@
     .dropdown-item-active {
         color: $color-a;
     }
-    
+
+    .board-sidebar-item:hover:not(.board-active) {
+        background: $color-a-10;
+    }
 
     @media(min-width: $tablet) {
         aside {

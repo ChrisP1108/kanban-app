@@ -57,9 +57,6 @@
             errorCheck: Boolean
         },
         computed: {
-            errorMsg() {
-                return this.$store.state.fieldErrorMsg
-            },
             text() {
                 return this.type === 'text'
             },
@@ -105,9 +102,6 @@
             }
         },
         created() {
-            if (this.list) {
-                console.log(this.value)
-            }
             this.value = this.input;
         }
     }

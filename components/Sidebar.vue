@@ -1,17 +1,31 @@
 <template>
-    <aside class="">
+    <aside :class="[!sidebarToggled ? 'sidebar-hidden' : '']">
         <a href=".">
-            <div class="logo-title-container">
+            <div class="logo-title-container board-side-item-minwidth">
                 <img class="logo" src="assets/images/logo.svg" alt="Logo">
                 <h1>kanban</h1>
             </div>
         </a>
-        <Boards class="full-height" />
+        <Boards class="boards-container board-side-item-minwidth" />
+        <div @click="toggleSidebar">
+            <HideSidebar  />
+        </div>
     </aside>
 </template>
 
 <script lang="ts">
-    
+    export default {
+        computed: {
+            sidebarToggled() {
+                return this.$store.state.sidebarToggled
+            }
+        },
+        methods: {
+            toggleSidebar() {
+                this.$store.commit('toggleSidebar')
+            }
+        }
+    }
 </script>
 
 <style lang="scss" scoped>
@@ -46,16 +60,20 @@
         font-size: 1.875rem;
     }
 
+    .boards-container {
+        height: 100%;
+    }
+
     .sidebar-hidden {
         min-width: 0;
         width: 0;
         flex-basis: 0;
-        z-index: -1;
+        // z-index: -1;
         padding: 0 !important;
         border: 0 transparent solid !important;
-        // left: -10%;
         top: 0;
-        transform: rotateY(90deg);
+        left: -0%;
+        // opacity: 0;
     }
 
     .full-height {
@@ -66,7 +84,7 @@
         aside {
             min-width: 16.3125rem;
             flex-basis: 16.3125rem;
-            z-index: 1;
+            z-index: 2;
             padding-top: 2rem;
             position: relative;
             left: 0%;

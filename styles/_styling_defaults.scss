@@ -1,6 +1,9 @@
 @use 'transition' as *;
+@use 'spacing' as *;
+@use 'buttons' as *;
 @use 'colors' as *;
 @use 'typography' as *;
+@use 'mixins_functions' as *;
 
 ul, li {
     list-style: none;
@@ -23,14 +26,6 @@ h1, h2, h3, h4, h5, h6, p, b {
 
 body {
     overflow: hidden;
-}
-
-@function field-border-hover() {
-    @return 0.0625rem $color-a solid;
-}
-
-@function field-border-error() {
-    @return 0.0625rem $color-j solid;
 }
 
 input, textarea, .dropdown, .dropdown-toggled-container {
@@ -183,4 +178,33 @@ button {
 .dropdown-arrow {
     transition: $speed-fast;
     width: 0.625rem;
+}
+
+.board-sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: $padding-top-bottom $padding-sides-tablet;
+    min-height: $button-l-height;
+    border-top-right-radius: $button-l-radius;
+    border-bottom-right-radius: $button-l-radius;
+    transition: $speed-medium;
+    cursor: pointer;
+
+    &:hover:not(.board-active) h3 {
+        color: $color-a;
+    }
+    &:hover:not(.board-active) .board-sidebar-icon {
+        fill: $color-a;
+    }
+}
+
+.board-sidebar-icon {
+    fill: $color-g;
+    width: 1rem;
+    height: 1rem;
+}
+
+.board-side-item-minwidth {
+    min-width: 14.6875rem;
 }

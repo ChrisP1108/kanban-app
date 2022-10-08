@@ -1,5 +1,5 @@
 <template>
-    <div class="mode-toggle-container">
+    <div class="mode-toggle-container board-side-item-minwidth">
         <img class="light-mode-icon" src="assets/images/light-mode-logo.svg" alt="light-mode-logo">
         <svg @click="modeToggleClicked" width="40" height="20" viewBox="0 0 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect width="40" height="20" rx="10" fill="" />

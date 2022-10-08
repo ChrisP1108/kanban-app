@@ -2,6 +2,7 @@
 
 export interface State {
     darkModeToggled: boolean;
+    sidebarToggled: boolean;
     modalOverlay: boolean;
     modals: {
         mobileBoardsToggled: boolean;
@@ -30,6 +31,7 @@ function resetModals(state: State) {
 
 export const state = (): State => ({
     darkModeToggled: true,
+    sidebarToggled: true,
     modalOverlay: false,
     modals: {
         mobileBoardsToggled: false,
@@ -47,6 +49,9 @@ export const state = (): State => ({
 export const mutations = {
     toggleDarkMode(state: State): void {
         state.darkModeToggled = !state.darkModeToggled
+    },
+    toggleSidebar(state: State): void {
+        state.sidebarToggled = !state.sidebarToggled
     },
     toggleModal(state: State, type: string): void {
         state.modalOverlay = true;

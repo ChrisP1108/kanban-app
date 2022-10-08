@@ -56,6 +56,16 @@
         color: $color-white;
     }
 
+    .hidebar-container {
+        &:hover {
+            background: $color-white;
+        }
+    }
+
+    .board-sidebar-item:hover:not(.board-active) {
+        background: $color-white;
+    }
+
     @media(min-width: $tablet) {
         aside {
             border-left: dark-sidebar-border();

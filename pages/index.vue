@@ -7,7 +7,15 @@
         <Columns />
       </div>
     </div>
+
+    <!-- Show Sidebar Icon On Bottom Left -->
+
+    <div @click="toggleSidebar">
+      <ShowSidebar />
+    </div>
+
     <!-- Modal Overlay -->
+
     <div @click="untoggleModal" :class="[modalOverlay ? 'modal-toggled' : '', 'modal-overlay']"></div> 
     <!-- Modals -->
     <div v-if="modalOverlay" class="modals-container">
@@ -59,6 +67,9 @@
     methods: {
       untoggleModal() {
         this.$store.commit('toggleModal')
+      },
+      toggleSidebar() {
+          this.$store.commit('toggleSidebar')
       }
     }
   })

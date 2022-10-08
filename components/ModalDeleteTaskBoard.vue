@@ -2,13 +2,11 @@
     <div class="modal-styling">
         <h2>Delete this {{ deletingTask ? 'task' : deletingBoard ? 'board' : '[Error]'}}?</h2>
         <p>Are you sure you want to delete the '' {{ deletingTask ? 'task and its subtasks' 
-            : deletingBoard ? 'board' : '[Error]'}} ? This action {{ deletingTask  
+            : deletingBoard ? 'board' : '[Error]'}}? This action {{ deletingTask  
             ? '' : deletingBoard ? 'will remove all columns and tasks and' : '[Error]'}} 
             cannot be reversed.</p>
         <button @click="confirmDelete" class="button-destructive">Delete</button>
-        <button @click="cancelDelete" class="button-secondary">
-            Cancel
-        </button>
+        <button @click="cancelDelete" class="button-secondary">Cancel</button>
     </div>
 </template>
 

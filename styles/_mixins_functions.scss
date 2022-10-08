@@ -7,5 +7,11 @@
 @use 'spacing' as *;
 @use 'transition' as *;
 @use 'animations' as *;
-@use 'styling_defaults' as *;
-@use 'mixins_functions' as *;
+
+@function field-border-hover() {
+    @return 0.0625rem $color-a solid;
+}
+
+@function field-border-error() {
+    @return 0.0625rem $color-j solid;
+}
