@@ -8,6 +8,7 @@
 
 <style lang="scss" scoped>
     .board-sidebar-item {
+        padding: 0 !important;
         position: fixed;
         z-index: 1;
         top: 100%;
@@ -18,10 +19,11 @@
 
         svg {
             transition: $speed-medium;
-            position: absolute;
+            position: relative;
             left: 50%;
             transform: translateX(-50%);
             width: 1rem !important;
+            height: 0.6563rem !important;
         }
 
         &:hover {
