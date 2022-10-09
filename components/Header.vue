@@ -10,7 +10,11 @@
                 Add New Task
             </span>
         </button>
-        <img class="dot-nav" src="assets/images/dot-nav.svg">
+        <img @click="toggleBoardDropdown" id="dot-nav" class="dot-nav" src="assets/images/dot-nav.svg">
+        <nav @click="toggleBoardDropdown">
+            <DropdownList @options-selected="(value) => console.log(value)" :dropdownToggled="boardDropdownToggled"
+                :dropdownOptions="boardDropdownOptions" />
+        </nav>
     </header>
 </template>
 
@@ -21,13 +25,30 @@
                 return this.$store.state.modals.mobileBoardsToggled
             }
         },
+        data() {
+            return {
+                boardDropdownToggled: false,
+                boardDropdownOptions: ['Edit Board', 'Delete Board']
+            }
+        },
         methods: {
             toggleMobileBoard() {
                 this.$store.commit('toggleModal', 'mobileBoards')
             },
             toggleAddTask() {
                 this.$store.commit('toggleModal', 'addTask')
+            },
+            toggleBoardDropdown() {
+                console.log('toggled')
+                this.boardDropdownToggled = !this.boardDropdownToggled
             }
+        },
+        mounted() {
+            window.addEventListener('click', e => {
+                if (e.target.id !== 'dot-nav') {
+                    this.boardDropdownToggled = false
+                }
+            });
         }
     }
 </script>
@@ -103,6 +124,14 @@
         width: 2.3125rem;
     }
 
+    nav {
+        min-width: 12rem;
+        position: absolute;
+        top: 5rem;
+        left: 100%;
+        transform: translateX(calc(-100% - 1rem));
+    }
+
     @media (min-width: $tablet) {
         header {
             padding: $padding-top-bottom $padding-sides-tablet;
@@ -112,6 +141,9 @@
             margin-right: 1rem;
             font-size: $heading-m-size !important;
             line-height: $heading-m-height !important;
+        }
+        nav {
+            top: 5.5625rem;
         }
         .dropdown-container {
             display: none;

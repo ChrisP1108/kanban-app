@@ -15,7 +15,6 @@
             transition: $speed-medium;
         }
     }
-
     h3 {
         color: $color-g;
     }

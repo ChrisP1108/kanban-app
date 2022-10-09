@@ -79,7 +79,7 @@ button {
     padding: 1.5rem;
     z-index: 101;
     border-radius: 0.5rem;
-    animation-name: fade-in;
+    animation-name: fade-in-upward;
     animation-duration: $speed-fast;
     width: 100%;
     max-width: 30rem;
@@ -207,4 +207,8 @@ button {
 
 .board-side-item-minwidth {
     min-width: 14.6875rem;
+}
+
+.curved-border {
+    border-radius: 0.5rem;
 }

@@ -2,7 +2,7 @@
     <div class="boards-mode-container">
         <h4>ALL BOARDS (3)</h4> 
         <ul>
-            <li class="board-sidebar-item board-active">
+            <li class="board-sidebar-item board-active board-side-item-minwidth">
                 <BoardIcon class="board-icon" />
                 <h3>Platform Launch</h3>
             </li>
@@ -26,7 +26,7 @@
         methods: {
             toggleAddBoard() {
                 this.$store.commit('toggleModal', 'addBoard')
-            }
+            },
         }
     }
 
@@ -79,4 +79,5 @@
         margin-top: auto;
         padding: 0 0.8125rem;
     }
+
 </style>

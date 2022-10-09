@@ -32,14 +32,14 @@
     aside {
         display: flex;
         flex-direction: column;
-        padding: 0;
+        padding-top: 2rem;
         height: 100vh;
-        z-index: -1;
+        z-index: 2;
         flex-basis: 0;
         overflow: hidden;
         min-width: 0;
         position: relative;
-        left: -100%;
+        left: 0%;
         transition: $speed-medium;
     }
 
@@ -66,14 +66,11 @@
 
     .sidebar-hidden {
         min-width: 0;
-        width: 0;
         flex-basis: 0;
-        // z-index: -1;
-        padding: 0 !important;
         border: 0 transparent solid !important;
         top: 0;
         left: -0%;
-        // opacity: 0;
+
     }
 
     .full-height {
@@ -85,7 +82,6 @@
             min-width: 16.3125rem;
             flex-basis: 16.3125rem;
             z-index: 2;
-            padding-top: 2rem;
             position: relative;
             left: 0%;
         }

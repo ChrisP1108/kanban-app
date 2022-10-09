@@ -1,13 +1,13 @@
 <template>
     <div>
-        <label for="field" :class="[dropdown ? 'select-heading' : '']">{{ label }}</label>
+        <label :class="[dropdown ? 'select-heading' : '']">{{ label }}</label>
 
         <!-- Text And Textarea Inputs -->
 
         <div v-if="text || textarea" class="field-container">
             <p v-if="fieldEmpty(value)" :class="[textarea ? 'textarea-err-msg' : '']">{{ errorMsg }}</p>
             <input v-if="text" :class="[fieldEmpty(value) ? 'field-error-border' : '']"
-                id="field" name="field" v-model="value" @change="updateValue" :placeholder="placeholder" type="text" />
+                id="text-input" name="field" v-model="value" @change="updateValue" :placeholder="placeholder" type="text" />
             <textarea v-if="textarea" :class="[fieldEmpty(value) ? 'field-error-border' : '']" 
                 id="field" name="field" v-model="value" @change="updateValue" :placeholder="placeholder">
             </textarea>
@@ -19,7 +19,7 @@
             <div class="list-item-container" v-for="(field, index) in value" :key="index">
                 <div class="field-container d-flex">
                     <p class="list-item-error-indent" v-if="fieldEmpty(field) && index === 0">{{ errorMsg }}</p>
-                    <input id="field" :class="[fieldEmpty(field) && index === 0 ? 'field-error-border' : '']" 
+                    <input id="list-input" :class="[fieldEmpty(field) && index === 0 ? 'field-error-border' : '']" 
                         name="field" v-model="value[index]" :placeholder="placeholder" type="text" />
                     <span @click="deleteValue(index)">
                         <Xicon />
@@ -32,15 +32,15 @@
 
         <div class="field-container">
             <div v-if="dropdown" class="dropdown-select-container">
-                <div @click="toggleDropdown" id="field" name="task-status" class="dropdown">
+                <div @click="toggleDropdown" id="dropdown-container" name="task-status" class="dropdown">
                     <span>{{ input }}</span>
                     <img :class="[dropdownToggled ? 'dropdown-rotate-arrow' : '', 'dropdown-arrow']" src="assets/images/dropdown-arrow.svg" alt="Dropdown Arrow">
                 </div>
-                <ul @click="toggleDropdown" :class="[dropdownToggled ? 'dropdown-active' : '' ,'dropdown-toggled-container']">
-                    <li @click="setOptionSelected(option)" v-for="option in dropdownOptions" :key="option"
-                        :class="[input === option ? 'dropdown-item-active' : '']">{{ option }}
-                    </li>
-                </ul>
+                <nav @click="toggleDropdown">
+                    <DropdownList @option-selected="setOptionSelected" :dropdownToggled="dropdownToggled" 
+                        :dropdownOptions="dropdownOptions" :optionSelected="input" />
+                </nav>
+                
             </div>
         </div>
     </div>
@@ -52,7 +52,7 @@
             label: String,
             type: String,
             input: [String, Number, Array],
-            dropdownOptions: [String],
+            dropdownOptions: [String, Array],
             placeholder: String,
             errorCheck: Boolean
         },
@@ -103,6 +103,13 @@
         },
         created() {
             this.value = this.input;
+        },
+        mounted() {
+            window.addEventListener('click', e => {
+                if (e.target.id !== 'dropdown-container') {
+                    this.dropdownToggled = false
+                }
+            });
         }
     }
 </script>
@@ -125,7 +132,6 @@
         top: 100%;
         position: absolute;
         background: red;
-        border-radius: 0.5rem;
         transform: rotateX(90deg);
         transform-origin: top;
         transition: 0s;

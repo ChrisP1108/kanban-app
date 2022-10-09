@@ -14,7 +14,7 @@
         top: 100%;
         transform: translateY(calc(-100% - 2rem));
         width: 3.5rem;
-        height: 3rem;
+        height: 3.1875rem;
         background: $color-a !important;
 
         svg {
