@@ -12,7 +12,7 @@
         </button>
         <img @click="toggleBoardDropdown" id="dot-nav" class="dot-nav" src="assets/images/dot-nav.svg">
         <nav @click="toggleBoardDropdown">
-            <DropdownList @options-selected="(value) => console.log(value)" :dropdownToggled="boardDropdownToggled"
+            <DropdownList @option-selected="toggleBoardModal" :dropdownToggled="boardDropdownToggled"
                 :dropdownOptions="boardDropdownOptions" />
         </nav>
     </header>
@@ -39,8 +39,12 @@
                 this.$store.commit('toggleModal', 'addTask')
             },
             toggleBoardDropdown() {
-                console.log('toggled')
                 this.boardDropdownToggled = !this.boardDropdownToggled
+            },
+            toggleBoardModal(value) {
+                this.$store.commit('toggleModal', 
+                    value === 'Edit Board' ? 'editBoard' : 
+                    value === 'Delete Board' ? 'deleteBoard' : '')
             }
         },
         mounted() {
