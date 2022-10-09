@@ -15,8 +15,7 @@
     "prepare": "husky install",
     "lint": "npm run lint:js && npm run lint:style",
     "server": "node server.js",
-    "serve": "nodemon server.js",
-    "devstack": "concurrently \"npm run dev\" \"npm run serve\""
+    "devServer": "nodemon ./server/devServer.js"
   },
   "lint-staged": {
     "*.{js,vue}": "eslint",
@@ -32,6 +31,7 @@
     "core-js": "^3.15.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "express-async-handler": "^1.2.0",
     "mongoose": "^6.6.5",
     "nuxt": "^2.15.7"
   },
