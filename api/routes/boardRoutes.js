@@ -10,5 +10,4 @@ router.put('/:id', updateBoard); // Update Board
 
 router.delete('/:id', deleteBoard); // Delete Board
 
-
 module.exports = router;
