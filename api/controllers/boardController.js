@@ -1,11 +1,14 @@
 const asyncHandler = require('express-async-handler');
 
+const Board = require('../models/boardModel');
+
 // @desc    Get boards
 // @route   GET /api/boards
 // @access  Private
 
 const getBoards = asyncHandler(async (req, res) => {
-    res.status(200).json({ message: 'Get Boards' })
+    const boards = await Board.find()
+    res.status(200).json(boards)
 });
 
 // @desc    Add board

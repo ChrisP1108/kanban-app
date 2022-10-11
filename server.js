@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv').config();
+const colors = require('colors');
 const { errorHandler } = require('./api/middleware/errorMiddleware');
 
 const { loadNuxt, build } = require('nuxt');
@@ -7,6 +8,10 @@ const { NODE_ENV } = process.env;
 const isDev = NODE_ENV === 'development';
 
 const port = process.env.PORT || 5000;
+
+const { connectDB } = require('./api/config/db');
+
+connectDB();
 
 async function startServer() {
     try {
