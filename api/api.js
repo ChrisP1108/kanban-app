@@ -14,14 +14,15 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Error Handler
-
-app.use(errorHandler);
-
 // API Routes
 
 app.use('/api/boards', require('./routes/boardRoutes'));
 app.use('/api/tasks', require('./routes/taskRoutes'));
 app.use('/api/user', require('./routes/userRoutes'));
+
+// Error Handler
+
+app.use(errorHandler);
+
 
 app.listen(port, () => console.log(`Server started on port ${port}`));

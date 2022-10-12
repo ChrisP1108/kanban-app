@@ -10,7 +10,7 @@ const boardSchema = mongoose.Schema({
         required: [true, 'Please add at least one column']
     }], 
     user: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'User'
     }
