@@ -170,12 +170,30 @@ const getUserData = asyncHandler(async (req, res) => {
 
     const user = await User.findById(req.user.id);
 
-    if(!user) {
+    if (!user) {
         res.status(401)
         throw new Error('Invalid User ID. Not authorized.')
-    } else {
-        res.status(200).json({ message: 'Get User Data' })
-    }
+    } 
+
+    // Get boards that user created
+
+    const userBoards = await Board.find({ user: user._id })
+
+    // Check if user has any boards saved
+
+    if (!userBoards.length) {
+        res.status(200).json([]);
+    } 
+    
+    // Map tasks pertaining to each board if boards found for user
+
+    const userData = userBoards.map(async board => {
+        return { name: board.name, columns: board.columns, 
+            tasks: await Task.find({ board: board._id })
+        }
+    });
+
+    res.status(200).json(userData)
 });
 
 // @desc    Verify user
