@@ -10,7 +10,7 @@ router.post('/login', loginUser); // LoginUser
 
 router.get('/data', protect, getUserData); // Get User Data (Protected)
 
-router.post('/verify', protect, verifyUser); // Verify User (Protected)
+router.post('/verify', verifyUser); // Verify User
 
 router.post('/reset', resetUserPassword); // Reset Password 
 

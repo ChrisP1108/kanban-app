@@ -25,11 +25,16 @@ const protect = asyncHandler(async (req, res, next) => {
 
             const user = await User.findById(decodedToken.id);
 
-            // Set user Id to req.user.id
+            if (!user) {
+                res.status(401);
+                throw new Error('User not authorized')
+            }
 
-            req.user.id = user._id;
+            // Set user data to req.user
 
-            next()
+            req.user = user;
+
+            next();
         } catch (err) {
             console.error(err);
             res.status(401);

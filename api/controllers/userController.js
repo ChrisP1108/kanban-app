@@ -29,7 +29,7 @@ async function hasher(input) {
 // @access  Public
 
 const registerUser = asyncHandler(async (req, res) => {
-    const { firstname, lastname, username, password, password2, pin, security } = req.body;
+    const { firstname, username, password, password2, pin, security } = req.body;
 
     // Check For Empty Or Invalid Fields
 
@@ -37,11 +37,6 @@ const registerUser = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('Please add a first name')
     } 
-    if (!lastname) {
-        res.status(400);
-        throw new Error('Please add a last name')
-    }
-    
     if (!username || username.length < 8) {
         res.status(400);
         throw new Error('Please add a username that is at least 8 characters in length')
@@ -58,28 +53,36 @@ const registerUser = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('Password entries do not match.  Please reenter matching passwords')
     }
-    if (!pin || pin.length !== 4) {
+
+    if (!Number(pin) || pin.toString().length !== 4) {
         res.status(400);
-        throw new Error('Please add a 4 digit pin')
+        throw new Error('Please add a 4 digit numeric pin')
     }
 
     // Check if security question and answer is blank
 
-    const { question, answer } = security;
+    if (!security) {
+        res.status(400);
+        throw new Error('Please provide a security question and a security answer')
+    }
 
-    if (!question) {
+    if (!security.question) {
         res.status(400);
         throw new Error('Please add a security question')
     }
 
-    if (!answer || answer.includes(' ')) {
+    if (!security.answer || security.answer.includes(' ')) {
         res.status(400);
         throw new Error('Please add a security answer.  Answer cannot have spaces')
     }
 
-    // Check if user with same email exists
+    // Destructure security
 
-    const userExists = await User.findOne({ username });
+    const { question, answer } = security;
+
+    // Check if user with same username
+
+    const userExists = await User.findOne({ username: username.toLowerCase() });
 
     if (userExists) {
         res.status(400);
@@ -88,20 +91,19 @@ const registerUser = asyncHandler(async (req, res) => {
 
     // Hash password, PIN and security answer
 
-    const hashedPassword = await hasher(password);
-    const hashedPin = await hasher(pin);
-    const hashedAnswer = await hasher(answer);
+    const hashedPassword = await hasher(password.toLowerCase());
+    const hashedPin = await hasher(pin.toString());
+    const hashedAnswer = await hasher(answer.toLowerCase());
 
     // Encrypt Security Question
 
-    const encryptedQuestion = cryptr.encrypt(question);
+    const encryptedQuestion = cryptr.encrypt(question.toLowerCase());
 
     // Create user
 
     const user = await User.create({
-        firstname,
-        lastname,
-        username,
+        firstname: firstname.toLowerCase(),
+        username: username.toLowerCase(),
         password: hashedPassword,
         pin: hashedPin,
         security: {
@@ -141,7 +143,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
     // Find user
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username: username.toLowerCase() });
 
     // Check if user exists
 
@@ -152,7 +154,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
     // Check password
 
-    if (!await bcrypt.compare(password, user.password)) {
+    if (!await bcrypt.compare(password.toLowerCase(), user.password)) {
         res.status(401);
         throw new Error('Invalid password')
     } else {
@@ -168,32 +170,36 @@ const loginUser = asyncHandler(async (req, res) => {
 
 const getUserData = asyncHandler(async (req, res) => {
 
-    const user = await User.findById(req.user.id);
-
-    if (!user) {
-        res.status(401)
-        throw new Error('Invalid User ID. Not authorized.')
-    } 
-
     // Get boards that user created
 
-    const userBoards = await Board.find({ user: user._id })
+    const userBoards = await Board.find({ user: req.user._id })
+
+    const userData = {
+        user: {
+            firstname: req.user.firstname,
+            username: req.user.username,
+        },
+        boards: []
+    }
 
     // Check if user has any boards saved
 
     if (!userBoards.length) {
-        res.status(200).json([]);
-    } 
+        res.status(200).json(userData);
+    } else {
     
-    // Map tasks pertaining to each board if boards found for user
+        // Map tasks pertaining to each board if boards found for user
 
-    const userData = userBoards.map(async board => {
-        return { name: board.name, columns: board.columns, 
-            tasks: await Task.find({ board: board._id })
-        }
-    });
+        const boardsData = userBoards.map(async board => {
+            return { name: board.name, columns: board.columns, 
+                tasks: await Task.find({ board: board._id })
+            }
+        });
 
-    res.status(200).json(userData)
+        userData.boards = boardsData;
+
+        res.status(200).json(userData)
+    }
 });
 
 // @desc    Verify user
@@ -201,7 +207,7 @@ const getUserData = asyncHandler(async (req, res) => {
 // @access  Public
 
 const verifyUser = asyncHandler(async (req, res) => {
-    const { firstname, lastname, username, pin } = req.body;
+    const { firstname, username, pin } = req.body;
 
     // Check for empty fields
 
@@ -209,22 +215,18 @@ const verifyUser = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('Please enter a first name')
     } 
-    if (!lastname) {
-        res.status(400);
-        throw new Error('Please enter a last name')
-    }
     if (!username) {
         res.status(400);
         throw new Error('Please enter a username')
     }
-    if (!pin || pin.length !== 4) {
+    if (!Number(pin) || pin.toString().length !== 4) {
         res.status(400);
         throw new Error('Please enter a 4 digit pin')
     }
 
     // Find user
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username: username.toLowerCase() });
 
     // Check if user exists
 
@@ -235,8 +237,8 @@ const verifyUser = asyncHandler(async (req, res) => {
 
     // Check if fields match user fields
 
-    if (user.firstname !== firstname || user.lastname !== lastname 
-        || user.username !== username || !await bcrypt.compare(pin, user.pin)) 
+    if (user.firstname !== firstname.toLowerCase() || user.username !== username.toLowerCase() 
+        || !await bcrypt.compare(pin.toString(), user.pin)) 
         {
             res.status(401);
             throw new Error('Invalid Credentials')
@@ -254,7 +256,7 @@ const verifyUser = asyncHandler(async (req, res) => {
 // @access  Public
 
 const resetUserPassword = asyncHandler(async (req, res) => {
-    const { firstname, lastname, username, pin, security, password, password2 } = req.body;
+    const { firstname, username, pin, security, password, password2 } = req.body;
 
     // Check for empty fields
 
@@ -262,15 +264,12 @@ const resetUserPassword = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('Please enter a first name')
     } 
-    if (!lastname) {
-        res.status(400);
-        throw new Error('Please enter a last name')
-    }
     if (!username) {
         res.status(400);
         throw new Error('Please enter a username')
     }
-    if (!pin || pin.length !== 4) {
+
+    if (!Number(pin) || pin.toString().length !== 4) {
         res.status(400);
         throw new Error('Please enter a 4 digit pin')
     }
@@ -282,7 +281,7 @@ const resetUserPassword = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('Please reenter password')
     }
-    if (password !== password2) {
+    if (password.toLowerCase() !== password2.toLowerCase()) {
         res.status(400);
         throw new Error('Password entries do not match.  Please reenter matching passwords')
     }
@@ -298,7 +297,7 @@ const resetUserPassword = asyncHandler(async (req, res) => {
 
     // Find user
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username: username.toLowerCase() });
 
     // Check if user exists
 
@@ -307,9 +306,11 @@ const resetUserPassword = asyncHandler(async (req, res) => {
         throw new Error('Username does not exist')
     }
 
-    // Check if security answer matches answer in database
+    // Check if credentials are valid
 
-    if (!await bcrypt.compare(answer, user.security.answer)) {
+    if (firstname.toLowerCase() !== user.firstname || username.toLowerCase() !== user.username
+        || !await bcrypt.compare(pin.toString(), user.pin) || security.question !== cryptr.decrypt(user.security.question)
+        || !await bcrypt.compare(answer.toLowerCase(), user.security.answer)) {
         res.status(401);
         throw new Error('Invalid Recovery Credentials')
     }
@@ -336,18 +337,7 @@ const resetUserPassword = asyncHandler(async (req, res) => {
 
 const deleteUser = asyncHandler(async (req, res) => {
 
-    // Find user
-
-    const user = await User.findById(req.user.id);
-
-    // Check if user exists
-
-    if (!user) {
-        res.status(401);
-        throw new Error('User does not exist')
-    }
-
-    const id = user._id;
+    const id = req.user._id;
 
     // Delete User Profile, User Boards, And User Tasks
 
@@ -360,7 +350,7 @@ const deleteUser = asyncHandler(async (req, res) => {
         throw new Error('An error occured when deleting user')
     } else {
         res.status(200).json( {
-            id
+            id: id
         });
     }
 });
