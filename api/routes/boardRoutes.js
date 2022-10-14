@@ -1,13 +1,14 @@
 const express = require ('express');
 const router = express.Router();
-const { getBoards, addBoard, updateBoard, deleteBoard } = require('../controllers/boardController')
+const { getBoards, addBoard, updateBoard, deleteBoard } = require('../controllers/boardController');
+const { protect } = require('../middleware/authMiddleware');
 
-router.get('/', getBoards); // Get Boards
+router.get('/', protect, getBoards); // Get Boards (Protected)
 
-router.post('/', addBoard); // Add Board
+router.post('/', protect, addBoard); // Add Board (Protected)
 
-router.put('/:id', updateBoard); // Update Board
+router.put('/:id', protect, updateBoard); // Update Board (Protected)
 
-router.delete('/:id', deleteBoard); // Delete Board
+router.delete('/:id', protect, deleteBoard); // Delete Board (Protected)
 
 module.exports = router;
