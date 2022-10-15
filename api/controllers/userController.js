@@ -189,12 +189,10 @@ const getUserData = asyncHandler(async (req, res) => {
     
         // Map tasks pertaining to each board if boards found for user
 
-        const boardsData = [];
         for(board of userBoards) {
-            boardsData.push({ name: board.name, columns: board.columns, 
+            userData.boards.push({ name: board.name, columns: board.columns, 
                 id: board._id, tasks: await Task.find({ board: board._id }) })
         }
-        userData.boards = boardsData;
 
         res.status(200).json(userData)
     }
