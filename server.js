@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv').config();
 const colors = require('colors');
+const cookieParser = require('cookie-parser');
 const { errorHandler } = require('./api/middleware/errorMiddleware');
 
 const { loadNuxt, build } = require('nuxt');
@@ -15,12 +16,16 @@ connectDB();
 
 async function startServer() {
     try {
-        
+
         // Express Initialization
 
         const app = express();
+        
+        // Middleware
+
         app.use(express.json());
         app.use(express.urlencoded({ extended: false }));
+        app.use(cookieParser());
 
         // API Routes
 

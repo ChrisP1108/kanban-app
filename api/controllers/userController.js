@@ -15,6 +15,12 @@ function generateToken(id) {
     })
 }
 
+// Cookie Options
+
+function cookieOptions() {
+    return { httpOnly: true, expires: new Date(Date.now() + 86400000) }
+}
+
 // Bcrypt Salt And Hash
 
 async function hasher(input) {
@@ -115,9 +121,9 @@ const registerUser = asyncHandler(async (req, res) => {
         res.status(500);
         throw new Error('Error saving data to MongoDB')
     } else {
-        res.status(201).json( {
-            token: generateToken(user._id)
-        });
+        const token = generateToken(user._id)
+        res.cookie("token", token, cookieOptions());
+        res.status(201).json({ message: 'User Successfully Registered'});
     }
 });
 
@@ -157,10 +163,18 @@ const loginUser = asyncHandler(async (req, res) => {
         res.status(401);
         throw new Error('Invalid password')
     } else {
-        res.status(200).json( {
-            token: generateToken(user._id)
-        });
+        res.cookie("token", generateToken(user._id), cookieOptions());
+        res.status(200).json({ message: 'User successfully logged In'});
     }
+});
+
+// @desc    Logout user
+// @route   POST /api/user/logout
+// @access  Private
+
+const logoutUser = asyncHandler(async (req, res) => {
+    res.clearCookie("token");
+    res.status(200).json({ message: 'User successfully logged out'});
 });
 
 // @desc    Get user data
@@ -333,9 +347,8 @@ const resetUserPassword = asyncHandler(async (req, res) => {
         res.status(500);
         throw new Error('Error updating password')
     } else {
-        res.status(201).json( {
-            token: generateToken(user._id)
-        });
+        res.cookie("token", generateToken(user._id), cookieOptions());
+        res.status(200).json({ message: 'User password successfully updated'});
     }
 });
 
@@ -364,4 +377,4 @@ const deleteUser = asyncHandler(async (req, res) => {
 });
 
 
-module.exports = { registerUser, loginUser, getUserData, verifyUser, resetUserPassword, deleteUser }
+module.exports = { registerUser, loginUser, logoutUser, getUserData, verifyUser, resetUserPassword, deleteUser }

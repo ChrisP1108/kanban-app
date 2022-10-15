@@ -5,15 +5,10 @@ const cryptr = new Cryptr(process.env.ENCRYPTION_KEY);
 const User = require('../models/userModel');
 
 const protect = asyncHandler(async (req, res, next) => {
-    const { authorization } = req.headers;
+    const token = req.cookies.token;
 
-    if (authorization && authorization.startsWith('Bearer')) {  
+    if (token) {  
         try {
-            // Get token from header
-
-            const token = authorization.split(' ')[1];
-
-            // Verify token
 
             const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -23,7 +18,7 @@ const protect = asyncHandler(async (req, res, next) => {
 
             if (!user) {
                 res.status(401);
-                throw new Error('User not authorized')
+                throw new Error('Token provided does not correspond to a user.')
             }
 
             // Set user data to req.user
