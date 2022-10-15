@@ -12,17 +12,17 @@ const getBoards = asyncHandler(async (req, res) => {
 
     if (!boards) {
         res.status(500);
-        throw new Error('Error Getting Boards From MongoDB')
+        throw new Error('Error getting boards from MongoDB')
     }
 
     if (!boards.length) {
         res.status(200).json([])
     } else {
-        const boardsData = boards.map(async board => {
-            return { name: board.name, columns: board.columns, 
-                tasks: await Task.find({ board: board._id })
-            }
-        });
+        const boardsData = [];
+        for(let i = 0; i < boards.length; i++) {
+            boardsData.push({ name: boards[i].name, columns: boards[i].columns, 
+                id: boards[i]._id, tasks: await Task.find({ board: boards[i]._id }) })
+        }
         res.status(200).json(boardsData)
     }
 });
@@ -38,11 +38,11 @@ const addBoard = asyncHandler(async (req, res) => {
 
     if (!name) {
         res.status(400);
-        throw new Error('Please Add A Board Name')
+        throw new Error('Please add a board name')
     }
     if (!columns || !columns.length || typeof columns !== 'object') {
         res.status(400);
-        throw new Error('Please Add At Least One Board Column')
+        throw new Error('Please add at least one board column')
     }
 
     // Create board
@@ -51,7 +51,7 @@ const addBoard = asyncHandler(async (req, res) => {
 
     if (!createBoard) {
         res.status(500);
-        throw new Error('Error Saving Board Data To MongoDB')
+        throw new Error('Error saving board data to MongoDB')
     } else res.status(201).json({ id: createBoard._id })
 });
 
@@ -66,27 +66,29 @@ const updateBoard = asyncHandler(async (req, res) => {
 
     if (!name) {
         res.status(400);
-        throw new Error('Please Add A Board Name')
+        throw new Error('Please add a board name')
     }
     if (!columns || !columns.length || typeof columns !== 'object') {
         res.status(400);
-        throw new Error('Please Add At Least One Board Column')
+        throw new Error('Please add at least one board column')
     }
 
     // Check If Board Exists
 
     const checkBoard = await Board.findById(req.params.id)
 
+    console.log(checkBoard)
+
     if (!checkBoard) {
         res.status(400);
-        throw new Error('Board Not Found Or Invalid Board ID')
+        throw new Error('Board not found or invalid board ID')
     }
 
     // Check If Board Corresponds To User
 
     if (checkBoard.user.toString() !== req.user._id.toString()) {
         res.status(401);
-        throw new Error('User Not Authorized')
+        throw new Error('User not authorized')
     }
 
     // Update Board
@@ -95,7 +97,7 @@ const updateBoard = asyncHandler(async (req, res) => {
 
     if (!updateBoard) {
         res.status(500);
-        throw new Error('Error Updating Board To MongoDB')
+        throw new Error('Error updating board to MongoDB')
     } else res.status(200).json({ id: updateBoard._id })
 });
 
@@ -111,14 +113,14 @@ const deleteBoard = asyncHandler(async (req, res) => {
 
     if (!checkBoard) {
         res.status(400);
-        throw new Error('Board Not Found Or Invalid Board ID')
+        throw new Error('Board not found or invalid board ID')
     }
 
     // Check If Board Corresponds To User
 
     if (checkBoard.user.toString() !== req.user._id.toString()) {
         res.status(401);
-        throw new Error('User Not Authorized')
+        throw new Error('User not authorized')
     }
 
     // Delete Board
@@ -127,7 +129,7 @@ const deleteBoard = asyncHandler(async (req, res) => {
 
     if (!deleteBoard) {
         res.status(500);
-        throw new Error('Error Deleting Board To MongoDB')
+        throw new Error('Error deleting board to MongoDB')
     } else res.status(200).json({ id: deleteBoard._id })
 });
 

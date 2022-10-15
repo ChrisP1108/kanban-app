@@ -10,16 +10,15 @@ const Task = require('../models/taskModel');
 // Generate JWT (encrypted)
 
 function generateToken(id) {
-    const token = jwt.sign({ id }, process.env.JWT_SECRET, {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: '30d'
-    });
-    return cryptr.encrypt(token)
+    })
 }
 
 // Bcrypt Salt And Hash
 
 async function hasher(input) {
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(12);
     const hashedOutput = await bcrypt.hash(input, salt);
     return hashedOutput
 }
@@ -97,7 +96,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     // Encrypt Security Question
 
-    const encryptedQuestion = cryptr.encrypt(question.toLowerCase());
+    const encryptedQuestion = cryptr.encrypt(question);
 
     // Create user
 
@@ -114,7 +113,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     if (!user) {
         res.status(500);
-        throw new Error('Error Saving Data To MongoDB')
+        throw new Error('Error saving data to MongoDB')
     } else {
         res.status(201).json( {
             token: generateToken(user._id)
@@ -190,12 +189,11 @@ const getUserData = asyncHandler(async (req, res) => {
     
         // Map tasks pertaining to each board if boards found for user
 
-        const boardsData = userBoards.map(async board => {
-            return { name: board.name, columns: board.columns, 
-                tasks: await Task.find({ board: board._id })
-            }
-        });
-
+        const boardsData = [];
+        for(let i = 0; i < userBoards.length; i++) {
+            boardsData.push({ name: userBoards[i].name, columns: userBoards[i].columns, 
+                id: userBoards[i]._id, tasks: await Task.find({ board: userBoards[i]._id }) })
+        }
         userData.boards = boardsData;
 
         res.status(200).json(userData)
@@ -241,7 +239,7 @@ const verifyUser = asyncHandler(async (req, res) => {
         || !await bcrypt.compare(pin.toString(), user.pin)) 
         {
             res.status(401);
-            throw new Error('Invalid Credentials')
+            throw new Error('Invalid credentials')
     } else {
         res.status(200).json({
             security: {
@@ -286,14 +284,26 @@ const resetUserPassword = asyncHandler(async (req, res) => {
         throw new Error('Password entries do not match.  Please reenter matching passwords')
     }
 
+    // Check if security question and answer is blank
+
+    if (!security) {
+        res.status(400);
+        throw new Error('Please provide a security question and a security answer')
+    }
+
+    if (!security.question) {
+        res.status(400);
+        throw new Error('Please add a security question')
+    }
+
+    if (!security.answer || security.answer.includes(' ')) {
+        res.status(400);
+        throw new Error('Please add a security answer.  Answer cannot have spaces')
+    }
+
     // Check if security answer is blank
 
     const { answer } = security;
-
-    if (!answer || answer.includes(' ')) {
-        res.status(400);
-        throw new Error('Please enter security answer.  Answer cannot have spaces')
-    }
 
     // Find user
 
@@ -312,7 +322,7 @@ const resetUserPassword = asyncHandler(async (req, res) => {
         || !await bcrypt.compare(pin.toString(), user.pin) || security.question !== cryptr.decrypt(user.security.question)
         || !await bcrypt.compare(answer.toLowerCase(), user.security.answer)) {
         res.status(401);
-        throw new Error('Invalid Recovery Credentials')
+        throw new Error('Invalid recovery credentials')
     }
 
     const updatedPassword = await hasher(password);

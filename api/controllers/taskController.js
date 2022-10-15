@@ -39,14 +39,21 @@ const addTask = asyncHandler(async (req, res) => {
 
     if (!checkBoard) {
         res.status(400);
-        throw new Error('Board Not Found Or Invalid Board ID')
+        throw new Error('Corresponding board not found or invalid board ID')
     }
 
     // Check If Board For Task Corresponds To User
 
     if (checkBoard.user.toString() !== req.user._id.toString()) {
         res.status(401);
-        throw new Error('User Not Authorized')
+        throw new Error('User not authorized')
+    }
+
+    // Check that status value is an actual board column value
+
+    if (!checkBoard.columns.includes(status)) {
+        res.status(400);
+        throw new Error('Task status value does not equate to one of its corresponding board column values')
     }
 
     // Create task
@@ -56,13 +63,13 @@ const addTask = asyncHandler(async (req, res) => {
         description,
         subtasks,
         status,
-        board: boardId,
+        board: checkBoard._id,
         user: req.user._id
     });
 
     if (!createTask) {
         res.status(500);
-        throw new Error('Error Saving Task Data To MongoDB')
+        throw new Error('Error saving task data to MongoDB')
     } else res.status(201).json({ id: createTask._id })
 
 });
@@ -99,14 +106,14 @@ const updateTask = asyncHandler(async (req, res) => {
 
     if (!checkTask) {
         res.status(400);
-        throw new Error('Task Not Found Or Invalid Task ID')
+        throw new Error('Task not found or invalid task iD')
     }
 
     // Check If Task Corresponds To User
 
     if (checkTask.user.toString() !== req.user._id.toString()) {
         res.status(401);
-        throw new Error('User Not Authorized')
+        throw new Error('User not authorized')
     }
 
     // Update Task
@@ -117,7 +124,7 @@ const updateTask = asyncHandler(async (req, res) => {
 
     if (!updateTask) {
         res.status(500);
-        throw new Error('Error Updating Task Data To MongoDB')
+        throw new Error('Error updating task data to MongoDB')
     } else res.status(200).json({ id: updateTask._id })
 });
 
@@ -133,14 +140,14 @@ const deleteTask = asyncHandler(async (req, res) => {
 
     if (!checkTask) {
         res.status(400);
-        throw new Error('Task Not Found Or Invalid Task ID')
+        throw new Error('Task not found or invalid task ID')
     }
 
     // Check If Task Corresponds To User
 
     if (checkTask.user.toString() !== req.user._id.toString()) {
         res.status(401);
-        throw new Error('User Not Authorized')
+        throw new Error('User not authorized')
     }
 
     // Delete Task
@@ -149,7 +156,7 @@ const deleteTask = asyncHandler(async (req, res) => {
 
     if (!deleteTask) {
         res.status(500);
-        throw new Error('Error Deleting Task Data From MongoDB')
+        throw new Error('Error deleting task data from MongoDB')
     } else res.status(200).json({ id: deleteTask._id })
 });
 

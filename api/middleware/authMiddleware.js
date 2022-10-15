@@ -13,13 +13,9 @@ const protect = asyncHandler(async (req, res, next) => {
 
             const token = authorization.split(' ')[1];
 
-            // Decrypt token
-
-            const decryptedToken = cryptr.decrypt(token);
-
             // Verify token
 
-            const decodedToken = jwt.verify(decryptedToken, process.env.JWT_SECRET);
+            const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
             // Get user from decoded token ID
 
