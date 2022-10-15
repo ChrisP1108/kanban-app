@@ -19,9 +19,9 @@ const getBoards = asyncHandler(async (req, res) => {
         res.status(200).json([])
     } else {
         const boardsData = [];
-        for(let i = 0; i < boards.length; i++) {
-            boardsData.push({ name: boards[i].name, columns: boards[i].columns, 
-                id: boards[i]._id, tasks: await Task.find({ board: boards[i]._id }) })
+        for(board of boards) {
+            boardsData.push({ name: board.name, columns: board.columns, 
+                id: board._id, tasks: await Task.find({ board: board._id }) })
         }
         res.status(200).json(boardsData)
     }
