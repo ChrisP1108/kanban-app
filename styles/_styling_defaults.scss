@@ -28,6 +28,34 @@ body {
     overflow: hidden;
 }
 
+.root-full-container {
+    min-width: 100vw;
+    min-height: 100vh;
+    transition: $speed-fast;
+}
+.root-boxed-container {
+    min-height: 100%;
+    display: flex;
+    max-width: 1920px;
+    margin: 0 auto;
+}
+
+.modal-toggled {
+    z-index: 100;
+    animation-name: fade-in;
+    animation-duration: $speed-very-fast;
+}
+.modals-container {
+position: absolute;
+padding: 0 1rem;
+top: 0;
+width: 100vw;
+height: 100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
 input, textarea, .dropdown, .dropdown-toggled-container {
     width: 100%;
     min-height: 2.5rem;

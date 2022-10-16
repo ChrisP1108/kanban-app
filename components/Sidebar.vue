@@ -1,11 +1,6 @@
 <template>
     <aside :class="[!sidebarToggled ? 'sidebar-hidden' : '']">
-        <a href=".">
-            <div class="logo-title-container board-side-item-minwidth">
-                <img class="logo" src="assets/images/logo.svg" alt="Logo">
-                <h1>kanban</h1>
-            </div>
-        </a>
+        <Logo />
         <Boards class="boards-container board-side-item-minwidth" />
         <div @click="toggleSidebar">
             <HideSidebar  />
@@ -43,25 +38,9 @@
         transition: $speed-medium;
     }
 
-    .logo-title-container {
-        display: flex;
-        padding: 0 $padding-sides-tablet;
-        align-items: center;
-        margin-bottom: 3.5rem;
-        gap: 1rem;
-    }
-
-    .logo {
-        width: 1.5rem;
-        height: 1.5rem;
-    }
-
-    h1 {
-        font-size: 1.875rem;
-    }
-
     .boards-container {
         height: 100%;
+        margin-top: 3.5rem;
     }
 
     .sidebar-hidden {

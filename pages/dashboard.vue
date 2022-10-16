@@ -16,7 +16,7 @@
 
     <!-- Modal Overlay -->
 
-    <div @click="untoggleModal" :class="[modalOverlay ? 'modal-toggled' : '', 'modal-overlay']"></div> 
+    <div :class="[modalOverlay ? 'modal-toggled' : '', 'modal-overlay']" @click="untoggleModal"></div> 
     <!-- Modals -->
     <div v-if="modalOverlay" class="modals-container">
       <MobileBoard v-if="modalToggled === 'mobileBoards'" />
@@ -62,6 +62,7 @@
         if (deleteBoardToggled) {
           return 'deleteBoard'
         }
+        return null
       } 
     },
     methods: {
@@ -77,17 +78,6 @@
 
 <style lang="scss" scoped>
 
-  .root-full-container {
-    min-width: 100%;
-    min-height: 100%;
-    transition: $speed-fast;
-  }
-  .root-boxed-container {
-    min-height: 100%;
-    display: flex;
-    max-width: 1920px;
-    margin: 0 auto;
-  }
   .primary-content-container {
     width: 100%;
     display: flex;
@@ -104,20 +94,5 @@
     background: $color-modal-overlay;
     z-index: -1;
   }
-  .modal-toggled {
-    z-index: 100;
-    animation-name: fade-in;
-    animation-duration: $speed-very-fast;
-  }
-  .modals-container {
-    position: absolute;
-    padding: 0 1rem;
-    top: 0;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
+  
 </style>
