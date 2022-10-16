@@ -1,7 +1,9 @@
 const express = require('express');
 const dotenv = require('dotenv').config();
 const colors = require('colors');
+const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
 const { errorHandler } = require('./api/middleware/errorMiddleware');
 
 const { loadNuxt, build } = require('nuxt');
@@ -25,7 +27,9 @@ async function startServer() {
 
         app.use(express.json());
         app.use(express.urlencoded({ extended: false }));
+        app.use(cors());
         app.use(cookieParser());
+        app.use(morgan('tiny'));
 
         // API Routes
 
