@@ -2,25 +2,33 @@
     <div>
         <label :class="[dropdown ? 'select-heading' : '']">{{ label }}</label>
 
-        <!-- Text And Textarea Inputs -->
+        <!-- Text, Textarea, And Password Inputs -->
 
-        <div v-if="text || textarea" class="field-container">
-            <p v-if="fieldEmpty(value)" :class="[textarea ? 'textarea-err-msg' : '']">{{ errorMsg }}</p>
-            <input v-if="text" :class="[fieldEmpty(value) ? 'field-error-border' : '']"
-                id="text-input" name="field" v-model="value" @change="updateValue" :placeholder="placeholder" type="text" />
-            <textarea v-if="textarea" :class="[fieldEmpty(value) ? 'field-error-border' : '']" 
-                id="field" name="field" v-model="value" @change="updateValue" :placeholder="placeholder">
+        <div v-if="text || textarea || password" class="field-container">
+            <p v-if="fieldEmpty(value) || hasError" :class="[textarea ? 'textarea-err-msg' : '']">
+                {{ hasError ? errorMessage : emptyMsg }}
+            </p>
+            <input v-if="text || password" 
+                v-model="value" :class="[fieldEmpty(value) || hasError ? 'field-error-border' : '']"
+                name="field" :placeholder="placeholder" :type="[text ? 'text' : 'password']" 
+                @change="updateValue" 
+            />
+            <textarea v-if="textarea" v-model="value" name="field" 
+                :class="[fieldEmpty(value) ? 'field-error-border' : '']" 
+                :placeholder="placeholder" @change="updateValue">
             </textarea>
         </div>
 
         <!-- List Input -->
 
         <div v-if="list" class="list-items-container">
-            <div class="list-item-container" v-for="(field, index) in value" :key="index">
+            <div v-for="(field, index) in value" :key="index" class="list-item-container">
                 <div class="field-container d-flex">
-                    <p class="list-item-error-indent" v-if="fieldEmpty(field) && index === 0">{{ errorMsg }}</p>
-                    <input id="list-input" :class="[fieldEmpty(field) && index === 0 ? 'field-error-border' : '']" 
-                        name="field" v-model="value[index]" :placeholder="placeholder" type="text" />
+                    <p v-if="fieldEmpty(field) && index === 0" class="list-item-error-indent">{{ emptyMsg }}</p>
+                    <input  v-model="value[index]" name="field" 
+                        :class="[fieldEmpty(field) && index === 0 ? 'field-error-border' : '']"
+                        :placeholder="placeholder" type="text" 
+                    />
                     <span @click="deleteValue(index)">
                         <Xicon />
                     </span>
@@ -32,13 +40,13 @@
 
         <div class="field-container">
             <div v-if="dropdown" class="dropdown-select-container">
-                <div @click="toggleDropdown" id="dropdown-container" name="task-status" class="dropdown">
+                <div id="dropdown-container" name="task-status" class="dropdown" @click="toggleDropdown">
                     <span>{{ input }}</span>
                     <img :class="[dropdownToggled ? 'dropdown-rotate-arrow' : '', 'dropdown-arrow']" src="assets/images/dropdown-arrow.svg" alt="Dropdown Arrow">
                 </div>
                 <nav @click="toggleDropdown">
-                    <DropdownList @option-selected="setOptionSelected" :dropdownToggled="dropdownToggled" 
-                        :dropdownOptions="dropdownOptions" :optionSelected="input" />
+                    <DropdownList :dropdown-toggled="dropdownToggled" :dropdown-options="dropdownOptions" 
+                    :option-selected="input" @option-selected="setOptionSelected" />
                 </nav>
                 
             </div>
@@ -49,12 +57,45 @@
 <script>
     export default {
         props: {
-            label: String,
-            type: String,
-            input: [String, Number, Array],
-            dropdownOptions: [String, Array],
-            placeholder: String,
-            errorCheck: Boolean
+            label: {
+                type: String,
+                default: ''
+            },
+            type: {
+                type: String,
+                default: ''
+            },
+            input: {
+                type: [String, Number, Array],
+                default: ''
+            },
+            dropdownOptions: {
+                type: [String, Array],
+                default: ''
+            },
+            placeholder: {
+                type: String,
+                default: ''
+            },
+            emptyCheck: {
+                type: Boolean,
+                default: false
+            },
+            hasError: {
+                type: Boolean,
+                default: false
+            },
+            errorMessage: {
+                type: String,
+                default: ''
+            }
+        },
+        data() {
+            return {
+                value: '',
+                dropdownToggled: false,
+                emptyMsg: "Can't be empty"
+            }
         },
         computed: {
             text() {
@@ -63,6 +104,9 @@
             textarea() {
                 return this.type === 'textarea'
             },
+            password() {
+                return this.type === 'password'
+            },
             list() {
                 return this.type === 'list'
             },
@@ -70,18 +114,26 @@
                 return this.type === 'dropdown'
             }
         },
-        data() {
-            return {
-                value: '',
-                dropdownToggled: false,
-                errorMsg: "Can't be empty"
+        created() {
+            if (this.hasError) {
+                this.value = '';
             }
+            this.value = this.input;
+        },
+        mounted() {
+            window.addEventListener('click', e => {
+                if (e.target.id !== 'dropdown-container') {
+                    this.dropdownToggled = false
+                }
+            });
         },
         methods: {
             fieldEmpty(field) {
-                if (!field && this.errorCheck) {
+                if (!field && this.emptyCheck) {
                     return true
-                } else return false
+                } else {
+                    return false
+                }
             },
             toggleDropdown() {
                 this.dropdownToggled = !this.dropdownToggled;
@@ -92,24 +144,14 @@
             deleteValue(index) {
                 if (index > 0) {
                     this.value = this.value.filter((item, i) => 
-                    i !== index);
-                    this.updateValue()
+                    i !== index && item);
+                    this.updateValue();
                 }
             },
             setOptionSelected(option) {
                 this.value = option;
                 this.updateValue()
             }
-        },
-        created() {
-            this.value = this.input;
-        },
-        mounted() {
-            window.addEventListener('click', e => {
-                if (e.target.id !== 'dropdown-container') {
-                    this.dropdownToggled = false
-                }
-            });
         }
     }
 </script>
@@ -154,5 +196,8 @@
     }
     .dropdown-rotate-arrow {
         transform: rotate(180deg);
+    }
+    label {
+        transition: $speed-medium;
     }
 </style>

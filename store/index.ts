@@ -48,7 +48,8 @@ export const state = (): State => ({
 
 export const mutations = {
     toggleDarkMode(state: State): void {
-        state.darkModeToggled = !state.darkModeToggled
+        state.darkModeToggled = !state.darkModeToggled;
+        document.body.style.background = state.darkModeToggled ? 'black' : 'white';
     },
     toggleSidebar(state: State): void {
         state.sidebarToggled = !state.sidebarToggled

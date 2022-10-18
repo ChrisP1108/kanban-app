@@ -18,7 +18,7 @@
         },
         computed: {
             errorMsg() {
-                return this.$store.state.fieldErrorMsg
+                return this.$store.state.fieldEmptyMsg
             },
             deletingTask() {
                 return this.mode === 'deleteTask'

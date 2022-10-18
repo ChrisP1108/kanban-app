@@ -83,16 +83,5 @@
     display: flex;
     flex-direction: column;
   }
-  .modal-overlay {
-    min-width: 100vw;
-    min-height: 100vh;
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background: $color-modal-overlay;
-    z-index: -1;
-  }
   
 </style>

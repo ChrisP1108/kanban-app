@@ -1,16 +1,18 @@
 <template>
     <div class="modal-styling">
         <h2>{{ mode === 'addBoard' ? 'Add New Board' : mode === 'editBoard' ? 'Edit Board' : 'Error'}}</h2>
-        <FieldInput @value-change="(value) => board.name = value" label="Board Name" type="text"
-            :input="board.name" placeholder="e.g. Web Design" :errorCheck="fieldErrors" />
-        <FieldInput @value-change="(value) => board.columns = value" label="Board Columns" type="list"
-            :input="board.columns" placeholder="e.g. Todo" :errorCheck="fieldErrors" />
-        <button v-if="board.columns.length <= 8" @click="addColumn" class="button-secondary">
+        <FieldInput :input="board.name" placeholder="e.g. Web Design" :empty-check="fieldsEmpty"  
+            label="Board Name" type="text" @value-change="(value) => board.name = value" 
+        />
+        <FieldInput :input="board.columns" placeholder="e.g. Todo" :empty-check="fieldsEmpty" 
+            label="Board Columns" type="list" @value-change="(value) => board.columns = value" 
+        />
+        <button v-if="board.columns.length <= 8" class="button-secondary" @click="addColumn">
             + <span class="ml-1"> 
                 Add New Column
             </span>
         </button>
-        <button @click="boardSubmit" class="button-primary-s">{{ mode === 'addBoard' ? 'Create New Board' 
+        <button class="button-primary-s" @click="boardSubmit">{{ mode === 'addBoard' ? 'Create New Board' 
             : mode === 'editBoard' ? 'Update Board' : 'Error'}}
         </button>
     </div>
@@ -19,11 +21,9 @@
 <script>
     export default {
         props: {
-            mode: String
-        },
-        computed: {
-            errorMsg() {
-                return this.$store.state.fieldErrorMsg
+            mode: {
+                type: String,
+                default: ""
             }
         },
         data() {
@@ -32,7 +32,12 @@
                     name: '',
                     columns: ['Todo', 'Doing'],
                 },
-                fieldErrors: false
+                fieldsEmpty: false
+            }
+        },
+        computed: {
+            errorMsg() {
+                return this.$store.state.fieldEmptyMsg
             }
         },
         methods: {
@@ -45,23 +50,23 @@
             deleteColumn(index) {
                 if (index > 0) {
                     this.board.columns = this.board.columns.filter((item, i) => 
-                    i !== index);
+                    i !== index && item);
                 }
             },
             setTaskStatus(option) {
                 this.task.status = option;
             },
             fieldEmpty(field) {
-                if (!field && this.fieldErrors) {
+                if (!field && this.fieldsEmpty) {
                     return true
                 } else return false
             },
             boardSubmit() {
                 const { name, columns } = this.board;
                 if (!name || !columns[0]) {
-                    this.fieldErrors = true;
+                    this.fieldsEmpty = true;
                     return
-                } else this.fieldErrors = false;
+                } else this.fieldsEmpty = false;
                 alert(JSON.stringify(this.board));
             }
         }
