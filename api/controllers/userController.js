@@ -68,7 +68,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     if (!security) {
         res.status(400);
-        throw new Error('Please provide a security question and a security answer')
+        throw new Error('Please provide a security question and answer')
     }
 
     if (!security.question) {
@@ -76,9 +76,14 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error('Please add a security question')
     }
 
-    if (!security.answer || security.answer.includes(' ')) {
+    if (!security.answer) {
         res.status(400);
-        throw new Error('Please add a security answer.  Answer cannot have spaces')
+        throw new Error('Please add a security answer.')
+    }
+
+    if (security.answer.includes(' ')) {
+        res.status(400);
+        throw new Error('Security answer cannot have spaces')
     }
 
     // Destructure security
@@ -172,9 +177,11 @@ const loginUser = asyncHandler(async (req, res) => {
 // @route   POST /api/user/logout
 // @access  Private
 
-const logoutUser = asyncHandler(async (req, res) => {
-    res.clearCookie("token");
-    res.status(200).json({ message: 'User successfully logged out'});
+const logoutUser = asyncHandler((req, res) => {
+    if (req) {
+        res.clearCookie("token");
+        res.status(200).json({ message: 'User successfully logged out'});
+    }
 });
 
 // @desc    Get user data
@@ -370,8 +377,8 @@ const deleteUser = asyncHandler(async (req, res) => {
         res.status(500);
         throw new Error('An error occured when deleting user')
     } else {
-        res.status(200).json( {
-            id: id
+        res.status(200).json({
+            id
         });
     }
 });

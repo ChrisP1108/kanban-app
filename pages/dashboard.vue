@@ -65,6 +65,13 @@
         return null
       } 
     },
+    mounted() {
+      const storageDarkMode = localStorage.getItem("darkMode") === 'true';
+      if (this.darkModeToggled !== storageDarkMode) {
+          this.$store.commit('toggleDarkMode');
+      }
+      document.body.style.background = this.darkModeToggled ? 'black' : 'white';
+    },
     methods: {
       untoggleModal() {
         this.$store.commit('toggleModal')

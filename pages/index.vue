@@ -20,13 +20,19 @@ import { httpGet } from '../services/httpClient';
         },
         async created() {
             const getDataAttempt = await httpGet('/user/data');
-            if (getDataAttempt.status === 200) {
-                this.$router.push('/dashboard')
-            } else {
-                this.$router.push('/login')
-            }
+            setTimeout(() => {
+                if (getDataAttempt.status === 200) {
+                    this.$router.push('/dashboard')
+                } else {
+                    this.$router.push('/login')
+                }
+            }, 1000);
         },
         mounted() {
+            const storageDarkMode = localStorage.getItem("darkMode") === 'true';;
+            if (this.darkModeToggled !== storageDarkMode) {
+                this.$store.commit('toggleDarkMode');
+            }
             document.body.style.background = this.darkModeToggled ? 'black' : 'white';
         }
     });

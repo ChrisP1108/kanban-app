@@ -1,7 +1,7 @@
 <template>
     <div class="modal-styling">
         <Logo class="center-logo" />
-        <h2>{{ mode === 'login' ? 'Login' : mode === 'register' ? 'Register User' : 'Error'}}</h2>
+        <h2>Login</h2>
         <FieldInput  class="username" label="Username" type="text" :input="credentials.username.value" placeholder="" 
             :empty-check="fieldsEmpty" :error-message="credentials.username.errMsg" :has-error="credentials.username.hasError"
             @value-change="(value) => credentials.username.value = value"  />
@@ -9,7 +9,7 @@
             placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.password.errMsg" :has-error="credentials.password.hasError"
             @value-change="(value) => credentials.password.value = value" />
         <button class="button-primary-s" @click="login" >Login</button>
-        <button class="button-secondary button-margin" @click="login">Register New User</button>
+        <button class="button-secondary button-margin" @click="goToRegister">Register New User</button>
         <ModeToggle class="mode-toggler"/>
     </div>
 </template>
@@ -18,12 +18,6 @@
 import { httpPost, httpErrMsg } from '../services/httpClient';
 
     export default {
-        props: {
-            mode: {
-                type: String,
-                default: ""
-            }
-        },
         data() {
             return {
                 credentials: {
@@ -39,8 +33,7 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
                     },
                 },
                 fieldsEmpty: false,
-                isLoading: false,
-                errorMessage: ''
+                isLoading: false
             }
         },
         methods: {
@@ -65,16 +58,27 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
                     } else {
                         this.isLoading = false;
                         this.errorMessage = httpErrMsg(httpReq);
-                        if (this.errorMessage.includes('Username')) {
+                        if (this.errorMessage.includes('enter a username')) {
                             this.credentials.username.hasError = true;
-                            this.credentials.username.errMsg = this.errorMessage;
+                            this.credentials.username.errMsg = 'enter a username';
                         } else this.credentials.username.hasError = false;
-                        if (this.errorMessage.includes('password')) {
+                        if (this.errorMessage.includes('Username does not exist')) {
+                            this.credentials.username.hasError = true;
+                            this.credentials.username.errMsg = 'username does not exist';
+                        } else this.credentials.username.hasError = false;
+                        if (this.errorMessage.includes('enter a password')) {
                             this.credentials.password.hasError = true;
-                            this.credentials.password.errMsg = this.errorMessage;
+                            this.credentials.password.errMsg = 'enter a password';
+                        } else this.credentials.password.hasError = false;  
+                        if (this.errorMessage.includes('Invalid password')) {
+                            this.credentials.password.hasError = true;
+                            this.credentials.password.errMsg = 'invalid password';
                         } else this.credentials.password.hasError = false;  
                     }
                 }
+            },
+            goToRegister() {
+                this.$router.push('/register');
             }
         }
     }

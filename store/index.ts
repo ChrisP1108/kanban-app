@@ -1,3 +1,4 @@
+
 // State Interface
 
 export interface State {
@@ -49,6 +50,7 @@ export const state = (): State => ({
 export const mutations = {
     toggleDarkMode(state: State): void {
         state.darkModeToggled = !state.darkModeToggled;
+        localStorage.setItem("darkMode", state.darkModeToggled.toString());
         document.body.style.background = state.darkModeToggled ? 'black' : 'white';
     },
     toggleSidebar(state: State): void {

@@ -1,7 +1,7 @@
 <template>
     <div :class="[darkModeToggled ? 'dark-mode' : 'light-mode', 'root-full-container']">
         <div class="modals-container">
-            <ModalLoginUser />
+            <ModalRegisterUser />
         </div>
     </div>
 </template>
