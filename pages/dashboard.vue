@@ -1,28 +1,30 @@
 <template>
-  <div :class="[darkModeToggled ? 'dark-mode' : 'light-mode', 'root-full-container']">
-    <div class="root-boxed-container">
-      <Sidebar />
-      <div class="primary-content-container">
-        <Header />
-        <Columns />
+  <div :class="[darkModeToggled ? 'dark-mode' : 'light-mode', 'root-background']">
+    <div class="root-full-container">
+      <div class="root-boxed-container">
+        <Sidebar />
+        <div class="primary-content-container">
+          <Header />
+          <Columns />
+        </div>
       </div>
-    </div>
 
-    <!-- Show Sidebar Icon On Bottom Left -->
+      <!-- Show Sidebar Icon On Bottom Left -->
 
-    <div @click="toggleSidebar">
-      <ShowSidebar />
-    </div>
+      <div @click="toggleSidebar">
+        <ShowSidebar />
+      </div>
 
-    <!-- Modal Overlay -->
+      <!-- Modal Overlay -->
 
-    <div :class="[modalOverlay ? 'modal-toggled' : '', 'modal-overlay']" @click="untoggleModal"></div> 
-    <!-- Modals -->
-    <div v-if="modalOverlay" class="modals-container">
-      <MobileBoard v-if="modalToggled === 'mobileBoards'" />
-      <ModalAddEditTask v-if="modalToggled === 'addTask' || modalToggled ==='editTask'" :mode="modalToggled" />
-      <ModalAddEditBoard v-if="modalToggled === 'addBoard' || modalToggled ==='editBoard'" :mode="modalToggled" />
-      <ModalDeleteTaskBoard v-if="modalToggled === 'deleteTask' || modalToggled ==='deleteBoard'" :mode="modalToggled" />
+      <div :class="[modalOverlay ? 'modal-toggled' : '', 'modal-overlay']" @click="untoggleModal"></div> 
+      <!-- Modals -->
+      <div v-if="modalOverlay" class="modals-container">
+        <MobileBoard v-if="modalToggled === 'mobileBoards'" />
+        <ModalAddEditTask v-if="modalToggled === 'addTask' || modalToggled ==='editTask'" :mode="modalToggled" />
+        <ModalAddEditBoard v-if="modalToggled === 'addBoard' || modalToggled ==='editBoard'" :mode="modalToggled" />
+        <ModalDeleteTaskBoard v-if="modalToggled === 'deleteTask' || modalToggled ==='deleteBoard'" :mode="modalToggled" />
+      </div>
     </div>
   </div>
 </template>
@@ -36,30 +38,30 @@
         return this.$store.state.darkModeToggled
       },
       modalOverlay() {
-        return this.$store.state.modalOverlay
+        return Object.entries(this.$store.state.modals).some(modal => modal[1].toggled === true)
       },
       modalToggled() {
-        const { mobileBoardsToggled, addTaskToggled, editTaskToggled, 
-          addBoardToggled, editBoardToggled, deleteTaskToggled, deleteBoardToggled } = this.$store.state.modals;
-        if (mobileBoardsToggled) {
+        const { mobileBoards, addTask, editTask, 
+          addBoard, editBoard, deleteTask, deleteBoard } = this.$store.state.modals;
+        if (mobileBoards.toggled) {
           return 'mobileBoards'
         }
-        if (addTaskToggled) {
+        if (addTask.toggled) {
           return 'addTask'
         }
-        if (editTaskToggled) {
+        if (editTask.toggled) {
           return 'editTask'
         }
-        if (addBoardToggled) {
+        if (addBoard.toggled) {
           return 'addBoard'
         }
-        if (editBoardToggled) {
+        if (editBoard.toggled) {
           return 'editBoard'
         }
-        if (deleteTaskToggled) {
+        if (deleteTask.toggled) {
           return 'deleteTask'
         }
-        if (deleteBoardToggled) {
+        if (deleteBoard.toggled) {
           return 'deleteBoard'
         }
         return null
@@ -70,7 +72,6 @@
       if (this.darkModeToggled !== storageDarkMode) {
           this.$store.commit('toggleDarkMode');
       }
-      document.body.style.background = this.darkModeToggled ? 'black' : 'white';
     },
     methods: {
       untoggleModal() {

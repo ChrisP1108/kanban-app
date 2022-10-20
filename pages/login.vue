@@ -1,7 +1,9 @@
 <template>
-    <div :class="[darkModeToggled ? 'dark-mode' : 'light-mode', 'root-full-container']">
-        <div class="modals-container">
-            <ModalLoginUser />
+    <div :class="[darkModeToggled ? 'dark-mode' : 'light-mode', 'root-background']">
+        <div class="root-full-container">
+            <div class="modals-container">
+                <ModalLoginUser />
+            </div>
         </div>
     </div>
 </template>
@@ -20,7 +22,6 @@ import Vue from 'vue';
             if (this.darkModeToggled !== storageDarkMode) {
                 this.$store.commit('toggleDarkMode');
             }
-            document.body.style.background = this.darkModeToggled ? 'black' : 'white';
         }
     });
 </script>

@@ -22,7 +22,14 @@
         <FieldInput class="security-question" label="Answer To Unique Security Question.  Must Be One Word With No Spaces" type="text" 
             :input="credentials.security.answer.value" placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.security.answer.errMsg" 
             :has-error="credentials.security.answer.hasError" @value-change="(value) => credentials.security.answer.value = value" />
-        <button class="button-primary-s" @click="register" >Register User</button>
+        <button class="button-primary-s" @click="register" >
+            <div v-if="isLoading" class="button-content">
+                <LoadingIcon />
+            </div>
+            <div v-if="!isLoading" class="button-content">
+                Register User
+            </div>
+        </button>
         <button class="button-secondary button-margin" @click="goToLogin">Return To Login</button>
         <ModeToggle class="mode-toggler"/>
     </div>
@@ -122,11 +129,11 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
                         this.credentials.pin.hasError = false;
                         this.credentials.security.question.hasError = false;
                         this.credentials.security.answer.hasError = false;
-                        this.isLoading = false;
-                        alert('success');
+                        this.$router.push('/dashboard');
                     } else {
                         this.isLoading = false;
                         this.errorMessage = httpErrMsg(httpReq);
+                        console.log(this.errorMessage);
                         if (this.errorMessage.includes('add a first name')) {
                             this.credentials.firstname.hasError = true;
                             this.credentials.firstname.errMsg = 'add first name';
@@ -136,6 +143,7 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
                             this.credentials.username.errMsg = 'add username';
                         } else this.credentials.username.hasError = false;
                         if (this.errorMessage.includes('Username already exists')) {
+                            console.log('caught')
                             this.credentials.username.hasError = true;
                             this.credentials.username.errMsg = 'username already exists';
                         } else this.credentials.username.hasError = false;

@@ -8,7 +8,14 @@
         <FieldInput class="password" label="Password" type="password" :input="credentials.password.value" 
             placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.password.errMsg" :has-error="credentials.password.hasError"
             @value-change="(value) => credentials.password.value = value" />
-        <button class="button-primary-s" @click="login" >Login</button>
+        <button class="button-primary-s" @click="login" >
+            <div v-if="isLoading" class="button-content">
+                <LoadingIcon />
+            </div>
+            <div v-if="!isLoading" class="button-content">
+                Login
+            </div>
+        </button>
         <button class="button-secondary button-margin" @click="goToRegister">Register New User</button>
         <ModeToggle class="mode-toggler"/>
     </div>
@@ -53,8 +60,7 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
                     if (httpReq.status === 200) {
                         this.credentials.username.hasError = false;
                         this.credentials.password.hasError = false;
-                        this.isLoading = false;
-                        alert('success')
+                        this.$router.push('/dashboard');
                     } else {
                         this.isLoading = false;
                         this.errorMessage = httpErrMsg(httpReq);
@@ -106,6 +112,7 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
         margin-bottom: 1rem;
         color: $color-j !important;
     }
+
     .mode-toggler {
         max-width: 12.5rem !important;
         margin: 0 auto;

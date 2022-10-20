@@ -64,6 +64,11 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error('Please add a 4 digit numeric pin')
     }
 
+    if (pin.includes(' ')) {
+        res.status(400);
+        throw new Error('Pin cannot have spaces')
+    }
+
     // Check if security question and answer is blank
 
     if (!security) {
