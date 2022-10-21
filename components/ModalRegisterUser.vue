@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { httpPost, httpErrMsg } from '../services/httpClient';
+import { httpPost, httpGet, httpErrMsg } from '../services/httpClient';
 
     export default {
         data() {
@@ -129,11 +129,12 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
                         this.credentials.pin.hasError = false;
                         this.credentials.security.question.hasError = false;
                         this.credentials.security.answer.hasError = false;
+                        const getNewUserData = await httpGet('/user/data');
+                        this.$store.commit('setUserData', getNewUserData.data);
                         this.$router.push('/dashboard');
                     } else {
                         this.isLoading = false;
                         this.errorMessage = httpErrMsg(httpReq);
-                        console.log(this.errorMessage);
                         if (this.errorMessage.includes('add a first name')) {
                             this.credentials.firstname.hasError = true;
                             this.credentials.firstname.errMsg = 'add first name';

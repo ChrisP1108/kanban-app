@@ -17,13 +17,14 @@
 
       <!-- Modal Overlay -->
 
-      <div :class="[modalOverlay ? 'modal-toggled' : '', 'modal-overlay']" @click="untoggleModal"></div> 
+      <div :class="[modalOverlay || isLoading ? 'modal-toggled' : '', 'modal-overlay']" @click="untoggleModal"></div> 
       <!-- Modals -->
-      <div v-if="modalOverlay" class="modals-container">
+      <div v-if="modalOverlay || isLoading" class="modals-container">
         <MobileBoard v-if="modalToggled === 'mobileBoards'" />
         <ModalAddEditTask v-if="modalToggled === 'addTask' || modalToggled ==='editTask'" :mode="modalToggled" />
         <ModalAddEditBoard v-if="modalToggled === 'addBoard' || modalToggled ==='editBoard'" :mode="modalToggled" />
         <ModalDeleteTaskBoard v-if="modalToggled === 'deleteTask' || modalToggled ==='deleteBoard'" :mode="modalToggled" />
+        <LoadingIcon v-if="isLoading" class="loading-icon-full" />
       </div>
     </div>
   </div>
@@ -31,8 +32,14 @@
 
 <script>
   import Vue from 'vue';
+  import { httpGet } from '../services/httpClient';
 
   export default Vue.extend({
+    data() {
+      return {
+        isLoading: false
+      }
+    },
     computed: {
       darkModeToggled() {
         return this.$store.state.darkModeToggled
@@ -66,6 +73,21 @@
         }
         return null
       } 
+    },
+    async created() {
+      if (!this.$store.state.userData.user.firstname) {
+        this.isLoading = true;
+        const userData = await httpGet('/user/data');
+        setTimeout(() => {
+          if (userData.status === 200) {
+            console.log(userData.data)
+          } else {
+            this.$store.commit('toggleLoginRedirect');
+            this.$router.push('/login')
+          }
+          this.isLoading = false;
+        }, 1000)
+      }
     },
     mounted() {
       const storageDarkMode = localStorage.getItem("darkMode") === 'true';

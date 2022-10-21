@@ -1,35 +1,5 @@
+import { State } from './interface';
 
-// State Interface
-
-export interface State {
-    darkModeToggled: boolean;
-    sidebarToggled: boolean;
-    modals: {
-        mobileBoards: {
-            toggled: boolean
-        };
-        addTask: {
-            toggled: boolean
-        };
-        editTask: {
-            toggled: boolean;
-            taskSelected: string
-        };
-        addBoard: {
-            toggled: boolean
-        };
-        editBoard: {
-            toggled: boolean;
-            boardSelected: string
-        };
-        deleteTask: {
-            toggled: boolean
-        };
-        deleteBoard: {
-            toggled: boolean
-        };
-    }
-}
 
 // Reset Modals
 
@@ -72,7 +42,12 @@ export const state = (): State => ({
         deleteBoard: {
             toggled: false
         }
-    }
+    },
+    userData: {
+        boards: [],
+        user: {}
+    },
+    loginRedirect: false
 });
 
 // State Mutations
@@ -112,5 +87,12 @@ export const mutations = {
             default:
                 resetModals(state);
         }
+    },
+    setUserData(state: State, data: any): void {
+        state.userData.user = data.user;
+        state.userData.boards = data.boards;
+    },
+    toggleLoginRedirect(state: State): void {
+        state.loginRedirect = !state.loginRedirect;
     }
 }

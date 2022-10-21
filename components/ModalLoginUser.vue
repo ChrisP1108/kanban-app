@@ -43,6 +43,9 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
                 isLoading: false
             }
         },
+        created() {
+
+        },
         methods: {
             fieldEmpty(field) {
                 if (!field && this.fieldsEmpty) {
@@ -60,6 +63,9 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
                     if (httpReq.status === 200) {
                         this.credentials.username.hasError = false;
                         this.credentials.password.hasError = false;
+                        if (this.$store.state.loginRedirect) {
+                            this.$store.commit('toggleLoginRedirect');
+                        }
                         this.$router.push('/dashboard');
                     } else {
                         this.isLoading = false;
@@ -85,7 +91,7 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
             },
             goToRegister() {
                 this.$router.push('/register');
-            }
+            },
         }
     }
 </script>

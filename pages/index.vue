@@ -1,7 +1,7 @@
 <template>
     <div :class="[darkModeToggled ? 'dark-mode' : 'light-mode', 'root-background']">
         <div class="root-full-container">
-            <LoadingIcon class="starting-load" />
+            <LoadingIcon class="loading-icon-full" />
         </div>
     </div>
 </template>
@@ -20,8 +20,10 @@ import { httpGet } from '../services/httpClient';
             const getDataAttempt = await httpGet('/user/data');
             setTimeout(() => {
                 if (getDataAttempt.status === 200) {
+                    this.$store.commit('setUserData', getDataAttempt.data);
                     this.$router.push('/dashboard')
                 } else {
+                    this.$store.commit('toggleLoginRedirect');
                     this.$router.push('/login')
                 }
             }, 1000);
@@ -38,14 +40,5 @@ import { httpGet } from '../services/httpClient';
 <style lang="scss" scoped>
     .root-full-container {
         display: flex;
-    }
-    .starting-load {
-        margin: auto;
-        min-width: 240px;
-        min-height: 240px;
-        width: 25vw;
-        height: 25vw;
-        max-height: 50vh;
-        max-width: 50vh;
     }
 </style>

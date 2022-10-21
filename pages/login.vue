@@ -17,6 +17,11 @@ import Vue from 'vue';
                 return this.$store.state.darkModeToggled
             }
         },
+        created() {
+            if (!this.$store.state.loginRedirect) {
+                this.$router.push('/')
+            }
+        },
         mounted() {
             const storageDarkMode = localStorage.getItem("darkMode") === 'true';
             if (this.darkModeToggled !== storageDarkMode) {
