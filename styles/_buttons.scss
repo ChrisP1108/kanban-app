@@ -46,6 +46,10 @@ button {
     }
 }
 
+.button-primary-active {
+    background: $color-b;
+}
+
 .button-secondary {   
     color: $color-a;
     font-size: $body-l-size;

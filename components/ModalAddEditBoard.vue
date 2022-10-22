@@ -1,5 +1,5 @@
 <template>
-    <div class="modal-styling">
+    <div class="modal-styling" @keyup="checkEnterKeypress">
         <h2>{{ mode === 'addBoard' ? 'Add New Board' : mode === 'editBoard' ? 'Edit Board' : 'Error'}}</h2>
         <FieldInput :input="board.name" placeholder="e.g. Web Design" :empty-check="fieldsEmpty"  
             label="Board Name" type="text" @value-change="(value) => board.name = value" 
@@ -60,6 +60,11 @@
                 if (!field && this.fieldsEmpty) {
                     return true
                 } else return false
+            },
+            checkEnterKeypress(e) {
+                if (e.key === 'Enter') {
+                    this.boardSubmit();
+                }
             },
             boardSubmit() {
                 const { name, columns } = this.board;

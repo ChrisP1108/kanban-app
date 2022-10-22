@@ -31,11 +31,16 @@
 
 
     .button-secondary {
-    background: $color-a-10;
+        background: $color-a-10;
 
         &:hover {
             background: $color-a-25;
         }
+
+    }
+
+    .button-secondary-active {
+        background: $color-a-25;
     }
 
     .tasklist-container {

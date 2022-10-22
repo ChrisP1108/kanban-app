@@ -47,7 +47,7 @@ export const state = (): State => ({
         boards: [],
         user: {}
     },
-    loginRedirect: false
+    loginRedirect: false,
 });
 
 // State Mutations

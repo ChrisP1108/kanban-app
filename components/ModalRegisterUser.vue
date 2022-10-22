@@ -1,5 +1,5 @@
 <template>
-    <div class="modal-styling">
+    <div class="modal-styling" @keyup="checkEnterKeypress">
         <h2>Register New User</h2>
         <FieldInput  class="firstname" label="First Name" type="text" :input="credentials.firstname.value" placeholder="" 
             :empty-check="fieldsEmpty" :error-message="credentials.firstname.errMsg" :has-error="credentials.firstname.hasError"
@@ -22,7 +22,7 @@
         <FieldInput class="security-question" label="Answer To Unique Security Question.  Must Be One Word With No Spaces" type="text" 
             :input="credentials.security.answer.value" placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.security.answer.errMsg" 
             :has-error="credentials.security.answer.hasError" @value-change="(value) => credentials.security.answer.value = value" />
-        <button class="button-primary-s" @click="register" >
+        <button :class="[isLoading ? 'button-primary-active' : '', 'button-primary-s']" @click="register" >
             <div v-if="isLoading" class="button-content">
                 <LoadingIcon />
             </div>
@@ -41,6 +41,7 @@ import { httpPost, httpGet, httpErrMsg } from '../services/httpClient';
     export default {
         data() {
             return {
+                nextPageToggled: false,
                 credentials: {
                     firstname: {
                         value: '',
@@ -90,6 +91,11 @@ import { httpPost, httpGet, httpErrMsg } from '../services/httpClient';
                 if (!field && this.fieldsEmpty) {
                     return true
                 } else return false
+            },
+            checkEnterKeypress(e) {
+                if (e.key === 'Enter') {
+                    this.register();
+                }
             },
             async register() {
                 const firstname = this.credentials.firstname.value;
@@ -144,7 +150,6 @@ import { httpPost, httpGet, httpErrMsg } from '../services/httpClient';
                             this.credentials.username.errMsg = 'add username';
                         } else this.credentials.username.hasError = false;
                         if (this.errorMessage.includes('Username already exists')) {
-                            console.log('caught')
                             this.credentials.username.hasError = true;
                             this.credentials.username.errMsg = 'username already exists';
                         } else this.credentials.username.hasError = false;
@@ -203,6 +208,7 @@ import { httpPost, httpGet, httpErrMsg } from '../services/httpClient';
 <style lang="scss" scoped>
     .modal-styling {
         width: 100%;
+        overflow: hidden;
     }
     .button-secondary {
         margin-bottom: 1.5rem !important;

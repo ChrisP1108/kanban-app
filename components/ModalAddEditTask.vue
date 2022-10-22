@@ -1,5 +1,5 @@
 <template>
-    <div class="modal-styling">
+    <div class="modal-styling" @keyup="checkEnterKeypress">
         <h2>{{ mode === 'addTask' ? 'Add New Task' : mode === 'editTask' ? 'Edit Task' : 'Error'}}</h2>
         <FieldInput label="Title" type="text" :input="task.title" placeholder="e.g. Take coffee break" 
             :empty-check="fieldsEmpty" @value-change="(value) => task.title = value"  
@@ -15,8 +15,8 @@
                 Add New Subtask
             </span>
         </button>
-        <FieldInput label="Status" type="dropdown" :input="task.status" :dropdownOptions="dropdownOptions" 
-            :errorCheck="fieldsEmpty" @value-change="(value) => task.status = value" 
+        <FieldInput label="Status" type="dropdown" :input="task.status" :dropdown-options="dropdownOptions" 
+            :error-check="fieldsEmpty" @value-change="(value) => task.status = value" 
         />
         <button class="button-primary-s" @click="taskSubmit">{{ mode === 'addTask' ? 'Create Task' : 'Update Task'}}</button>
     </div>
@@ -62,6 +62,11 @@
                 if (!field && this.fieldsEmpty) {
                     return true
                 } else return false
+            },
+            checkEnterKeypress(e) {
+                if (e.key === 'Enter') {
+                    this.taskSubmit();
+                }
             },
             taskSubmit() {
                 const { title, description, subtasks, status} = this.task;

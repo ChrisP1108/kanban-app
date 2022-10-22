@@ -32,5 +32,5 @@ export interface State {
         boards: [],
         user: Object
     }
-    loginRedirect: boolean
+    loginRedirect: boolean;
 }

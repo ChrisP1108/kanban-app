@@ -5,31 +5,39 @@
         <div class="dropdown-container" @click="toggleMobileBoard">
             <img :class="[mobileBoardToggled ? 'dropdown-arrow-toggled' : '', 'dropdown-arrow']" src="assets/images/dropdown-arrow.svg" alt="Dropdown Arrow">
         </div>
-        <button @click="toggleAddTask" class="button-primary-l ml-auto button-mobile">
+        <button class="button-primary-l ml-auto button-mobile" @click="toggleAddTask">
             + <span class="add-button-text ml-1"> 
                 Add New Task
             </span>
         </button>
-        <img @click="toggleBoardDropdown" id="dot-nav" class="dot-nav" src="assets/images/dot-nav.svg">
+        <img id="dot-nav" class="dot-nav" src="assets/images/dot-nav.svg" @click="toggleBoardDropdown">
         <nav @click="toggleBoardDropdown">
-            <DropdownList @option-selected="toggleBoardModal" :dropdownToggled="boardDropdownToggled"
-                :dropdownOptions="boardDropdownOptions" />
+            <DropdownList :dropdown-toggled="boardDropdownToggled" :dropdown-options="boardDropdownOptions" 
+                @option-selected="toggleOption" />
         </nav>
     </header>
 </template>
 
 <script>
+    import { httpPost } from '../services/httpClient';
     export default {
+        data() {
+            return {
+                boardDropdownToggled: false,
+                boardDropdownOptions: ['Edit Board', 'Delete Board', 'User Settings', 'Logout']
+            }
+        },
         computed: {
             mobileBoardToggled() {
                 return this.$store.state.modals.mobileBoardsToggled
             }
         },
-        data() {
-            return {
-                boardDropdownToggled: false,
-                boardDropdownOptions: ['Edit Board', 'Delete Board']
-            }
+        mounted() {
+            window.addEventListener('click', e => {
+                if (e.target.id !== 'dot-nav') {
+                    this.boardDropdownToggled = false
+                }
+            });
         },
         methods: {
             toggleMobileBoard() {
@@ -41,18 +49,17 @@
             toggleBoardDropdown() {
                 this.boardDropdownToggled = !this.boardDropdownToggled
             },
-            toggleBoardModal(value) {
-                this.$store.commit('toggleModal', 
-                    value === 'Edit Board' ? 'editBoard' : 
-                    value === 'Delete Board' ? 'deleteBoard' : '')
-            }
-        },
-        mounted() {
-            window.addEventListener('click', e => {
-                if (e.target.id !== 'dot-nav') {
-                    this.boardDropdownToggled = false
+            async toggleOption(value) {
+                if (value === 'Edit Board' || value === 'Delete Board') {
+                    this.$store.commit('toggleModal', 
+                        value === 'Edit Board' ? 'editBoard' : 
+                        value === 'Delete Board' ? 'deleteBoard' : '')
+                } else if (value === 'Logout') {
+                    await httpPost('/user/logout', {});
+                    this.$store.commit('toggleLoginRedirect');
+                    this.$router.push('/login');
                 }
-            });
+            }
         }
     }
 </script>

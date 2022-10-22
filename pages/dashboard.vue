@@ -32,7 +32,6 @@
 
 <script>
   import Vue from 'vue';
-  import { httpGet } from '../services/httpClient';
 
   export default Vue.extend({
     data() {
@@ -74,20 +73,10 @@
         return null
       } 
     },
-    async created() {
+    created() {
       if (!this.$store.state.userData.user.firstname) {
-        this.isLoading = true;
-        const userData = await httpGet('/user/data');
-        setTimeout(() => {
-          if (userData.status === 200) {
-            console.log(userData.data)
-          } else {
-            this.$store.commit('toggleLoginRedirect');
-            this.$router.push('/login')
-          }
-          this.isLoading = false;
-        }, 1000)
-      }
+        this.$router.push('/')
+      } 
     },
     mounted() {
       const storageDarkMode = localStorage.getItem("darkMode") === 'true';
@@ -112,6 +101,12 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+  }
+  .trans-speed {
+    transition: $speed-fast; 
+  }
+  .no-opacity {
+    opacity: 0;
   }
   
 </style>
