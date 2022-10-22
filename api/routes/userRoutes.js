@@ -16,6 +16,6 @@ router.post('/verify', verifyUser); // Verify User
 
 router.post('/reset', resetUserPassword); // Reset Password 
 
-router.delete('/', protect, deleteUser) // Delete User (Protected)
+router.post('/', protect, deleteUser) // Delete User (Protected)
 
 module.exports = router;

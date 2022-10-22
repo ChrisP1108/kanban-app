@@ -46,9 +46,9 @@ export async function httpPut(route: string, body: Object): Promise<any> {
 
 // DELETE Request
 
-export async function httpDelete(route: string): Promise<any> {
+export async function httpDelete(route: string, body: Object): Promise<any> {
     try {
-        const res: any = await axios.delete(baseUrl + route);
+        const res: any = await axios.delete(baseUrl + route, body);
         return res
     } catch(err: any) {
         console.error(err);

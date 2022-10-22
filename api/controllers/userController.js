@@ -110,20 +110,28 @@ const registerUser = asyncHandler(async (req, res) => {
     const hashedPin = await hasher(pin.toString());
     const hashedAnswer = await hasher(answer.toLowerCase());
 
+    // Encrypt Password
+
+    const encryptedHashedPassword = cryptr.encrypt(hashedPassword);
+
     // Encrypt Security Question
 
     const encryptedQuestion = cryptr.encrypt(question);
 
+    // Encrypt Security Answer
+
+    const encryptedHashedAnswer = cryptr.encrypt(hashedAnswer);
+
     // Create user
 
     const user = await User.create({
-        firstname: firstname.toLowerCase(),
+        firstname: cryptr.encrypt(firstname.toLowerCase()),
         username: username.toLowerCase(),
-        password: hashedPassword,
+        password: encryptedHashedPassword,
         pin: hashedPin,
         security: {
             question: encryptedQuestion,
-            answer: hashedAnswer
+            answer: encryptedHashedAnswer
         }
     });
 
@@ -158,6 +166,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
     // Find user
 
+
     const user = await User.findOne({ username: username.toLowerCase() });
 
     // Check if user exists
@@ -169,7 +178,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
     // Check password
 
-    if (!await bcrypt.compare(password.toLowerCase(), user.password)) {
+    if (!await bcrypt.compare(password.toLowerCase(), cryptr.decrypt(user.password))) {
         res.status(401);
         throw new Error('Invalid password')
     } else {
@@ -215,7 +224,7 @@ const getUserData = asyncHandler(async (req, res) => {
     
         // Map tasks pertaining to each board if boards found for user
 
-        for(board of userBoards) {
+        for (board of userBoards) {
             userData.boards.push({ name: board.name, columns: board.columns, 
                 id: board._id, tasks: await Task.find({ board: board._id }) })
         }
@@ -237,16 +246,18 @@ const verifyUser = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('Please enter a first name')
     } 
+
     if (!username) {
         res.status(400);
         throw new Error('Please enter a username')
     }
+    
     if (!Number(pin) || pin.toString().length !== 4) {
         res.status(400);
-        throw new Error('Please enter a 4 digit pin')
+        throw new Error('Please enter a 4 digit numeric pin')
     }
 
-    // Find user
+    // Find users based upon firstname
 
     const user = await User.findOne({ username: username.toLowerCase() });
 
@@ -259,11 +270,15 @@ const verifyUser = asyncHandler(async (req, res) => {
 
     // Check if fields match user fields
 
-    if (user.firstname !== firstname.toLowerCase() || user.username !== username.toLowerCase() 
-        || !await bcrypt.compare(pin.toString(), user.pin)) 
-        {
+    if (cryptr.decrypt(user.firstname) !== firstname.toLowerCase()) {
+        res.status(401);
+        throw new Error('Invalid first name')
+    }
+
+    if (!await bcrypt.compare(pin.toString(), user.pin)) {
             res.status(401);
-            throw new Error('Invalid credentials')
+            throw new Error('Invalid pin')
+
     } else {
         res.status(200).json({
             security: {
@@ -293,7 +308,7 @@ const resetUserPassword = asyncHandler(async (req, res) => {
 
     if (!Number(pin) || pin.toString().length !== 4) {
         res.status(400);
-        throw new Error('Please enter a 4 digit pin')
+        throw new Error('Please enter a 4 digit numeric pin')
     }
     if (!password || password.length < 8) {
         res.status(400);
@@ -342,17 +357,35 @@ const resetUserPassword = asyncHandler(async (req, res) => {
 
     // Check if credentials are valid
 
-    if (firstname.toLowerCase() !== user.firstname || username.toLowerCase() !== user.username
-        || !await bcrypt.compare(pin.toString(), user.pin) || security.question !== cryptr.decrypt(user.security.question)
-        || !await bcrypt.compare(answer.toLowerCase(), user.security.answer)) {
+    if (firstname.toLowerCase() !== cryptr.decrypt(user.firstname)) {
         res.status(401);
-        throw new Error('Invalid recovery credentials')
+        throw new Error('Invalid first name')
+    }
+
+    if (username.toLowerCase() !== user.username) {
+        res.status(401);
+        throw new Error('Invalid username')
+    }
+
+    if (!await bcrypt.compare(pin.toString(), user.pin)) {
+        res.status(401);
+        throw new Error('Invalid pin')
+    }
+
+    if (security.question !== cryptr.decrypt(user.security.question)) {
+        res.status(401);
+        throw new Error('Invalid security question')
+    }
+
+    if (!await bcrypt.compare(answer.toLowerCase(), cryptr.decrypt(user.security.answer))) {
+        res.status(401);
+        throw new Error('Invalid security answer')
     }
 
     const updatedPassword = await hasher(password);
 
     const resetUserCredentials = await User.findByIdAndUpdate(user._id, {
-        password: updatedPassword
+        password: cryptr.encrypt(updatedPassword)
     });
 
     if (!resetUserCredentials) {
@@ -370,7 +403,38 @@ const resetUserPassword = asyncHandler(async (req, res) => {
 
 const deleteUser = asyncHandler(async (req, res) => {
 
+    const { username, password } = req.body;
+
+    if (!username) {
+        res.status(400);
+        throw new Error('Please enter a username')
+    }
+    if (!password) {
+        res.status(400);
+        throw new Error('Please enter a password')
+    }
+
+    // User ID
+
     const id = req.user._id;
+
+    // Verify User Credentials
+
+    const checkUser = await User.findById(id);
+
+    // Check username
+
+    if (username.toLowerCase() !== checkUser.username.toLowerCase()) {
+        res.status(401);
+        throw new Error('Invalid username')
+    }
+
+    // Check password
+
+    if (!await bcrypt.compare(password.toLowerCase(), cryptr.decrypt(checkUser.password))) {
+        res.status(401);
+        throw new Error('Invalid password')
+    }
 
     // Delete User Profile, User Boards, And User Tasks
 

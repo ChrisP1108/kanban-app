@@ -1,20 +1,21 @@
 <template>
   <div :class="[darkModeToggled ? 'dark-mode' : 'light-mode', 'root-background']">
     <div class="root-full-container">
-      <div class="root-boxed-container">
-        <Sidebar />
-        <div class="primary-content-container">
-          <Header />
-          <Columns />
+      <div v-if="!isLoading">
+        <div class="root-boxed-container">
+          <Sidebar />
+          <div class="primary-content-container">
+            <Header />
+            <Columns />
+          </div>
+        </div>
+
+        <!-- Show Sidebar Icon On Bottom Left -->
+
+        <div @click="toggleSidebar">
+          <ShowSidebar />
         </div>
       </div>
-
-      <!-- Show Sidebar Icon On Bottom Left -->
-
-      <div @click="toggleSidebar">
-        <ShowSidebar />
-      </div>
-
       <!-- Modal Overlay -->
 
       <div :class="[modalOverlay || isLoading ? 'modal-toggled' : '', 'modal-overlay']" @click="untoggleModal"></div> 
@@ -24,6 +25,7 @@
         <ModalAddEditTask v-if="modalToggled === 'addTask' || modalToggled ==='editTask'" :mode="modalToggled" />
         <ModalAddEditBoard v-if="modalToggled === 'addBoard' || modalToggled ==='editBoard'" :mode="modalToggled" />
         <ModalDeleteTaskBoard v-if="modalToggled === 'deleteTask' || modalToggled ==='deleteBoard'" :mode="modalToggled" />
+        <ModalDeleteUser v-if="modalToggled === 'deleteUser'" />
         <LoadingIcon v-if="isLoading" class="loading-icon-full" />
       </div>
     </div>
@@ -36,7 +38,7 @@
   export default Vue.extend({
     data() {
       return {
-        isLoading: false
+        isLoading: true
       }
     },
     computed: {
@@ -48,7 +50,7 @@
       },
       modalToggled() {
         const { mobileBoards, addTask, editTask, 
-          addBoard, editBoard, deleteTask, deleteBoard } = this.$store.state.modals;
+          addBoard, editBoard, deleteTask, deleteBoard, deleteUser } = this.$store.state.modals;
         if (mobileBoards.toggled) {
           return 'mobileBoards'
         }
@@ -70,13 +72,18 @@
         if (deleteBoard.toggled) {
           return 'deleteBoard'
         }
+        if (deleteUser.toggled) {
+          return 'deleteUser'
+        }
         return null
       } 
     },
     created() {
       if (!this.$store.state.userData.user.firstname) {
         this.$router.push('/')
-      } 
+      } else {
+        this.isLoading = false;
+      }
     },
     mounted() {
       const storageDarkMode = localStorage.getItem("darkMode") === 'true';

@@ -2,7 +2,7 @@
     <ul id="dropdown-container" :class="[dropdownToggled ? 'dropdown-active' : '' ,'dropdown-toggled-container curved-border']">
         <li @click="setOptionSelected(option)" v-for="option in dropdownOptions" :key="option"
             :class="[optionSelected === option ? 'dropdown-item-active' : '', 
-            option === 'Delete Board' ? 'delete-board-text-color' : '']">{{ option }}
+            option.includes('Delete') ? 'delete-board-text-color' : '']">{{ option }}
         </li>
     </ul>
 </template>

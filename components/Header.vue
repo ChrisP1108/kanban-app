@@ -24,7 +24,7 @@
         data() {
             return {
                 boardDropdownToggled: false,
-                boardDropdownOptions: ['Edit Board', 'Delete Board', 'User Settings', 'Logout']
+                boardDropdownOptions: ['Edit Board', 'Delete Board', 'Delete User', 'Logout']
             }
         },
         computed: {
@@ -50,11 +50,12 @@
                 this.boardDropdownToggled = !this.boardDropdownToggled
             },
             async toggleOption(value) {
-                if (value === 'Edit Board' || value === 'Delete Board') {
+                if (value !== 'Logout') {
                     this.$store.commit('toggleModal', 
                         value === 'Edit Board' ? 'editBoard' : 
-                        value === 'Delete Board' ? 'deleteBoard' : '')
-                } else if (value === 'Logout') {
+                        value === 'Delete Board' ? 'deleteBoard' : 
+                        value === 'Delete User' ? 'deleteUser' : '')
+                } else if (value === 'Logout')  {
                     await httpPost('/user/logout', {});
                     this.$store.commit('toggleLoginRedirect');
                     this.$router.push('/login');

@@ -144,10 +144,10 @@ import { httpPost, httpGet, httpErrMsg } from '../services/httpClient';
                         if (this.errorMessage.includes('add a first name')) {
                             this.credentials.firstname.hasError = true;
                             this.credentials.firstname.errMsg = 'add first name';
-                        } else this.credentials.username.hasError = false;
+                        } else this.credentials.firstname.hasError = false;
                         if (this.errorMessage.includes('add a username')) {
                             this.credentials.username.hasError = true;
-                            this.credentials.username.errMsg = 'add username';
+                            this.credentials.username.errMsg = 'add username 8 char min';
                         } else this.credentials.username.hasError = false;
                         if (this.errorMessage.includes('Username already exists')) {
                             this.credentials.username.hasError = true;
@@ -155,7 +155,7 @@ import { httpPost, httpGet, httpErrMsg } from '../services/httpClient';
                         } else this.credentials.username.hasError = false;
                         if (this.errorMessage.includes('add a password')) {
                             this.credentials.password.hasError = true;
-                            this.credentials.password.errMsg = 'add password';
+                            this.credentials.password.errMsg = 'add password 8 char min';
                         } else this.credentials.password.hasError = false;  
                         if (this.errorMessage.includes('reenter password')) {
                             this.credentials.password2.hasError = true;
@@ -165,7 +165,7 @@ import { httpPost, httpGet, httpErrMsg } from '../services/httpClient';
                             this.credentials.password.hasError = true;
                             this.credentials.password2.hasError = true;
                             this.credentials.password.errMsg = 'passwords must match';
-                            this.credentials.password2.errMsg = 'password must match';
+                            this.credentials.password2.errMsg = 'passwords must match';
                         } else {
                             this.credentials.password.hasError = false; 
                             this.credentials.password2.hasError = false;  

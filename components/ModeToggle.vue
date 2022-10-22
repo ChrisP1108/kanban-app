@@ -11,14 +11,25 @@
 
 <script>
     export default {
+        data() {
+            return {
+                metaColor: null
+            }
+        },
         computed: {
             darkModeToggled() {
                 return this.$store.state.darkModeToggled
             } 
         },
+        mounted() {
+            this.metaColor = document.querySelector('meta[name="theme-color"]');
+        },
         methods: {
             modeToggleClicked() {
-                this.$store.commit('toggleDarkMode')
+                this.$store.commit('toggleDarkMode');
+                if (this.darkModeToggled) {
+                    this.metaColor.content = '#2B2C36'
+                } else this.metaColor.content = '#A8A3FF'
             }
         }
     }
