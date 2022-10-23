@@ -45,6 +45,15 @@ const addBoard = asyncHandler(async (req, res) => {
         throw new Error('Please add at least one board column')
     }
 
+    // Check if duplicate board name exists
+
+    const checkBoards = await Board.find( { user: req.user._id });
+
+    if (checkBoards.some(board => board.name.toLowerCase() === name.toLowerCase())) {
+        res.status(400);
+        throw new Error('Board with duplicate name already exists')
+    }
+
     // Create board
 
     const createBoard = await Board.create({ name, columns, user: req.user._id  })
@@ -52,7 +61,7 @@ const addBoard = asyncHandler(async (req, res) => {
     if (!createBoard) {
         res.status(500);
         throw new Error('Error saving board data to MongoDB')
-    } else res.status(201).json({ id: createBoard._id })
+    } else res.status(201).json({ _id: createBoard._id })
 });
 
 // @desc    Update board
@@ -98,7 +107,7 @@ const updateBoard = asyncHandler(async (req, res) => {
     if (!updateBoard) {
         res.status(500);
         throw new Error('Error updating board to MongoDB')
-    } else res.status(200).json({ id: updateBoard._id })
+    } else res.status(200).json({ _id: updateBoard._id })
 });
 
 // @desc    Delete board
@@ -130,7 +139,7 @@ const deleteBoard = asyncHandler(async (req, res) => {
     if (!deleteBoard) {
         res.status(500);
         throw new Error('Error deleting board to MongoDB')
-    } else res.status(200).json({ id: deleteBoard._id })
+    } else res.status(200).json({ _id: deleteBoard._id })
 });
 
 module.exports = { getBoards, addBoard, updateBoard, deleteBoard }

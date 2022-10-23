@@ -70,7 +70,7 @@ const addTask = asyncHandler(async (req, res) => {
     if (!createTask) {
         res.status(500);
         throw new Error('Error saving task data to MongoDB')
-    } else res.status(201).json({ id: createTask._id })
+    } else res.status(201).json({ _id: createTask._id })
 
 });
 
@@ -125,7 +125,7 @@ const updateTask = asyncHandler(async (req, res) => {
     if (!updateTask) {
         res.status(500);
         throw new Error('Error updating task data to MongoDB')
-    } else res.status(200).json({ id: updateTask._id })
+    } else res.status(200).json({ _id: updateTask._id })
 });
 
 // @desc    Delete task
@@ -157,7 +157,7 @@ const deleteTask = asyncHandler(async (req, res) => {
     if (!deleteTask) {
         res.status(500);
         throw new Error('Error deleting task data from MongoDB')
-    } else res.status(200).json({ id: deleteTask._id })
+    } else res.status(200).json({ _id: deleteTask._id })
 });
 
 module.exports = { addTask, updateTask, deleteTask }

@@ -21,6 +21,7 @@ import { httpGet } from '../services/httpClient';
             setTimeout(() => {
                 if (getDataAttempt.status === 200) {
                     this.$store.commit('setUserData', getDataAttempt.data);
+                    console.log(this.$store.state.userData);
                     this.$router.push('/dashboard')
                 } else {
                     this.$store.commit('toggleLoginRedirect');

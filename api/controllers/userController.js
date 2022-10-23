@@ -210,7 +210,7 @@ const getUserData = asyncHandler(async (req, res) => {
 
     const userData = {
         user: {
-            firstname: req.user.firstname,
+            firstname: cryptr.decrypt(req.user.firstname),
             username: req.user.username,
         },
         boards: []
@@ -447,7 +447,7 @@ const deleteUser = asyncHandler(async (req, res) => {
         throw new Error('An error occured when deleting user')
     } else {
         res.status(200).json({
-            id
+            _id
         });
     }
 });

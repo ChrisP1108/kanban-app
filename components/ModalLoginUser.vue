@@ -2,7 +2,7 @@
     <div class="modal-styling" @keyup="checkEnterKeypress">
         <Logo class="center-logo" />
         <h2>Login</h2>
-        <FieldInput  class="username" label="Username" type="text" :input="credentials.username.value" placeholder="" 
+        <FieldInput class="username" label="Username" type="text" :input="credentials.username.value" placeholder="" 
             :empty-check="fieldsEmpty" :error-message="credentials.username.errMsg" :has-error="credentials.username.hasError"
             @value-change="(value) => credentials.username.value = value"  />
         <FieldInput class="password" label="Password" type="password" :input="credentials.password.value" 
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { httpGet, httpPost, httpErrMsg } from '../services/httpClient';
+    import { httpGet, httpPost, httpErrMsg } from '../services/httpClient';
 
     export default {
         data() {

@@ -32,8 +32,15 @@ export interface State {
         };
     },
     userData: {
-        boards: [],
+        boards: Array<any>,
         user: Object
     }
     loginRedirect: boolean;
+}
+
+export interface Board {
+    name: String,
+    columns: Array<string>,
+    id: ObjectId,
+    tasks: []
 }

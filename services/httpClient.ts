@@ -39,7 +39,6 @@ export async function httpPut(route: string, body: Object): Promise<any> {
         const res: any = await axios.put(baseUrl + route, body);
         return res
     } catch(err: any) {
-        console.error(err);
         return { message: err }
     }
 }
@@ -51,7 +50,6 @@ export async function httpDelete(route: string, body: Object): Promise<any> {
         const res: any = await axios.delete(baseUrl + route, body);
         return res
     } catch(err: any) {
-        console.error(err);
         return { message: err }
     }
 }

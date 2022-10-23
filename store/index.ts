@@ -1,4 +1,4 @@
-import { State } from './interface';
+import { State, Board } from './interface';
 
 
 // Reset Modals
@@ -64,7 +64,7 @@ export const mutations = {
     toggleSidebar(state: State): void {
         state.sidebarToggled = !state.sidebarToggled
     },
-    toggleModal(state: State, type: string): void {
+    toggleModal(state: State, type: string, selectedId: string): void {
         resetModals(state);
         switch(type) {
             case 'mobileBoards':
@@ -81,6 +81,7 @@ export const mutations = {
                 break;
             case 'editBoard':
                 state.modals.editBoard.toggled = true;
+                state.modals.editBoard.boardSelected = selectedId;
                 break;
             case 'deleteTask':
                 state.modals.deleteTask.toggled = true;
@@ -101,5 +102,13 @@ export const mutations = {
     },
     toggleLoginRedirect(state: State): void {
         state.loginRedirect = !state.loginRedirect;
+    },
+    addBoard(state: State, newBoard: Board): void {
+        state.userData.boards = [...state.userData.boards, { ...newBoard, tasks: [] }]
+    },
+    updateBoard(state: State, updatedBoard: Board): void {
+        state.userData.boards = state.userData.boards.map(board => 
+            board.id === updatedBoard.id ? updatedBoard : board
+        )
     }
 }
