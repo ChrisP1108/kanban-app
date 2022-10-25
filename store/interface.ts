@@ -18,8 +18,7 @@ export interface State {
             toggled: boolean
         };
         editBoard: {
-            toggled: boolean;
-            boardSelected: string
+            toggled: boolean
         };
         deleteTask: {
             toggled: boolean
@@ -31,6 +30,7 @@ export interface State {
             toggled: boolean
         };
     },
+    boardSelected: string,
     userData: {
         boards: Array<any>,
         user: Object

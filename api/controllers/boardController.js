@@ -3,6 +3,8 @@ const asyncHandler = require('express-async-handler');
 const Board = require('../models/boardModel');
 const Task = require ('../models/taskModel');
 
+const { caseFormatAll } = require('../services/caseFormatting');
+
 // @desc    Get boards
 // @route   GET /api/boards
 // @access  Private
@@ -32,7 +34,7 @@ const getBoards = asyncHandler(async (req, res) => {
 // @access  Private
 
 const addBoard = asyncHandler(async (req, res) => {
-    const { name, columns } = req.body
+    let { name, columns } = req.body
 
     // Check for empty fields
 
@@ -54,6 +56,11 @@ const addBoard = asyncHandler(async (req, res) => {
         throw new Error('Board with duplicate name already exists')
     }
 
+    // Capitalize First Characters Of Names And Columns
+
+    name = caseFormatAll(name);
+    columns = columns.map(column => caseFormatAll(column));
+
     // Create board
 
     const createBoard = await Board.create({ name, columns, user: req.user._id  })
@@ -69,7 +76,14 @@ const addBoard = asyncHandler(async (req, res) => {
 // @access  Private
 
 const updateBoard = asyncHandler(async (req, res) => {
-    const { name, columns } = req.body;
+    let { name, columns } = req.body;
+
+    // Check if Req Params has an ID
+
+    if (!req.params.id) {
+        res.status(400);
+        throw new Error('Please provide the board ID in url parameters')
+    }
 
     // Check for empty fields
 
@@ -86,8 +100,6 @@ const updateBoard = asyncHandler(async (req, res) => {
 
     const checkBoard = await Board.findById(req.params.id)
 
-    console.log(checkBoard)
-
     if (!checkBoard) {
         res.status(400);
         throw new Error('Board not found or invalid board ID')
@@ -99,6 +111,11 @@ const updateBoard = asyncHandler(async (req, res) => {
         res.status(401);
         throw new Error('User not authorized')
     }
+
+    // Capitalize First Characters Of Names And Columns
+
+    name = caseFormatAll(name);
+    columns = columns.map(column => caseFormatAll(column));
 
     // Update Board
 

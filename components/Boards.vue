@@ -1,16 +1,15 @@
 <template>
     <div class="boards-mode-container">
-        <h4>ALL BOARDS (3)</h4> 
+        <h4>ALL BOARDS ({{ boards.length }})</h4> 
         <ul>
-            <li class="board-sidebar-item board-active board-side-item-minwidth">
-                <BoardIcon class="board-icon" />
-                <h3>Platform Launch</h3>
+            <li v-for="(board, index) in boards" :key="board.id" 
+                :class="[selectedBoard === board.id ? 'board-active' : !selectedBoard && index === 0 ? 'board-active' : ''
+                , 'board-sidebar-item  board-side-item-minwidth']" 
+                @click="selectBoard(board.id)">
+                    <BoardIcon class="board-icon" />
+                    <h3>{{ board.name }}</h3>
             </li>
-            <li class="board-sidebar-item">
-                <BoardIcon class="board-sidebar-icon" />
-                <h3>Marketing Plan</h3>
-            </li>
-            <button @click="toggleAddBoard" class="board-sidebar-item board-side-item-minwidth create-board-sidebar-item">
+            <button class="board-sidebar-item board-side-item-minwidth create-board-sidebar-item" @click="toggleAddBoard">
                 <BoardIcon class="board-sidebar-icon" />
                 <h3>+ Create New Board</h3>
             </button>
@@ -23,10 +22,21 @@
 
 <script>
     export default {
+        computed: {
+            boards() {
+                return this.$store.state.userData.boards
+            },
+            selectedBoard() {
+                return this.$store.state.boardSelected;
+            }
+        },
         methods: {
             toggleAddBoard() {
                 this.$store.commit('toggleModal', 'addBoard')
             },
+            selectBoard(id) {
+                this.$store.commit('selectBoard', id)
+            }
         }
     }
 
@@ -65,6 +75,9 @@
         }
     }
     
+    .board-icon {
+        fill: $color-g;
+    }
     .board-active {
         background: $color-a;
         cursor: auto;

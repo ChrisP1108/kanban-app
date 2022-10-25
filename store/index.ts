@@ -34,8 +34,7 @@ export const state = (): State => ({
             toggled: false
         },
         editBoard: {
-            toggled: false,
-            boardSelected: ''
+            toggled: false
         },
         deleteTask: {
             toggled: false
@@ -47,6 +46,7 @@ export const state = (): State => ({
             toggled: false
         }
     },
+    boardSelected: '',
     userData: {
         boards: [],
         user: {}
@@ -81,7 +81,6 @@ export const mutations = {
                 break;
             case 'editBoard':
                 state.modals.editBoard.toggled = true;
-                state.modals.editBoard.boardSelected = selectedId;
                 break;
             case 'deleteTask':
                 state.modals.deleteTask.toggled = true;
@@ -102,6 +101,9 @@ export const mutations = {
     },
     toggleLoginRedirect(state: State): void {
         state.loginRedirect = !state.loginRedirect;
+    },
+    selectBoard(state: State, id: string): void {
+        state.boardSelected = id;
     },
     addBoard(state: State, newBoard: Board): void {
         state.userData.boards = [...state.userData.boards, { ...newBoard, tasks: [] }]

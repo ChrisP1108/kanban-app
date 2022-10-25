@@ -3,12 +3,16 @@ const asyncHandler = require('express-async-handler');
 const Board = require('../models/boardModel');
 const Task = require ('../models/taskModel');
 
+const { caseFormatAll, caseFormatFirst } = require('../services/caseFormatting');
+
 // @desc    Add task
 // @route   POST /api/tasks
 // @access  Private
 
 const addTask = asyncHandler(async (req, res) => {
-    const { title, description, subtasks, status, boardId } = req.body;
+    let { title, description, subtasks, status } = req.body;
+
+    const { boardId } = req.body;
 
     // Check for empty fields
 
@@ -56,6 +60,22 @@ const addTask = asyncHandler(async (req, res) => {
         throw new Error('Task status value does not equate to one of its corresponding board column values')
     }
 
+    // Capitalize First Characters Of Title Letters
+
+    title = caseFormatAll(title);
+
+    // Capitalize First Character Of Description
+
+    description = caseFormatFirst(columns);
+
+    // Capitalize First Character Of Each Subtask
+    
+    subtasks = subtasks.map(subtask => caseFormatAll(subtask));
+
+    // Capitalize First Character Of Each Subtask
+    
+    status = caseFormatFirst(status);
+
     // Create task
 
     const createTask = await Task.create({
@@ -79,7 +99,7 @@ const addTask = asyncHandler(async (req, res) => {
 // @access  Private
 
 const updateTask = asyncHandler(async (req, res) => {
-    const { title, description, subtasks, status } = req.body;
+    let { title, description, subtasks, status } = req.body;
 
     // Check for empty fields
 
@@ -115,6 +135,22 @@ const updateTask = asyncHandler(async (req, res) => {
         res.status(401);
         throw new Error('User not authorized')
     }
+
+    // Capitalize First Characters Of Title Letters
+
+    title = caseFormatAll(title);
+
+    // Capitalize First Character Of Description
+
+    description = caseFormatFirst(columns);
+
+    // Capitalize First Character Of Each Subtask
+    
+    subtasks = subtasks.map(subtask => caseFormatAll(subtask));
+
+    // Capitalize First Character Of Each Subtask
+    
+    status = caseFormatFirst(status);
 
     // Update Task
 
