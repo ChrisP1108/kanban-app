@@ -27,7 +27,7 @@
                     <p v-if="fieldEmpty(field) && index === 0" class="list-item-error-indent">{{ emptyMsg }}</p>
                     <input  v-model="value[index]" name="field" 
                         :class="[fieldEmpty(field) && index === 0 ? 'field-error-border' : '']"
-                        :placeholder="placeholder" type="text" 
+                        :placeholder="placeholder" type="text" @change="updateValue" 
                     />
                     <span @click="deleteValue(index)">
                         <Xicon />

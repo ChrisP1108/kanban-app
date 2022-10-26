@@ -63,7 +63,7 @@ import { caseFormatAll } from '../services/caseFormatting';
                 return this.$store.state.userData.boards
             },
             selectedId() {
-                return this.$store.state.boardSelected ? this.$store.state.boardSelected : this.boardList[0].id
+                return this.$store.state.boardSelected
             }
         },
         created() {
@@ -100,6 +100,7 @@ import { caseFormatAll } from '../services/caseFormatting';
                 }
             },
             async boardSubmit() {
+                this.fieldsEmpty = false;
                 this.board.name.value = this.board.name.value ? caseFormatAll(this.board.name.value) : '';
                 this.board.columns.value = this.board.columns.value
                     .filter(column => column !== '')
@@ -118,8 +119,8 @@ import { caseFormatAll } from '../services/caseFormatting';
                             const id = addReq.data._id;
                             this.board.name.hasError = false;
                             this.board.columns.hasError = false;
-                            this.$store.commit('addBoard', { name, columns, id })
-                            this.$store.commit('toggleModal')
+                            this.$store.commit('addBoard', { name, columns, id });
+                            this.$store.commit('toggleModal');
                         } else {
                             reqError = true;
                             reqMade = addReq;

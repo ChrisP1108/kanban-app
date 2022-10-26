@@ -21,13 +21,16 @@ import { httpGet } from '../services/httpClient';
             setTimeout(() => {
                 if (getDataAttempt.status === 200) {
                     this.$store.commit('setUserData', getDataAttempt.data);
-                    console.log(this.$store.state.userData);
+                    const boards = getDataAttempt.data.boards;
+                    if (boards.length) {
+                        this.$store.commit('selectBoard', boards[0].id)
+                    }
                     this.$router.push('/dashboard')
                 } else {
                     this.$store.commit('toggleLoginRedirect');
                     this.$router.push('/login')
                 }
-            }, 1000);
+            }, 500);
         },
         mounted() {
             const storageDarkMode = localStorage.getItem("darkMode") === 'true';;

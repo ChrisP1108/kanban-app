@@ -1,20 +1,38 @@
 <template>
     <div class="modal-styling">
         <h2>Delete this {{ deletingTask ? 'task' : deletingBoard ? 'board' : '[Error]'}}?</h2>
-        <p>Are you sure you want to delete the '' {{ deletingTask ? 'task and its subtasks' 
+        <p>Are you sure you want to delete the '{{ deletingBoard ? boardName : '' }}' 
+            {{ deletingTask ? 'task and its subtasks' 
             : deletingBoard ? 'board' : '[Error]'}}? This action {{ deletingTask  
             ? '' : deletingBoard ? 'will remove all columns and tasks and' : '[Error]'}} 
             cannot be reversed.</p>
-        <button @click="confirmDelete" class="button-destructive">Delete</button>
-        <button @click="cancelDelete" class="button-secondary">Cancel</button>
+        <button class="button-destructive" @click="confirmDelete">
+            <div v-if="isLoading" class="button-content">
+                <LoadingIcon />
+            </div>
+            <div v-if="!isLoading" class="button-content">
+                Delete
+            </div>
+        </button>
+        <button class="button-secondary" @click="cancelDelete">Cancel</button>
     </div>
 </template>
 
 <script>
+    import { httpDelete } from '../services/httpClient';
+    
     export default {
         props: {
-            mode: String,
-            deleting: Number
+            mode: {
+                type: String,
+                default: ''
+            }
+        },
+        data() {
+            return {
+                boardName: '',
+                isLoading: false
+            }
         },
         computed: {
             errorMsg() {
@@ -25,20 +43,33 @@
             },
             deletingBoard() {
                 return this.mode === 'deleteBoard'
+            },
+            selectedBoardId() {
+                return this.$store.state.boardSelected
+            },
+            boardList() {
+                return this.$store.state.userData.boards
             }
         },
-        data() {
-            return {
-                board: {
-                    name: '',
-                    columns: ['Todo', 'Doing'],
-                },
-                fieldErrors: false
+        created() {
+            if (this.deletingBoard) {
+                const boardSelected = [...this.boardList].find(board => board.id === this.selectedBoardId);
+                this.boardName = boardSelected.name
             }
         },
         methods: {
-            confirmDelete() {
-                alert('Item Deleted')
+            async confirmDelete() {
+                this.isLoading = true;
+                if (this.deletingBoard) {
+                    const boardDelReq = await httpDelete(`/boards/${this.selectedBoardId}`);
+                    if (boardDelReq.status === 200) {
+                        this.$store.commit('deleteBoard', this.selectedBoardId);
+                        this.$store.commit('toggleModal');
+                    } else {
+                        isLoading = false;
+                        console.error('Error deleting board')
+                    }
+                }
             },
             cancelDelete() {
                 this.$store.commit('toggleModal')

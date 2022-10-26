@@ -1,14 +1,16 @@
 <template>
     <div class="boards-mode-container">
-        <h4>ALL BOARDS ({{ boards.length }})</h4> 
+        <h4>{{ boardList.length ? `ALL BOARDS (${boardList.length })` : 'NO BOARDS'}}</h4> 
         <ul>
-            <li v-for="(board, index) in boards" :key="board.id" 
-                :class="[selectedBoard === board.id ? 'board-active' : !selectedBoard && index === 0 ? 'board-active' : ''
-                , 'board-sidebar-item  board-side-item-minwidth']" 
-                @click="selectBoard(board.id)">
-                    <BoardIcon class="board-icon" />
-                    <h3>{{ board.name }}</h3>
-            </li>
+            <div class="board-list">
+                <li v-for="(board, index) in boardList" :key="board.id" 
+                    :class="[selectedBoard === board.id ? 'board-active' : !selectedBoard && index === 0 ? 'board-active' : ''
+                    , 'board-sidebar-item  board-side-item-minwidth']" 
+                    @click="selectBoard(board.id)">
+                        <BoardIcon class="board-icon" />
+                        <h3>{{ board.name }}</h3>
+                </li>
+            </div>
             <button class="board-sidebar-item board-side-item-minwidth create-board-sidebar-item" @click="toggleAddBoard">
                 <BoardIcon class="board-sidebar-icon" />
                 <h3>+ Create New Board</h3>
@@ -23,7 +25,7 @@
 <script>
     export default {
         computed: {
-            boards() {
+            boardList() {
                 return this.$store.state.userData.boards
             },
             selectedBoard() {
@@ -61,8 +63,21 @@
         display: flex;
         flex-direction: column;
     }
-    ul, .create-new-board-container {
+    ul {
         margin-right: $padding-sides-tablet !important;
+        
+    }
+
+    .board-list {
+        max-height: 50vh;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        box-sizing: border-box;
+        scrollbar-width: thin;
+
+        &::-webkit-scrollbar {
+            width: 0;
+        }
     }
 
     .create-board-sidebar-item {

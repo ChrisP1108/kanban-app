@@ -149,6 +149,20 @@ const deleteBoard = asyncHandler(async (req, res) => {
         throw new Error('User not authorized')
     }
 
+    // Check If Board Has Tasks
+
+    const checkTasks = await Task.find({ board: req.params.id });
+
+    // Delete Corresponding Board Tasks If Tasks Found
+
+    if (checkTasks.length) {
+        const boardTasks = await Task.remove({ board: req.params.id })
+        if (!boardTasks) {
+            res.status(500);
+            throw new Error('Error deleting corresponding tasks to MongoDB')
+        }
+    }
+
     // Delete Board
 
     const deleteBoard = await Board.findByIdAndDelete(req.params.id);

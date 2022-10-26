@@ -54,6 +54,12 @@ export const state = (): State => ({
     loginRedirect: false,
 });
 
+// Sort Boards
+
+function boardSorter(list: Array<any>): Array<any> {
+    return list.sort((a: any, b: any) => a.name > b.name ? 1 : -1 )
+}
+
 // State Mutations
 
 export const mutations = {
@@ -97,7 +103,7 @@ export const mutations = {
     },
     setUserData(state: State, data: any): void {
         state.userData.user = data.user;
-        state.userData.boards = data.boards;
+        state.userData.boards = boardSorter(data.boards);
     },
     toggleLoginRedirect(state: State): void {
         state.loginRedirect = !state.loginRedirect;
@@ -106,11 +112,16 @@ export const mutations = {
         state.boardSelected = id;
     },
     addBoard(state: State, newBoard: Board): void {
-        state.userData.boards = [...state.userData.boards, { ...newBoard, tasks: [] }]
+        state.userData.boards = boardSorter([...state.userData.boards, { ...newBoard, tasks: [] }]);
+        state.boardSelected = newBoard.id.toString();
     },
     updateBoard(state: State, updatedBoard: Board): void {
-        state.userData.boards = state.userData.boards.map(board => 
+        state.userData.boards = boardSorter(state.userData.boards.map(board => 
             board.id === updatedBoard.id ? updatedBoard : board
-        )
+        ));
+    },
+    deleteBoard(state: State, id: string): void {
+        state.userData.boards = boardSorter(state.userData.boards.filter(board => board.id !== id));
+        state.boardSelected = state.userData.boards.length ? state.userData.boards[0].id : '';
     }
 }
