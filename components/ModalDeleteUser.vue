@@ -65,42 +65,54 @@
                 } else return false
             },
             async confirmDelete() {
+
+                // Check That No Fields Are Empty
+
                 const username = this.credentials.username.value;
                 const password = this.credentials.password.value;
                 if (!username || !password) {
                     this.fieldsEmpty = true;
-                } else {
-                    this.isLoading = true;
-                    const deleteReq = await httpPost('/user', { username, password });
-                    if (deleteReq.status === 200) {
-                        this.credentials.username.hasError = false;
-                        this.credentials.password.hasError = false;
-                        if (!this.$store.state.loginRedirect) {
-                            this.$store.commit('toggleLoginRedirect');
-                        }
-                        this.$store.commit('toggleModal');
-                        this.$router.push('/login')
-                    } else {
-                        this.isLoading = false;
-                        this.errorMessage = httpErrMsg(deleteReq);
-                        if (this.errorMessage.includes('enter a username')) {
-                            console.log('caught')
-                            this.credentials.username.hasError = true;
-                            this.credentials.username.errMsg = 'enter a username';
-                        } else this.credentials.username.hasError = false;
-                        if (this.errorMessage.includes('Invalid username')) {
-                            this.credentials.username.hasError = true;
-                            this.credentials.username.errMsg = 'invalid username';
-                        } else this.credentials.username.hasError = false;
-                        if (this.errorMessage.includes('enter a password')) {
-                            this.credentials.password.hasError = true;
-                            this.credentials.password.errMsg = 'enter a password';
-                        } else this.credentials.password.hasError = false;  
-                        if (this.errorMessage.includes('Invalid password')) {
-                            this.credentials.password.hasError = true;
-                            this.credentials.password.errMsg = 'invalid password';
-                        } else this.credentials.password.hasError = false;  
+                    return null
+                } 
+
+                // HTTP Post Request Which Actually Deletes User To Work Around Delete Request Limitation In Node Express
+
+                this.isLoading = true;
+                const deleteReq = await httpPost('/user/delete', { username, password });
+
+                // Delete User And Store Commit If No Errors Found
+
+                if (deleteReq.status === 200) {
+                    this.credentials.username.hasError = false;
+                    this.credentials.password.hasError = false;
+                    if (!this.$store.state.loginRedirect) {
+                        this.$store.commit('toggleLoginRedirect');
                     }
+                    this.$store.commit('toggleModal');
+                    this.$router.push('/login')
+
+                // Error Handling
+                
+                } else {
+                    this.isLoading = false;
+                    this.errorMessage = httpErrMsg(deleteReq);
+                    if (this.errorMessage.includes('enter a username')) {
+                        console.log('caught')
+                        this.credentials.username.hasError = true;
+                        this.credentials.username.errMsg = 'enter a username';
+                    } else this.credentials.username.hasError = false;
+                    if (this.errorMessage.includes('Invalid username')) {
+                        this.credentials.username.hasError = true;
+                        this.credentials.username.errMsg = 'invalid username';
+                    } else this.credentials.username.hasError = false;
+                    if (this.errorMessage.includes('enter a password')) {
+                        this.credentials.password.hasError = true;
+                        this.credentials.password.errMsg = 'enter a password';
+                    } else this.credentials.password.hasError = false;  
+                    if (this.errorMessage.includes('Invalid password')) {
+                        this.credentials.password.hasError = true;
+                        this.credentials.password.errMsg = 'invalid password';
+                    } else this.credentials.password.hasError = false;  
                 }
             },
             cancelDelete() {

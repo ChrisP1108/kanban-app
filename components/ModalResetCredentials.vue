@@ -14,15 +14,15 @@
                     @value-change="(value) => credentials.pin.value = value" />
             </div>
             <div class="reset-container">
-                <FieldInput class="password" label="Password" type="password" :input="credentials.password.value" 
-                    placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.password.errMsg" :has-error="credentials.password.hasError"
-                    @value-change="(value) => credentials.password.value = value" />
-                <FieldInput class="password" label="Re-Enter Password" type="password" :input="credentials.password2.value" 
-                    placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.password2.errMsg" :has-error="credentials.password2.hasError"
-                    @value-change="(value) => credentials.password2.value = value" />
                 <FieldInput class="security-question" :label="'Provide Security Answer To Question: ' + credentials.security.question.value" type="text" 
                     :input="credentials.security.answer.value" placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.security.answer.errMsg" 
                     :has-error="credentials.security.answer.hasError" @value-change="(value) => credentials.security.answer.value = value" />
+                <FieldInput class="password" label="Enter New Password" type="password" :input="credentials.password.value" 
+                    placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.password.errMsg" :has-error="credentials.password.hasError"
+                    @value-change="(value) => credentials.password.value = value" />
+                <FieldInput class="password" label="Re-Enter New Password" type="password" :input="credentials.password2.value" 
+                    placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.password2.errMsg" :has-error="credentials.password2.hasError"
+                    @value-change="(value) => credentials.password2.value = value" />
             </div>
         </div>
         <button :class="[isLoading ? 'button-primary-active' : '', 'button-primary-s']" @click="verifyOrReset" >
@@ -101,6 +101,9 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
                 }
             },
             async verifyOrReset() {
+
+                // Field Declarations
+
                 const firstname = this.credentials.firstname.value;
                 const username = this.credentials.username.value;
                 const pin = this.credentials.pin.value;
@@ -112,8 +115,15 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
                     question: this.credentials.security.question.value,
                     answer: this.credentials.security.answer.value
                 }
-                
+
+                // Check If User Was Verified.  If Not, Start With Verification First.  Otherwise Go To Reset
+
+                // Verify User
+
                 if (!this.userVerified) {
+
+                    // Check That No Fields Are Empty
+
                     if (!firstname || !username || !pin) {
                         this.fieldsEmpty = true;
                     } else if (username.length < 8) { 
@@ -123,6 +133,9 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
                         this.credentials.pin.hasError = true;
                         this.credentials.pin.errMsg = '4 numbers required';
                     } else {
+
+                    // HTTP Post Request To Verify First Name, Username, And Pin.  Get Security Question Response From Server
+
                         this.isLoading = true;
                         const verifyReq = await httpPost('/user/verify', 
                         { firstname, username, pin });
@@ -132,6 +145,9 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
                             this.userVerified = true;
                             this.credentials.security.question.value = verifyReq.data.security.question;
                         } else {
+
+                    // Error Handling If User Verification Fails
+
                             this.isLoading = false;
                             this.errorMessage = httpErrMsg(verifyReq);
                             if (this.errorMessage.includes('enter a first name')) {
@@ -160,7 +176,13 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
                             } else this.credentials.pin.hasError = false;  
                         }
                     } 
+
+                    // HTTP Reset User Password
+
                 } else if (this.userVerified) {
+
+                    // Check That No Fields Are Empty
+
                     if (!password || !password2|| !answer) {
                         this.fieldsEmpty = true;
                     } else if (password.length < 8) { 
@@ -173,6 +195,9 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
                         this.credentials.password.errMsg = nonMatchPasswordMsg;
                         this.credentials.password2.errMsg = nonMatchPasswordMsg;
                     } else {
+
+                    // HTTP Post For Reset User Password
+
                         this.isLoading = true;
                         const resetReq = await httpPost('/user/reset', 
                             { firstname, username, password, password2, pin, security });
@@ -182,6 +207,9 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
                             }
                             this.$router.push('/')
                         } else {
+
+                    // Reset User Password Error Handling
+
                             this.isLoading = false;
                             this.errorMessage = httpErrMsg(resetReq);
                             if (this.errorMessage.includes('add a password')) {

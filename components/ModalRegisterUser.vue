@@ -98,6 +98,9 @@ import { httpPost, httpGet, httpErrMsg } from '../services/httpClient';
                 }
             },
             async register() {
+
+                // Check That No Fields Are Empty
+
                 const firstname = this.credentials.firstname.value;
                 const username = this.credentials.username.value;
                 const password = this.credentials.password.value;
@@ -105,6 +108,7 @@ import { httpPost, httpGet, httpErrMsg } from '../services/httpClient';
                 const pin = this.credentials.pin.value;
                 const question = this.credentials.security.question.value;
                 const answer = this.credentials.security.answer.value;
+
                 if (!firstname || !username || !password || !password2 || !pin || !question || !answer) {
                     this.fieldsEmpty = true;
                 } else if (password !== password2){
@@ -123,6 +127,9 @@ import { httpPost, httpGet, httpErrMsg } from '../services/httpClient';
                     this.credentials.pin.hasError = true;
                     this.credentials.pin.errMsg = '4 numbers required';
                 } else {
+
+                // HTTP Post Request For User Registration And Store Commit If Registration Successful
+
                     this.isLoading = true;
                     const security = { question, answer };
                     const httpReq = await httpPost('/user/register', 
@@ -139,6 +146,9 @@ import { httpPost, httpGet, httpErrMsg } from '../services/httpClient';
                         this.$store.commit('setUserData', getNewUserData.data);
                         this.$router.push('/dashboard');
                     } else {
+
+                // Error Handling
+
                         this.isLoading = false;
                         this.errorMessage = httpErrMsg(httpReq);
                         if (this.errorMessage.includes('add a first name')) {

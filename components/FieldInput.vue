@@ -142,9 +142,12 @@
                 this.$emit('value-change', this.value)
             },
             deleteValue(index) {
-                if (index > 0) {
+                if (index > 0 && this.value[0] !== '') {
                     this.value = this.value.filter((item, i) => 
                     i !== index && item);
+                    this.updateValue();
+                } else {
+                    this.value = [''];
                     this.updateValue();
                 }
             },

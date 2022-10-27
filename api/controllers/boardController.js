@@ -36,15 +36,11 @@ const getBoards = asyncHandler(async (req, res) => {
 const addBoard = asyncHandler(async (req, res) => {
     let { name, columns } = req.body
 
-    // Check for empty fields
+    // Check for empty fields.  Column field is optional.
 
     if (!name) {
         res.status(400);
         throw new Error('Please add a board name')
-    }
-    if (!columns || !columns.length || typeof columns !== 'object') {
-        res.status(400);
-        throw new Error('Please add at least one board column')
     }
 
     // Check if duplicate board name exists
@@ -59,7 +55,14 @@ const addBoard = asyncHandler(async (req, res) => {
     // Capitalize First Characters Of Names And Columns
 
     name = caseFormatAll(name);
-    columns = columns.map(column => caseFormatAll(column));
+
+    if (columns.length && columns[0] !== '') {
+        columns = columns.map(column => caseFormatAll(column));
+    }
+
+    if (!columns || columns[0] === '') {
+        columns = [];
+    }
 
     // Create board
 
@@ -85,15 +88,11 @@ const updateBoard = asyncHandler(async (req, res) => {
         throw new Error('Please provide the board ID in url parameters')
     }
 
-    // Check for empty fields
+    // Check for empty fields.  Columns Optional
 
     if (!name) {
         res.status(400);
         throw new Error('Please add a board name')
-    }
-    if (!columns || !columns.length || typeof columns !== 'object') {
-        res.status(400);
-        throw new Error('Please add at least one board column')
     }
 
     // Check If Board Exists
@@ -115,7 +114,14 @@ const updateBoard = asyncHandler(async (req, res) => {
     // Capitalize First Characters Of Names And Columns
 
     name = caseFormatAll(name);
-    columns = columns.map(column => caseFormatAll(column));
+    
+    if (columns.length && columns[0] !== '') {
+        columns = columns.map(column => caseFormatAll(column));
+    }
+
+    if (!columns || columns[0] === '') {
+        columns = [];
+    }
 
     // Update Board
 
@@ -156,7 +162,7 @@ const deleteBoard = asyncHandler(async (req, res) => {
     // Delete Corresponding Board Tasks If Tasks Found
 
     if (checkTasks.length) {
-        const boardTasks = await Task.remove({ board: req.params.id })
+        const boardTasks = await Task.deleteMany({ board: req.params.id })
         if (!boardTasks) {
             res.status(500);
             throw new Error('Error deleting corresponding tasks to MongoDB')
