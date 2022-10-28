@@ -1,6 +1,7 @@
 <template>
     <div class="mobile-board-container modal-styling">
         <Boards class="mobile-boards" />
+        <UserIcon  class="offset-adjust" />
     </div>
 </template>
 
@@ -32,5 +33,9 @@
         .mobile-board-container {
             background: $color-white;
         }
+    }
+
+    .offset-adjust {
+        top: 0.2rem;
     }
 </style>

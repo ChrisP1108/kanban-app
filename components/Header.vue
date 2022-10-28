@@ -19,12 +19,11 @@
 </template>
 
 <script>
-    import { httpPost } from '../services/httpClient';
     export default {
         data() {
             return {
                 boardDropdownToggled: false,
-                boardDropdownOptions: ['Edit Board', 'Delete Board', 'Delete User', 'Logout']
+                boardDropdownOptions: ['Edit Board', 'Delete Board']
             }
         },
         computed: {
@@ -47,19 +46,14 @@
                 this.$store.commit('toggleModal', 'addTask')
             },
             toggleBoardDropdown() {
-                this.boardDropdownToggled = !this.boardDropdownToggled
-            },
-            async toggleOption(value) {
-                if (value !== 'Logout') {
-                    this.$store.commit('toggleModal', 
-                        value === 'Edit Board' ? 'editBoard' : 
-                        value === 'Delete Board' ? 'deleteBoard' : 
-                        value === 'Delete User' ? 'deleteUser' : '')
-                } else if (value === 'Logout')  {
-                    await httpPost('/user/logout', {});
-                    this.$store.commit('toggleLoginRedirect');
-                    this.$router.push('/login');
+                if (this.$store.state.userData.boards.length) {
+                    this.boardDropdownToggled = !this.boardDropdownToggled
                 }
+            },
+            toggleOption(value) {
+                this.$store.commit('toggleModal', 
+                    value === 'Edit Board' ? 'editBoard' : 
+                    value === 'Delete Board' ? 'deleteBoard' : '')
             }
         }
     }

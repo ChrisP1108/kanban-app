@@ -26,6 +26,7 @@
         <ModalAddEditBoard v-if="modalToggled === 'addBoard' || modalToggled ==='editBoard'" :mode="modalToggled" />
         <ModalDeleteTaskBoard v-if="modalToggled === 'deleteTask' || modalToggled ==='deleteBoard'" :mode="modalToggled" />
         <ModalDeleteUser v-if="modalToggled === 'deleteUser'" />
+        <ModalUserMenu v-if="modalToggled === 'userMenu'" />
         <LoadingIcon v-if="isLoading" class="loading-icon-full" />
       </div>
     </div>
@@ -50,7 +51,7 @@
       },
       modalToggled() {
         const { mobileBoards, addTask, editTask, 
-          addBoard, editBoard, deleteTask, deleteBoard, deleteUser } = this.$store.state.modals;
+          addBoard, editBoard, deleteTask, deleteBoard, deleteUser, userMenu } = this.$store.state.modals;
         if (mobileBoards.toggled) {
           return 'mobileBoards'
         }
@@ -75,6 +76,9 @@
         if (deleteUser.toggled) {
           return 'deleteUser'
         }
+        if (userMenu.toggled) {
+          return 'userMenu'
+        }
         return null
       } 
     },
@@ -90,6 +94,13 @@
       if (this.darkModeToggled !== storageDarkMode) {
           this.$store.commit('toggleDarkMode');
       }
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+          if (this.modalToggled ==='mobileBoards') {
+            this.$store.commit('toggleModal')
+          }
+        }
+      })
     },
     methods: {
       untoggleModal() {

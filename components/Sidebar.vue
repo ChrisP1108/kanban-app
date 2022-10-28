@@ -1,6 +1,9 @@
 <template>
     <aside :class="[!sidebarToggled ? 'sidebar-hidden' : '']">
-        <Logo />
+        <div class="logo-user-container">
+            <Logo />
+            <UserIcon />
+        </div>
         <Boards class="boards-container board-side-item-minwidth" />
         <div @click="toggleSidebar">
             <HideSidebar  />
@@ -42,6 +45,14 @@
         height: 100%;
         margin-top: 3.5rem;
     }
+
+    .logo-user-container {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        position: relative;
+    }
+
 
     .sidebar-hidden {
         min-width: 0;

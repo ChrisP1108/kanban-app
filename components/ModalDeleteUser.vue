@@ -1,16 +1,16 @@
 <template>
     <div class="modal-styling" @keyup="checkEnterKeypress">
         <h2>Delete your user account?</h2>
-        <p>Are you sure you want to delete user account?  This action will remove all of your boards and tasks
+        <p>Are you sure you want to delete your user account?  This action will remove all of your boards and tasks
              along with your login credentials and cannot be undone.
         </p>
-        <FieldInput  class="username" label="Username" type="text" :input="credentials.username.value" placeholder="" 
+        <FieldInput class="username" label="Username" type="text" :input="credentials.username.value" placeholder="" 
             :empty-check="fieldsEmpty" :error-message="credentials.username.errMsg" :has-error="credentials.username.hasError"
             @value-change="(value) => credentials.username.value = value"  />
         <FieldInput class="password" label="Password" type="password" :input="credentials.password.value" 
             placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.password.errMsg" :has-error="credentials.password.hasError"
             @value-change="(value) => credentials.password.value = value" />
-        <button @click="confirmDelete" class="button-destructive">
+        <button class="button-destructive" @click="confirmDelete">
             <div v-if="isLoading" class="button-content">
                 <LoadingIcon />
             </div>
@@ -18,7 +18,7 @@
                 Delete
             </div>
         </button>
-        <button @click="cancelDelete" class="button-secondary">Cancel</button>
+        <button class="button-secondary" @click="cancelDelete">Cancel</button>
     </div>
 </template>
 
@@ -26,9 +26,6 @@
     import { httpPost, httpErrMsg } from '../services/httpClient';
 
     export default {
-        props: {
-            deleting: Number
-        },
         data() {
             return {
                 credentials: {
@@ -97,7 +94,6 @@
                     this.isLoading = false;
                     this.errorMessage = httpErrMsg(deleteReq);
                     if (this.errorMessage.includes('enter a username')) {
-                        console.log('caught')
                         this.credentials.username.hasError = true;
                         this.credentials.username.errMsg = 'enter a username';
                     } else this.credentials.username.hasError = false;

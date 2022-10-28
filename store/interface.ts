@@ -29,6 +29,9 @@ export interface State {
         deleteUser: {
             toggled: boolean
         };
+        userMenu: {
+            toggled: boolean
+        };
     },
     boardSelected: string,
     userData: {

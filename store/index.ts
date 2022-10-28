@@ -12,6 +12,7 @@ function resetModals(state: State) {
     state.modals.deleteTask.toggled = false;
     state.modals.deleteBoard.toggled = false;
     state.modals.deleteUser.toggled = false;
+    state.modals.userMenu.toggled = false;
 }
 
 // State Declarations
@@ -43,6 +44,9 @@ export const state = (): State => ({
             toggled: false
         },
         deleteUser: {
+            toggled: false
+        },
+        userMenu: {
             toggled: false
         }
     },
@@ -96,6 +100,9 @@ export const mutations = {
                 break;
             case 'deleteUser':
                 state.modals.deleteUser.toggled = true;
+                break;
+            case 'userMenu':
+                state.modals.userMenu.toggled = true;
                 break;
             default:
                 resetModals(state);
