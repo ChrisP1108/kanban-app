@@ -51,6 +51,7 @@
         align-items: center;
         width: 100%;
         position: relative;
+        min-width: $board-side-minwidth;
     }
 
 

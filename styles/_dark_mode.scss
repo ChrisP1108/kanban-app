@@ -70,6 +70,12 @@
         background: $color-white;
     }
 
+    main {
+        h2 {
+            color: $color-g;
+        }
+    }
+
     @media(min-width: $tablet) {
         aside {
             border-left: dark-sidebar-border();

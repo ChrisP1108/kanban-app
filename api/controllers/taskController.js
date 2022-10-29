@@ -28,6 +28,11 @@ const addTask = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('Please add at least one subtask')
     }
+
+    if (!subtasks[0].name || typeof !subtasks[0].checked !== 'boolean') {
+        res.status(400);
+        throw new Error('Please make sure subtasks are formatted with { name: ###, checked: false }')
+    }
     if (!status) {
         res.status(400);
         throw new Error('Please add a task status')
@@ -53,6 +58,15 @@ const addTask = asyncHandler(async (req, res) => {
         throw new Error('User not authorized')
     }
 
+    // Check if duplicate task name exists inside same board
+
+    const checkTasks = await Task.find( { board: checkBoard._id.toString() });
+
+    if (checkTasks.some(task => task.title.toLowerCase() === title.toLowerCase())) {
+        res.status(400);
+        throw new Error('Task with duplicate title in the same board already exists')
+    }
+
     // Check that status value is an actual board column value
 
     if (!checkBoard.columns.includes(status)) {
@@ -66,11 +80,11 @@ const addTask = asyncHandler(async (req, res) => {
 
     // Capitalize First Character Of Description
 
-    description = caseFormatFirst(columns);
+    description = caseFormatFirst(description);
 
     // Capitalize First Character Of Each Subtask
     
-    subtasks = subtasks.map(subtask => caseFormatAll(subtask));
+    subtasks = subtasks.map(subtask => ({ name: caseFormatFirst(subtask.name), checked: false }));
 
     // Capitalize First Character Of Each Subtask
     

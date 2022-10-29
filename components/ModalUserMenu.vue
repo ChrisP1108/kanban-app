@@ -14,6 +14,7 @@
             async logout() {
                 await httpPost('/user/logout', {});
                 this.$store.commit('toggleLoginRedirect');
+                this.$store.commit('toggleModal');
                 this.$router.push('/login');
             },
             deleteUser() {

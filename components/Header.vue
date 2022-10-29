@@ -5,7 +5,8 @@
         <div class="dropdown-container" @click="toggleMobileBoard">
             <img :class="[mobileBoardToggled ? 'dropdown-arrow-toggled' : '', 'dropdown-arrow']" src="assets/images/dropdown-arrow.svg" alt="Dropdown Arrow">
         </div>
-        <button class="button-primary-l ml-auto button-mobile" @click="toggleAddTask">
+        <button :class="[ !columnExists ? 'button-inactive' : '', 'button-primary-l ml-auto button-mobile']" 
+            @click="toggleAddTask">
             + <span class="add-button-text ml-1"> 
                 Add New Task
             </span>
@@ -29,6 +30,10 @@
         computed: {
             mobileBoardToggled() {
                 return this.$store.state.modals.mobileBoardsToggled
+            },
+            columnExists() {
+                return this.$store.state.userData.boards.find(board => board.id === this.$store.state.boardSelected)
+                    .columns.length > 0
             }
         },
         mounted() {
@@ -43,7 +48,9 @@
                 this.$store.commit('toggleModal', 'mobileBoards')
             },
             toggleAddTask() {
-                this.$store.commit('toggleModal', 'addTask')
+                if (this.columnExists) {
+                    this.$store.commit('toggleModal', 'addTask')
+                }
             },
             toggleBoardDropdown() {
                 if (this.$store.state.userData.boards.length) {
@@ -166,6 +173,26 @@
         .button-mobile {
             padding: 1rem 1.5rem;
             font-size: inherit;
+        }
+    }
+    .button-inactive {
+        opacity: 0.25;
+        cursor: auto;
+
+        &:hover {
+            pointer-events: none;
+        }
+
+        &:active {
+            pointer-events: none;
+        }
+
+        span:hover {
+            pointer-events: none;
+        }
+
+        span:active {
+            pointer-events: none;
         }
     }
 </style>

@@ -55,7 +55,6 @@
     }
 
     h4 {
-        color: $color-g;
         margin-bottom: 1.375rem;
         padding: 0 $padding-sides-tablet;
     }

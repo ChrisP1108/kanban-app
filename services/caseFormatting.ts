@@ -5,5 +5,5 @@ export function caseFormatAll(string: string): string {
 }
 
 export function caseFormatFirst(string: string): string {
-    return string[0].toUpperCase + string.slice(1)
+    return string[0].toUpperCase() + string.slice(1)
 }

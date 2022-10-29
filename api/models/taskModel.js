@@ -10,9 +10,9 @@ const taskSchema = mongoose.Schema({
         required: [true, 'Please add a task description']
     }, 
     subtasks: [{
-        type: String,
-        required: [true, 'Please add at least one subtask']
-    }],
+        name: String,
+        checked: Boolean
+    }], 
     status: {
         type: String,
         required: [true, 'Please select task status']

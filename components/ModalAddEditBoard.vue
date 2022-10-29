@@ -28,8 +28,8 @@
 </template>
 
 <script>
-import { httpPut, httpPost, httpErrMsg } from '../services/httpClient';
-import { caseFormatAll } from '../services/caseFormatting';
+    import { httpPut, httpPost, httpErrMsg } from '../services/httpClient';
+    import { caseFormatAll } from '../services/caseFormatting';
 
     export default {
         props: {

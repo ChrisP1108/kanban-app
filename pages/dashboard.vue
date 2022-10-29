@@ -3,11 +3,11 @@
     <div class="root-full-container">
       <div v-if="!isLoading">
         <div class="root-boxed-container">
-          <Sidebar />
-          <div class="primary-content-container">
-            <Header />
-            <Columns />
-          </div>
+            <Sidebar />
+            <div class="primary-content-container">
+              <Header />
+              <Columns />
+            </div>
         </div>
 
         <!-- Show Sidebar Icon On Bottom Left -->
@@ -116,9 +116,9 @@
 <style lang="scss" scoped>
 
   .primary-content-container {
-    width: 100%;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
   .trans-speed {
     transition: $speed-fast; 

@@ -42,8 +42,19 @@ export interface State {
 }
 
 export interface Board {
+    id: ObjectId,
     name: String,
     columns: Array<string>,
-    id: ObjectId,
     tasks: []
+}
+
+export interface Task {
+    id: ObjectId,
+    title: String,
+    description: String,
+    subtasks: [{
+        name: string,
+        checked: boolean
+    }],
+    status: string
 }

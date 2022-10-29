@@ -1,4 +1,4 @@
-import { State, Board } from './interface';
+import { State, Board, Task } from './interface';
 
 
 // Reset Modals
@@ -130,5 +130,9 @@ export const mutations = {
     deleteBoard(state: State, id: string): void {
         state.userData.boards = boardSorter(state.userData.boards.filter(board => board.id !== id));
         state.boardSelected = state.userData.boards.length ? state.userData.boards[0].id : '';
+    },
+    addTask(state: State, newTask: Task): void {
+        state.userData.boards = state.userData.boards.map(board => 
+            board.id === state.boardSelected ? {...board, tasks: [...board.tasks, newTask]} : board)
     }
 }

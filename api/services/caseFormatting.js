@@ -5,7 +5,7 @@ function caseFormatAll(string) {
 }
 
 function caseFormatFirst(string) {
-    return string[0].toUpperCase + string.slice(1)
+    return string[0].toUpperCase() + string.slice(1)
 }
 
 module.exports = { caseFormatAll, caseFormatFirst }
