@@ -111,6 +111,14 @@
                     return null
                 }
 
+                // Check That There Are No Duplicate Column Names
+
+                if (columns.length > 1 && columns.some(column => columns.filter(col => col === column).length > 1)) {
+                    this.board.columns.hasError = true;
+                    this.board.columns.errMsg = 'no duplicate names';
+                    return null
+                }
+
                 // HTTP Requests
 
                 let reqError = false;
@@ -153,6 +161,7 @@
                 if (reqError) {
                     this.isLoading = false;
                     this.errorMessage = httpErrMsg(reqMade);
+                    console.log(this.errorMessage);
                     if (this.errorMessage.includes('add a board name')) {
                         this.board.name.hasError = true;
                         this.board.name.errMsg = 'add name';
@@ -164,6 +173,10 @@
                     if (this.errorMessage.includes('add at least one board column')) {
                         this.board.columns.hasError = true;
                         this.board.columns.errMsg = 'one column minimum';
+                    } else this.board.columns.hasError = false;
+                    if (this.errorMessage.includes('Duplicate column names not allowed')) {
+                        this.board.columns.hasError = true;
+                        this.board.columns.errMsg = 'no duplicate names';
                     } else this.board.columns.hasError = false;
                 }
             }

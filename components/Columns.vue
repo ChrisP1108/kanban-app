@@ -26,6 +26,11 @@
         <div v-if="columns.length" class="all-columns">
             <div v-for="(column, index) in columns" :key="index" class="column-list">
                 <h4>{{ `${column.name.toUpperCase()} (${column.tasks.length})` }}</h4>
+                <ul>
+                    <li v-for="task in column.tasks" :key="task._id">
+                        {{ task.title }}
+                    </li>
+                </ul>
             </div>
         </div>
 
@@ -44,7 +49,8 @@
                     const columnTasks = this.selectedBoard.columns.map(column => {
                         return { 
                             name: column, 
-                            tasks: this.selectedBoard.tasks.filter(task => task.status === column)
+                            tasks: this.selectedBoard.tasks && this.selectedBoard.tasks.length 
+                                ? this.selectedBoard.tasks.filter(task => task.status === column) : []
                         }
                     });
                     return columnTasks
@@ -92,5 +98,8 @@
     .column-list {
         width: 17.5rem;
         min-width: 17.5rem;
+    }
+    li {
+        color: $color-white;
     }
 </style>

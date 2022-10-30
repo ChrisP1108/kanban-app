@@ -163,9 +163,9 @@
                         this.task.title.hasError = true;
                         this.task.title.errMsg = 'add title';
                     } else this.task.title.hasError = false;
-                    if (this.errorMessage.includes('duplicate name in the same board already exists')) {
+                    if (this.errorMessage.includes('duplicate title in the same board already exists')) {
                         this.task.title.hasError = true;
-                        this.task.title.errMsg = 'duplicate exists';
+                        this.task.title.errMsg = 'duplicate task exists';
                     } else this.task.title.hasError = false;
                     if (this.errorMessage.includes('Please add a task description')) {
                         this.task.description.hasError = true;

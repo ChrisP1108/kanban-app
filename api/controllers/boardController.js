@@ -43,6 +43,13 @@ const addBoard = asyncHandler(async (req, res) => {
         throw new Error('Please add a board name')
     }
 
+    // Check for duplicate columns
+
+    if (columns.some(column => columns.filter(col => col === column).length > 1)) {
+        res.status(400);
+        throw new Error('Duplicate column names not allowed')
+    } 
+
     // Check if duplicate board name exists
 
     const checkBoards = await Board.find( { user: req.user._id });
@@ -114,9 +121,11 @@ const updateBoard = asyncHandler(async (req, res) => {
     // If Existing Task Column Is Being Removed Or Changed, Make Sure None Of The Board Tasks Have Their Status Still Set To It
 
     const boardTasks = await Task.find({ board: checkBoard._id.toString() })
-    if (!boardTasks.some(task => columns.includes(task.status))) {
-        res.status(400);
-        throw new Error('Cannot edit/delete columns that have tasks with previous column value still set as its status')
+    if (boardTasks.length) {
+        if (!boardTasks.some(task => columns.includes(task.status))) {
+            res.status(400);
+            throw new Error('Cannot edit/delete columns that have tasks with previous column value still set as its status')
+        }
     }
 
     // Capitalize First Characters Of Names And Columns

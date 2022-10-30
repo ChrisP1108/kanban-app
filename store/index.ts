@@ -124,7 +124,7 @@ export const mutations = {
     },
     updateBoard(state: State, updatedBoard: Board): void {
         state.userData.boards = boardSorter(state.userData.boards.map(board => 
-            board.id === updatedBoard._id ? updatedBoard : board
+            board._id === updatedBoard._id ? updatedBoard : board
         ));
     },
     deleteBoard(state: State, _id: string): void {
