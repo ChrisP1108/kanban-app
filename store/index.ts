@@ -115,24 +115,24 @@ export const mutations = {
     toggleLoginRedirect(state: State): void {
         state.loginRedirect = !state.loginRedirect;
     },
-    selectBoard(state: State, id: string): void {
-        state.boardSelected = id;
+    selectBoard(state: State, _id: string): void {
+        state.boardSelected = _id;
     },
     addBoard(state: State, newBoard: Board): void {
         state.userData.boards = boardSorter([...state.userData.boards, { ...newBoard, tasks: [] }]);
-        state.boardSelected = newBoard.id.toString();
+        state.boardSelected = newBoard._id.toString();
     },
     updateBoard(state: State, updatedBoard: Board): void {
         state.userData.boards = boardSorter(state.userData.boards.map(board => 
-            board.id === updatedBoard.id ? updatedBoard : board
+            board.id === updatedBoard._id ? updatedBoard : board
         ));
     },
-    deleteBoard(state: State, id: string): void {
-        state.userData.boards = boardSorter(state.userData.boards.filter(board => board.id !== id));
-        state.boardSelected = state.userData.boards.length ? state.userData.boards[0].id : '';
+    deleteBoard(state: State, _id: string): void {
+        state.userData.boards = boardSorter(state.userData.boards.filter(board => board._id !== _id));
+        state.boardSelected = state.userData.boards.length ? state.userData.boards[0]._id : '';
     },
     addTask(state: State, newTask: Task): void {
         state.userData.boards = state.userData.boards.map(board => 
-            board.id === state.boardSelected ? {...board, tasks: [...board.tasks, newTask]} : board)
+            board._id === state.boardSelected ? {...board, tasks: [...board.tasks, newTask]} : board)
     }
 }

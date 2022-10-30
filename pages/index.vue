@@ -23,7 +23,7 @@ import { httpGet } from '../services/httpClient';
                     this.$store.commit('setUserData', getDataAttempt.data);
                     const boards = getDataAttempt.data.boards;
                     if (boards.length) {
-                        this.$store.commit('selectBoard', boards[0].id)
+                        this.$store.commit('selectBoard', boards[0]._id)
                     }
                     this.$router.push('/dashboard')
                 } else {

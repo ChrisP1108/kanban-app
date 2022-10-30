@@ -67,7 +67,7 @@
         },
         created() {
             if (this.mode === 'editBoard') {
-                const boardSelected = [...this.boardList].find(board => board.id === this.selectedId);
+                const boardSelected = [...this.boardList].find(board => board._id === this.selectedId);
                 this.board.name.value = boardSelected.name;
                 this.board.columns.value = boardSelected.columns.length !== 0 ? [...boardSelected.columns] : [''];
             }
@@ -135,12 +135,12 @@
                 // Edit Board HTTP Put Request And Store Commit If No Errors
 
                 } else if (this.mode === 'editBoard') {
-                    const id = this.selectedId;
-                    const updateReq = await httpPut(`/boards/${id}`, { name, columns })
+                    const _id = this.selectedId;
+                    const updateReq = await httpPut(`/boards/${_id}`, { name, columns })
                     if (updateReq.status === 200) {
                         this.board.name.hasError = false;
                         this.board.columns.hasError = false;
-                        this.$store.commit('updateBoard', { name, columns, id })
+                        this.$store.commit('updateBoard', { name, columns, _id })
                         this.$store.commit('toggleModal')
                     } else {
                         reqError = true;

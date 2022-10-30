@@ -42,14 +42,14 @@ export interface State {
 }
 
 export interface Board {
-    id: ObjectId,
+    _id: ObjectId,
     name: String,
     columns: Array<string>,
     tasks: []
 }
 
 export interface Task {
-    id: ObjectId,
+    _id: ObjectId,
     title: String,
     description: String,
     subtasks: [{

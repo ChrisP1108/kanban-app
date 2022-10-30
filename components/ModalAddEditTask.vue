@@ -76,7 +76,7 @@
         },
         computed: {
             selectedBoard() {
-                return this.$store.state.userData.boards.find(board => board.id === this.$store.state.boardSelected)
+                return this.$store.state.userData.boards.find(board => board._id === this.$store.state.boardSelected)
             }
         },
         created() {
@@ -131,7 +131,7 @@
                     return
                 } else this.fieldsEmpty = false;
 
-                const boardId = this.selectedBoard.id
+                const boardId = this.selectedBoard._id
 
                 // HTTP Requests
 
@@ -144,12 +144,12 @@
                 if (this.mode === 'addTask') {
                     const addReq = await httpPost('/tasks', { title, description, subtasks, status, boardId });
                     if (addReq.status === 201) {
-                        const id = addReq.data._id;
+                        const _id = addReq.data._id;
                         this.task.title.hasError = false;;
                         this.task.description.hasError = false;
                         this.task.subtasks.hasError = false;
                         this.task.status.hasError= false;
-                        this.$store.commit('addTask', { id, title, description, subtasks, status });
+                        this.$store.commit('addTask', { _id, title, description, subtasks, status });
                         this.$store.commit('toggleModal');
                     } else {
                         reqError = true;

@@ -3,10 +3,10 @@
         <h4>{{ boardList.length ? `ALL BOARDS (${boardList.length })` : 'NO BOARDS'}}</h4> 
         <ul>
             <div class="board-list">
-                <li v-for="(board, index) in boardList" :key="board.id" 
-                    :class="[selectedBoard === board.id ? 'board-active' : !selectedBoard && index === 0 ? 'board-active' : ''
+                <li v-for="(board, index) in boardList" :key="board._id" 
+                    :class="[selectedBoard === board._id ? 'board-active' : !selectedBoard && index === 0 ? 'board-active' : ''
                     , 'board-sidebar-item  board-side-item-minwidth']" 
-                    @click="selectBoard(board.id)">
+                    @click="selectBoard(board._id)">
                         <BoardIcon class="board-icon" />
                         <h3>{{ board.name }}</h3>
                 </li>
@@ -36,8 +36,8 @@
             toggleAddBoard() {
                 this.$store.commit('toggleModal', 'addBoard')
             },
-            selectBoard(id) {
-                this.$store.commit('selectBoard', id)
+            selectBoard(_id) {
+                this.$store.commit('selectBoard', _id)
             }
         }
     }

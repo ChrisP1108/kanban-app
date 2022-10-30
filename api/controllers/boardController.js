@@ -111,6 +111,14 @@ const updateBoard = asyncHandler(async (req, res) => {
         throw new Error('User not authorized')
     }
 
+    // If Existing Task Column Is Being Removed Or Changed, Make Sure None Of The Board Tasks Have Their Status Still Set To It
+
+    const boardTasks = await Task.find({ board: checkBoard._id.toString() })
+    if (!boardTasks.some(task => columns.includes(task.status))) {
+        res.status(400);
+        throw new Error('Cannot edit/delete columns that have tasks with previous column value still set as its status')
+    }
+
     // Capitalize First Characters Of Names And Columns
 
     name = caseFormatAll(name);

@@ -230,7 +230,7 @@ const getUserData = asyncHandler(async (req, res) => {
 
         for (board of userBoards) {
             userData.boards.push({ name: board.name, columns: board.columns, 
-                id: board._id, user: board.user, createdAt: board.createdAt,
+                _id: board._id, user: board.user, createdAt: board.createdAt,
                 updatedAt: board.updatedAt, __v: board.__v,
                 tasks: await Task.find({ board: board._id }) })
         }

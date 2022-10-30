@@ -37,7 +37,7 @@
     export default {
         computed: {
             selectedBoard() {
-                return this.$store.state.userData.boards.find(board => board.id === this.$store.state.boardSelected)
+                return this.$store.state.userData.boards.find(board => board._id === this.$store.state.boardSelected)
             },
             columns() {
                 if (this.selectedBoard && this.selectedBoard.columns.length) {
