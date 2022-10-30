@@ -9,4 +9,6 @@ router.put('/:id', protect, updateTask); // Update Task (Protected)
 
 router.delete('/:id', protect, deleteTask); // Delete Task (Protected)
 
+router.put('/:taskId/subtasks/:subtaskId'); // Toggle Subtask Checked (Protected)
+
 module.exports = router;

@@ -212,6 +212,10 @@ const getUserData = asyncHandler(async (req, res) => {
         user: {
             firstname: cryptr.decrypt(req.user.firstname),
             username: req.user.username,
+            _id: req.user._id,
+            createdAt: req.user.createdAt,
+            updatedAt: req.user.updatedAt,
+            __v: req.user.__v
         },
         boards: []
     }
@@ -226,7 +230,9 @@ const getUserData = asyncHandler(async (req, res) => {
 
         for (board of userBoards) {
             userData.boards.push({ name: board.name, columns: board.columns, 
-                id: board._id, tasks: await Task.find({ board: board._id }) })
+                id: board._id, user: board.user, createdAt: board.createdAt,
+                updatedAt: board.updatedAt, __v: board.__v,
+                tasks: await Task.find({ board: board._id }) })
         }
 
         res.status(200).json(userData)

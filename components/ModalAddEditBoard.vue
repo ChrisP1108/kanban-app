@@ -122,10 +122,10 @@
                 if (this.mode === 'addBoard') {
                     const addReq = await httpPost('/boards', { name, columns});
                     if (addReq.status === 201) {
-                        const id = addReq.data._id;
+                        const _id = addReq.data._id;
                         this.board.name.hasError = false;
                         this.board.columns.hasError = false;
-                        this.$store.commit('addBoard', { name, columns, id });
+                        this.$store.commit('addBoard', { name, columns, _id });
                         this.$store.commit('toggleModal');
                     } else {
                         reqError = true;

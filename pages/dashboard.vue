@@ -119,6 +119,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    width: 100%;
   }
   .trans-speed {
     transition: $speed-fast; 
