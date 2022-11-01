@@ -84,6 +84,10 @@
                     const getDataAttempt = await httpGet('/user/data');
                     if (getDataAttempt.status === 200) {
                         this.$store.commit('setUserData', getDataAttempt.data);
+                        const boards = getDataAttempt.data.boards;
+                        if (boards.length) {
+                            this.$store.commit('selectBoard', boards[0]._id)
+                        }
                         this.$router.push('/dashboard')
                     }
                 } 

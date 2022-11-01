@@ -24,12 +24,10 @@
 
         <!-- If Board Select And Has At Least One Column  -->
         <div v-if="columns.length" class="all-columns">
-            <div v-for="(column, index) in columns" :key="index" class="column-list">
-                <h4>{{ `${column.name.toUpperCase()} (${column.tasks.length})` }}</h4>
-                <ul>
-                    <li v-for="task in column.tasks" :key="task._id">
-                        {{ task.title }}
-                    </li>
+            <div v-for="(column, index) in columns" :key="index" class="task-column-list">
+                <TaskListHeading :index="index" :task-status-heading="column.name" :length="column.tasks.length" />
+                <ul class="task-list-items-container">
+                    <TaskListItem v-for="task in column.tasks" :key="task._id" :task="task" />
                 </ul>
             </div>
         </div>
@@ -40,6 +38,11 @@
 <script>
 
     export default {
+        data() {
+            return {
+                headingDotColors: ['']
+            }
+        },
         computed: {
             selectedBoard() {
                 return this.$store.state.userData.boards.find(board => board._id === this.$store.state.boardSelected)
@@ -90,16 +93,19 @@
     h2 {
         text-align: center;
     }
-
     .all-columns {
         width: 100%;
         display: flex;
+        gap: 1.5rem;
     }
-    .column-list {
+    .task-column-list {
         width: 17.5rem;
         min-width: 17.5rem;
     }
-    li {
-        color: $color-white;
+    .task-list-items-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        margin-top: 1.5rem;
     }
 </style>

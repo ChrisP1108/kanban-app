@@ -51,6 +51,7 @@ export const state = (): State => ({
         }
     },
     boardSelected: '',
+    taskSelected: '',
     userData: {
         boards: [],
         user: {}
@@ -130,6 +131,9 @@ export const mutations = {
     deleteBoard(state: State, _id: string): void {
         state.userData.boards = boardSorter(state.userData.boards.filter(board => board._id !== _id));
         state.boardSelected = state.userData.boards.length ? state.userData.boards[0]._id : '';
+    },
+    selectTask(state: State, _id: string): void {
+        state.taskSelected = _id;
     },
     addTask(state: State, newTask: Task): void {
         state.userData.boards = state.userData.boards.map(board => 

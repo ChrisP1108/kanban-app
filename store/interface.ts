@@ -34,6 +34,7 @@ export interface State {
         };
     },
     boardSelected: string,
+    taskSelected: string,
     userData: {
         boards: Array<any>,
         user: Object
