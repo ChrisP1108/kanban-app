@@ -5,11 +5,11 @@
             placeholder="e.g. Web Design" :empty-check="fieldsEmpty" :error-message="board.name.errMsg" 
             :has-error="board.name.hasError" @value-change="(value) => board.name.value = value" 
         />
-        <FieldInput class="board-columns" label="Board Columns" type="list" :input="board.columns.value"
-            placeholder="e.g. Todo" @value-change="(value) => board.columns.value = value" 
+        <FieldInput class="board-columns" label="Board Columns" type="list" :input="board.columns.values"
+            placeholder="e.g. Todo" @value-change="(value) => board.columns.values = value" 
         />
-        <button v-if="board.columns.value.length <= 8" 
-            :class="[board.columns.value[board.columns.value.length - 1] === '' ?'add-column-disabled' : '', 'button-secondary']" 
+        <button v-if="board.columns.values.length <= 8" 
+            :class="[board.columns.values[board.columns.values.length - 1] === '' ?'add-column-disabled' : '', 'button-secondary']" 
             @click="addColumn">
                 + <span class="ml-1"> 
                     Add New Column
@@ -47,7 +47,14 @@
                         errMsg: ''
                     },
                     columns: {
-                        value: ['']
+                        values: [
+                            { 
+                                canModify: true, 
+                                value: '' 
+                            }
+                        ],
+                        hasError: false,
+                        errMsg: ''
                     }
                 },
                 fieldsEmpty: false,
@@ -63,20 +70,34 @@
             },
             selectedId() {
                 return this.$store.state.boardSelected
+            },
+            selectedBoard() {
+                return [...this.$store.state.userData.boards].find(board => 
+                    board._id === this.$store.state.boardSelected);
             }
         },
         created() {
             if (this.mode === 'editBoard') {
-                const boardSelected = [...this.boardList].find(board => board._id === this.selectedId);
-                this.board.name.value = boardSelected.name;
-                this.board.columns.value = boardSelected.columns.length !== 0 ? [...boardSelected.columns] : [''];
+                this.board.name.value = this.selectedBoard.name;
+                this.board.columns.values = this.selectedBoard.columns.length !== 0 
+                    ? this.selectedBoard.columns.map(column => {
+                        return {
+                            canModify: !this.selectedBoard.tasks.some(task => task.status === column),
+                            value: column
+                        } 
+                    }) 
+                    : [{ 
+                        canModify: true, 
+                        value: '' 
+                    }]
+                ;
             }
         },
         methods: {
             addColumn() {
-                const columns = this.board.columns.value;
-                if (columns[columns.length - 1] !== '') {
-                    this.board.columns.value.push('')
+                const columns = this.board.columns.values;
+                if (columns[columns.length - 1].value !== '') {
+                    this.board.columns.values.push( { canModify: true, value: '' } )
                 } 
             },
             setTaskStatus(option) {
@@ -97,14 +118,18 @@
                 // Capitalize Name And Title And Filter Empty Columns
 
                 this.board.name.value = this.board.name.value ? caseFormatAll(this.board.name.value) : '';
-                this.board.columns.value = this.board.columns.value
-                    .filter(column => column !== '')
-                    .map(column => caseFormatAll(column));
+                this.board.columns.values = this.board.columns.values ? this.board.columns.values
+                    .filter(column => column.value !== '')
+                    .map(column => ({ value: caseFormatAll(column.value), canModify: column.canModify }))
+                        : [{ canModify: true, value: ''}]
+                ;
 
                 // Check That Name Fields Is Not Empty.  Column Field Optional
 
                 const name = this.board.name.value;
-                const columns = this.board.columns.value[0] !== [''] ? this.board.columns.value : [];
+                const columns = this.board.columns.values[0].value !== [''] 
+                    ? this.board.columns.values.map(column => column.value)
+                    : [];
 
                 if (!name) {
                     this.fieldsEmpty = true;
@@ -133,7 +158,7 @@
                         const _id = addReq.data._id;
                         this.board.name.hasError = false;
                         this.board.columns.hasError = false;
-                        this.$store.commit('addBoard', { name, columns, _id });
+                        this.$store.commit('addBoard', { _id, name, columns });
                         this.$store.commit('toggleModal');
                     } else {
                         reqError = true;
@@ -146,9 +171,10 @@
                     const _id = this.selectedId;
                     const updateReq = await httpPut(`/boards/${_id}`, { name, columns })
                     if (updateReq.status === 200) {
+                        const tasks = this.selectedBoard.tasks
                         this.board.name.hasError = false;
                         this.board.columns.hasError = false;
-                        this.$store.commit('updateBoard', { name, columns, _id })
+                        this.$store.commit('updateBoard', { _id, name, columns, tasks })
                         this.$store.commit('toggleModal')
                     } else {
                         reqError = true;

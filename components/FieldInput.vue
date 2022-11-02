@@ -23,10 +23,10 @@
 
         <div v-if="list" class="list-items-container">
             <div v-for="(field, index) in value" :key="index" class="list-item-container">
-                <div class="field-container d-flex">
-                    <p v-if="fieldEmpty(field) && index === 0" class="list-item-error-indent">{{ emptyMsg }}</p>
-                    <input  v-model="value[index]" name="field" 
-                        :class="[fieldEmpty(field) && index === 0 ? 'field-error-border' : '']"
+                <div :class="[field.canModify === false ? 'list-item-no-edit' : '', 'field-container d-flex']">
+                    <p v-if="fieldEmpty(field.value) && index === 0" class="list-item-error-indent">{{ emptyMsg }}</p>
+                    <input  v-model="value[index].value" name="field" 
+                        :class="[fieldEmpty(field.value) && index === 0 ? 'field-error-border' : '']"
                         :placeholder="placeholder" type="text" @change="updateValue" 
                     />
                     <span @click="deleteValue(index)">
@@ -48,7 +48,6 @@
                     <DropdownList :dropdown-toggled="dropdownToggled" :dropdown-options="dropdownOptions" 
                     :option-selected="input" @option-selected="setOptionSelected" />
                 </nav>
-                
             </div>
         </div>
     </div>
@@ -192,7 +191,6 @@
             }
         }
     }
-
     .dropdown-active {
         transform: rotateX(0deg);
         transition: $speed-fast;
@@ -202,5 +200,18 @@
     }
     label {
         transition: $speed-medium;
+    }
+    .list-item-no-edit {
+
+        input {
+            opacity: 0.25; 
+            pointer-events: none;
+            margin-right: 2rem !important;
+        }
+
+        span {
+            display: none;
+        }
+
     }
 </style>

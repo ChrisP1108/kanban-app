@@ -10,11 +10,11 @@
             :empty-check="fieldsEmpty" :error-message="task.description.errMsg" :has-error="task.description.hasError"
             @value-change="(value) => task.description.value = value"  
         />
-        <FieldInput class="task-subtasks" label="Subtasks" type="list" :input="task.subtasks.value" 
+        <FieldInput class="task-subtasks" label="Subtasks" type="list" :input="task.subtasks.values" 
             placeholder="e.g. Make coffee" :empty-check="fieldsEmpty" :error-message="task.subtasks.errMsg" 
-            :has-error="task.subtasks.hasError" @value-change="(value) => task.subtasks.value = value"  
+            :has-error="task.subtasks.hasError" @value-change="(value) => task.subtasks.values = value"  
         />
-        <button v-if="task.subtasks.value.length <= 8" class="button-secondary" @click="addSubTask">
+        <button v-if="task.subtasks.values.length <= 8" class="button-secondary" @click="addSubTask">
             + <span class="ml-1"> 
                 Add New Subtask
             </span>
@@ -59,7 +59,12 @@
                         errMsg: ''
                     },
                     subtasks: {
-                        value: [''],
+                        values: [
+                            { 
+                                canModify: true, 
+                                value: '' 
+                            }
+                        ],
                         hasError: false,
                         errMsg: ''
                     },
@@ -85,16 +90,10 @@
         },
         methods: {
             addSubTask() {
-                const subtasks = this.task.subtasks;
-                if (subtasks[subtasks.length - 1] !== '') {
-                    this.task.subtasks.value.push('')
+                const subtasks = this.task.subtasks.values;
+                if (subtasks[subtasks.length - 1].value !== '') {
+                    this.task.subtasks.values.push( { canModify: true, value: '' } )
                 } 
-            },
-            deleteSubTask(index) {
-                if (index > 0) {
-                    this.task.subtasks.value = this.task.subtasks.value.filter((item, i) => 
-                    i !== index && item);
-                }
             },
             setTaskStatus(option) {
                 this.task.status = option;
@@ -115,15 +114,19 @@
 
                 this.task.title.value = this.task.title.value ? caseFormatAll(this.task.title.value) : '';
                 this.task.description.value = this.task.description.value ? caseFormatFirst(this.task.description.value) : '';
-                this.task.subtasks.value = this.task.subtasks.value.length ? this.task.subtasks.value
+                this.task.subtasks.values = this.task.subtasks.values ? this.task.subtasks.values
                     .filter(task => task !== '')
-                    .map(subtask => ({ name: caseFormatFirst(subtask), checked: false })) : [];
+                    .map(subtask => ({ value: caseFormatFirst(subtask.value), canModify: subtask.canModify }))
+                        : [{ canModify: true, value: ''}]
+                ;
 
                 // Check that fields are not empty
 
                 const title = this.task.title.value;
                 const description = this.task.description.value;
-                const subtasks = this.task.subtasks.value;
+                const subtasks = this.task.subtasks.values.map(task => 
+                    ({ name: task.value, checked: false })
+                );
                 const status = this.task.status.value;
 
                 if (!title || !description || !subtasks[0] || !status) {
