@@ -16,7 +16,7 @@
         methods: {
             itemClicked() {
                 this.$store.commit('selectTask', this.task._id);
-                alert(`Vuex State 'taskSelected' set to ${this.task._id}`);
+                this.$store.commit('toggleModal', 'viewTask');
             }
         }
     }

@@ -226,7 +226,7 @@ const deleteTask = asyncHandler(async (req, res) => {
 });
 
 // @desc    Toggle Subtask Checked
-// @route   PUT /:taskid/subtasks/:subtaskid
+// @route   PUT api/tasks/:taskid/subtasks/:subtaskid
 // @access  Private
 
 const toggleCheckedSubtask = asyncHandler(async (req, res) => {
@@ -248,7 +248,7 @@ const toggleCheckedSubtask = asyncHandler(async (req, res) => {
         throw new Error('No task with such id exists')
     }
 
-    // Check If Parent Task Corresponds To User
+    // Check If Task Corresponds To User
 
     if (task.user.toString() !== req.user._id.toString()) {
         res.status(401);
@@ -278,7 +278,57 @@ const toggleCheckedSubtask = asyncHandler(async (req, res) => {
         res.status(500);
         throw new Error('Error updating subtask to MongoDB')
     } else res.status(200).json({ _id: toggleSubtaskChecked })
-    
+});
+
+// @desc    Update Task Status
+// @route   PUT api/tasks/:id/status
+// @access  Private
+
+const updateTaskStatus = asyncHandler(async (req, res) => {
+    const { status } = req.body;
+
+    // Check If Checked Variable In Body Is A Boolean
+
+    if (typeof status !== 'string') {
+        res.status(400);
+        throw new Error('Status parameter must be a string')
+    }
+
+    // Check If Parent Task Exists From Id Parameter
+
+    const task = await Task.findById(req.params.id);
+
+    if (!task) {
+        res.status(400);
+        throw new Error('No task with such id exists')
+    }
+
+    // Check If Task Corresponds To User
+
+    if (task.user.toString() !== req.user._id.toString()) {
+        res.status(401);
+        throw new Error('User not authorized')
+    }
+
+    // Check If Status Corresponds To A Board Column Value
+
+    const board = await Board.findById(task.board)
+
+    if (!board.columns.includes(status)) {
+        res.status(400);
+        throw new Error('No column value for task board corresponds to status value')
+    }
+
+    // Update Task Status
+
+    const updateTaskStatus= await Task.findByIdAndUpdate(task._id, {
+        status
+    });
+
+    if (!updateTaskStatus) {
+        res.status(500);
+        throw new Error('Error updating subtask to MongoDB')
+    } else res.status(200).json({ _id: updateTaskStatus })
 })
 
-module.exports = { addTask, updateTask, deleteTask, toggleCheckedSubtask }
+module.exports = { addTask, updateTask, deleteTask, toggleCheckedSubtask, updateTaskStatus }

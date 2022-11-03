@@ -1,4 +1,4 @@
-import { State, Board, Task } from './interface';
+import { State, Board, Task, UpdatedTaskStatus } from './interface';
 
 
 // Reset Modals
@@ -10,6 +10,7 @@ function resetModals(state: State) {
     state.modals.addBoard.toggled= false;
     state.modals.editBoard.toggled = false;
     state.modals.deleteTask.toggled = false;
+    state.modals.viewTask.toggled = false;
     state.modals.deleteBoard.toggled = false;
     state.modals.deleteUser.toggled = false;
     state.modals.userMenu.toggled = false;
@@ -38,6 +39,9 @@ export const state = (): State => ({
             toggled: false
         },
         deleteTask: {
+            toggled: false
+        },
+        viewTask: {
             toggled: false
         },
         deleteBoard: {
@@ -96,6 +100,9 @@ export const mutations = {
             case 'deleteTask':
                 state.modals.deleteTask.toggled = true;
                 break;
+            case 'viewTask':
+                state.modals.viewTask.toggled = true;
+                break;
             case 'deleteBoard':
                 state.modals.deleteBoard.toggled = true;
                 break;
@@ -125,7 +132,9 @@ export const mutations = {
     },
     updateBoard(state: State, updatedBoard: Board): void {
         state.userData.boards = boardSorter(state.userData.boards.map(board => 
-            board._id === updatedBoard._id ? updatedBoard : board
+            board._id === state.boardSelected 
+            ? {...board, name: updatedBoard.name, columns: updatedBoard.columns} 
+            : board
         ));
     },
     deleteBoard(state: State, _id: string): void {
@@ -138,5 +147,12 @@ export const mutations = {
     addTask(state: State, newTask: Task): void {
         state.userData.boards = state.userData.boards.map(board => 
             board._id === state.boardSelected ? {...board, tasks: [...board.tasks, newTask]} : board)
+    },
+    updateTaskStatus(state: State, updatedTaskStatus: UpdatedTaskStatus): void {
+        const boardIndex = state.userData.boards.findIndex(board => board._id === state.boardSelected);
+        const taskIndex = state.userData.boards[boardIndex].tasks.findIndex((task: any) => 
+            task._id === state.taskSelected
+        );
+        state.userData.boards[boardIndex].tasks[taskIndex].status = updatedTaskStatus;
     }
 }

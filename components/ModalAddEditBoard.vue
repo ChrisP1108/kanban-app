@@ -171,10 +171,9 @@
                     const _id = this.selectedId;
                     const updateReq = await httpPut(`/boards/${_id}`, { name, columns })
                     if (updateReq.status === 200) {
-                        const tasks = this.selectedBoard.tasks
                         this.board.name.hasError = false;
                         this.board.columns.hasError = false;
-                        this.$store.commit('updateBoard', { _id, name, columns, tasks })
+                        this.$store.commit('updateBoard', { name, columns })
                         this.$store.commit('toggleModal')
                     } else {
                         reqError = true;
@@ -187,7 +186,6 @@
                 if (reqError) {
                     this.isLoading = false;
                     this.errorMessage = httpErrMsg(reqMade);
-                    console.log(this.errorMessage);
                     if (this.errorMessage.includes('add a board name')) {
                         this.board.name.hasError = true;
                         this.board.name.errMsg = 'add name';

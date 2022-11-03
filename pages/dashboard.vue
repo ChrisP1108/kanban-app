@@ -23,6 +23,7 @@
       <div v-if="modalOverlay || isLoading" class="modals-container">
         <MobileBoard v-if="modalToggled === 'mobileBoards'" />
         <ModalAddEditTask v-if="modalToggled === 'addTask' || modalToggled ==='editTask'" :mode="modalToggled" />
+        <ModalViewTask v-if="modalToggled === 'viewTask'" />
         <ModalAddEditBoard v-if="modalToggled === 'addBoard' || modalToggled ==='editBoard'" :mode="modalToggled" />
         <ModalDeleteTaskBoard v-if="modalToggled === 'deleteTask' || modalToggled ==='deleteBoard'" :mode="modalToggled" />
         <ModalDeleteUser v-if="modalToggled === 'deleteUser'" />
@@ -51,7 +52,7 @@
       },
       modalToggled() {
         const { mobileBoards, addTask, editTask, 
-          addBoard, editBoard, deleteTask, deleteBoard, deleteUser, userMenu } = this.$store.state.modals;
+          addBoard, editBoard, deleteTask, viewTask, deleteBoard, deleteUser, userMenu } = this.$store.state.modals;
         if (mobileBoards.toggled) {
           return 'mobileBoards'
         }
@@ -69,6 +70,9 @@
         }
         if (deleteTask.toggled) {
           return 'deleteTask'
+        }
+        if (viewTask.toggled) {
+          return 'viewTask'
         }
         if (deleteBoard.toggled) {
           return 'deleteBoard'

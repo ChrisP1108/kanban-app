@@ -23,6 +23,9 @@ export interface State {
         deleteTask: {
             toggled: boolean
         };
+        viewTask: {
+            toggled: boolean
+        };
         deleteBoard: {
             toggled: boolean
         };
@@ -58,4 +61,8 @@ export interface Task {
         checked: boolean
     }],
     status: string
+}
+
+export interface UpdatedTaskStatus {
+    status: boolean
 }
