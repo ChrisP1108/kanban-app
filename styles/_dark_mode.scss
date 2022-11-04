@@ -30,9 +30,8 @@
         }
     }
 
-    .tasklist-container {
-        background: $color-d;
-        border-right: 1px $color-f solid;
+    .task-list-item {
+        color: $color-white;
     }
 
     .modal-styling {
@@ -46,6 +45,10 @@
         &::placeholder {
             opacity: 0.75;
         }
+    }
+
+    .checklist-item-container {
+        background: $color-d;
     }
     
     .dropdown-toggled-container {

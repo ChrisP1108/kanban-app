@@ -62,7 +62,3 @@ export interface Task {
     }],
     status: string
 }
-
-export interface UpdatedTaskStatus {
-    status: boolean
-}

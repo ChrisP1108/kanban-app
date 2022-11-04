@@ -1,4 +1,4 @@
-import { State, Board, Task, UpdatedTaskStatus } from './interface';
+import { State, Board, Task } from './interface';
 
 
 // Reset Modals
@@ -148,11 +148,18 @@ export const mutations = {
         state.userData.boards = state.userData.boards.map(board => 
             board._id === state.boardSelected ? {...board, tasks: [...board.tasks, newTask]} : board)
     },
-    updateTaskStatus(state: State, updatedTaskStatus: UpdatedTaskStatus): void {
+    updateTaskStatus(state: State, updatedTaskStatus: Pick<Task, 'status'>): void {
         const boardIndex = state.userData.boards.findIndex(board => board._id === state.boardSelected);
         const taskIndex = state.userData.boards[boardIndex].tasks.findIndex((task: any) => 
             task._id === state.taskSelected
         );
         state.userData.boards[boardIndex].tasks[taskIndex].status = updatedTaskStatus;
+    },
+    updateTaskSubtasks(state: State, updatedSubtasks: Pick<Task, 'subtasks'>): void {
+        const boardIndex = state.userData.boards.findIndex(board => board._id === state.boardSelected);
+        const taskIndex = state.userData.boards[boardIndex].tasks.findIndex((task: any) => 
+            task._id === state.taskSelected
+        );
+        state.userData.boards[boardIndex].tasks[taskIndex].subtasks = updatedSubtasks;
     }
 }

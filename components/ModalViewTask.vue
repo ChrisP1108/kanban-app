@@ -2,8 +2,8 @@
     <div class="modal-styling">
         <h2>{{ selectedTask.title }}</h2>
         <p class="task-description-text">{{ selectedTask.description }}</p>
-        <FieldInput class="task-subtask-checklist" :label="subtasksCheckedQty()" type="list" :input="task.subtasks" 
-            placeholder="e.g. Make coffee" @value-change="(value) => task.subtasks = value"  
+        <FieldInput class="task-subtask-checklist" :label="subtasksCheckedQty()" type="checklist" 
+            :input="task.subtasks" @value-change="(value) => subtaskChecked(value)"  
         />
         <FieldInput class="task-status" label="Current Status" type="dropdown" :input="task.status" 
             :dropdown-options="boardColumns" @value-change="(value) => statusValueChange(value)" 
@@ -12,7 +12,7 @@
 </template>
 
 <script>
-    import { httpPut } from '../services/httpClient';
+    import { httpPut, httpErrMsg } from '../services/httpClient';
 
     export default {
         data() {
@@ -38,7 +38,7 @@
         },
         created() {
             this.task.subtasks = this.selectedTask.subtasks;
-            this.task.status = this.selectedTask.status
+            this.task.status = this.selectedTask.status;
         },
         methods: {
             subtasksCheckedQty() {
@@ -46,11 +46,16 @@
                     of ${this.task.subtasks.length})`
             },
             async statusValueChange(value) {
-                this.task.status = value;
                 const updateReq = await httpPut(`/tasks/${this.taskId}/status`, { status: value });
                 if (updateReq.status === 200) {
                     this.$store.commit('updateTaskStatus', value)
                 }
+            },
+            async subtaskChecked(value) {
+                const updateReq = await httpPut(`/tasks/${this.taskId}/subtasks/`, { subtasks: value });
+                if (updateReq.status === 200) {
+                    this.$store.commit('updateTaskSubtasks', value)
+                } else console.log(httpErrMsg(updateReq))
             }
         }
     }

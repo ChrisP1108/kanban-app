@@ -226,22 +226,37 @@ const deleteTask = asyncHandler(async (req, res) => {
 });
 
 // @desc    Toggle Subtask Checked
-// @route   PUT api/tasks/:taskid/subtasks/:subtaskid
+// @route   PUT api/tasks/:id/subtasks/
 // @access  Private
 
-const toggleCheckedSubtask = asyncHandler(async (req, res) => {
-    const { checked } = req.body;
+const toggleCheckedSubtasks = asyncHandler(async (req, res) => {
+    const { subtasks } = req.body;
 
     // Check If Checked Variable In Body Is A Boolean
 
-    if (typeof checked !== 'boolean') {
+    if (typeof subtasks !== 'object' || subtasks.length < 1) {
         res.status(400);
-        throw new Error('Checked parameter must be a boolean')
+        throw new Error('Subtasks must be an array')
+    }
+
+    if (!subtasks.every(subtask => subtask._id)) {
+        res.status(400);
+        throw new Error('Subtasks must have an _id key and value')
+    }
+
+    if (!subtasks.every(subtask => subtask.name || typeof subtask.name === 'string')) {
+        res.status(400);
+        throw new Error('Subtasks must have a name key and string value')
+    }
+
+    if (!subtasks.every(subtask => subtask.checked === true || subtask.checked === false)) {
+        res.status(400);
+        throw new Error('Subtasks must have a name key and boolean value')
     }
 
     // Check If Parent Task Exists From Id Parameter
 
-    const task = await Task.findById(req.params.taskId);
+    const task = await Task.findById(req.params.id);
 
     if (!task) {
         res.status(400);
@@ -255,29 +270,18 @@ const toggleCheckedSubtask = asyncHandler(async (req, res) => {
         throw new Error('User not authorized')
     }
 
-    // Check If Subtask Exists In Task From Id Parameter
-
-    if (!task.subtasks.some(subtask => subtask._id === req.params.subtaskId)) {
-        res.status(400);
-        throw new Error('No subtask with such id exists in task')
-    }
-
     // Update Subtask Checked Value
-
-    const subtasksUpdate = task.subtasks.map(subtask => 
-        subtask._id === req.params.subtaskId ? {...subtask, checked } : subtask
-    )
 
     // Update Checked Boolean Value Of SubTask By Updating Entire Task
 
-    const toggleSubtaskChecked = await Task.findByIdAndUpdate(task._id, {
-        subtasks: subtasksUpdate
+    const updateSubtasks = await Task.findByIdAndUpdate(task._id, {
+        subtasks
     });
 
-    if (!toggleSubtaskChecked) {
+    if (!updateSubtasks) {
         res.status(500);
         throw new Error('Error updating subtask to MongoDB')
-    } else res.status(200).json({ _id: toggleSubtaskChecked })
+    } else res.status(200).json({ _id: updateSubtasks._id })
 });
 
 // @desc    Update Task Status
@@ -328,7 +332,7 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
     if (!updateTaskStatus) {
         res.status(500);
         throw new Error('Error updating subtask to MongoDB')
-    } else res.status(200).json({ _id: updateTaskStatus })
+    } else res.status(200).json({ _id: updateTaskStatus._id })
 })
 
-module.exports = { addTask, updateTask, deleteTask, toggleCheckedSubtask, updateTaskStatus }
+module.exports = { addTask, updateTask, deleteTask, toggleCheckedSubtasks, updateTaskStatus }

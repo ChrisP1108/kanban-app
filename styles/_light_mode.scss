@@ -9,7 +9,7 @@
 .light-mode {
     background: $color-h;
 
-    aside, header {
+    aside, header, .task-list-item {
         background: $color-white;
     }
 
@@ -43,10 +43,6 @@
         background: $color-a-25;
     }
 
-    .tasklist-container {
-        background: $color-i;
-    }
-
     .modal-styling {
         background: $color-white;
 
@@ -63,6 +59,10 @@
             opacity: 0.5;
             font-weight: $medium;
         }
+    }
+
+    .checklist-item-container {
+        background: $color-i;
     }
 
     .dropdown-toggled-container {

@@ -25,7 +25,7 @@
             <div v-for="(field, index) in value" :key="index" class="list-item-container">
                 <div :class="[field.canModify === false ? 'list-item-no-edit' : '', 'field-container d-flex']">
                     <p v-if="fieldEmpty(field.value) && index === 0" class="list-item-error-indent">{{ emptyMsg }}</p>
-                    <input  v-model="value[index].value" name="field" 
+                    <input v-model="value[index].value" name="field" 
                         :class="[fieldEmpty(field.value) && index === 0 ? 'field-error-border' : '']"
                         :placeholder="placeholder" type="text" @change="updateValue" 
                     />
@@ -33,6 +33,16 @@
                         <Xicon />
                     </span>
                 </div>
+            </div>
+        </div>
+
+        <!-- Checklist Input -->
+
+        <div v-if="checklist" class="list-items-container">
+            <div v-for="(field, index) in value" :key="index" class="checklist-item-container">
+                <input v-model="value[index].checked" type="checkbox" class="checklist-checkbox"  
+                    @change="updateValue">
+                <b>{{ field.name }}</b>
             </div>
         </div>
 
@@ -109,9 +119,12 @@
             list() {
                 return this.type === 'list'
             },
+            checklist() {
+                return this.type === 'checklist'
+            },
             dropdown() {
                 return this.type === 'dropdown'
-            }
+            },
         },
         created() {
             if (this.hasError) {
@@ -159,17 +172,93 @@
 </script>
 
 <style lang="scss" scoped>
+    .field-container {
+        position: relative;
+        p {
+            z-index: 1;
+            position: absolute;
+            left: 100%;
+            text-align: right;
+            top: 50%;
+            width: 40%;
+            line-height: 1.25em;
+            transform: translate(calc(-100% - 0.9375rem), -50%);
+            color: $color-j;
+        }
+        .list-item-error-indent {
+            left: calc(100% - 1.9375rem);
+        }
+    }
+    .field-container, .dropdown-toggled-container {
+        width: 100%;
+        margin: 0.25rem 0 1rem;
+        font-size: $body-l-size;
+        line-height: $body-l-height;
+    }
+
+    .dropdown {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .dropdown-arrow {
+        transition: $speed-fast;
+        width: 0.625rem;
+    }
+    .list-items-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        max-height: 25vh;
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding-right: 1rem;
+        margin: 0.25rem -1rem 0.5rem 0;
+
+        .field-container {
+            margin: 0 !important;
+        }
+    }
+    .list-item-container {
+        display: flex;
+        align-items: center;
+
+        input {
+            margin: 0;
+        }
+
+        .x-icon {
+            cursor: pointer;
+            margin-right: -1rem;
+            height: 2.5rem;
+            width: 3.0rem;
+            padding: 0 1rem;
+        }
+    }
+    .checklist-item-container {
+        display: flex;
+        align-items: center;
+        padding:  0.75rem;
+        border-radius: 0.25rem;
+        gap: 1rem;
+    }
+    .checklist-checkbox {
+        width: 1rem;
+        height: 1rem;
+        min-height: 1rem !important;
+        border-radius: 0.125rem;
+        border: 0.0625rem $color-g solid;
+        background: $color-white;
+        accent-color: $color-a;
+    }
+
     .dropdown-select-container {
         width: 100%;
         transition: $speed-fast;
         position: relative;
         margin-bottom: 1.5rem !important;
-    }
-    .dropdown {
-        cursor: pointer;
-    }
-    img {
-        transition: $speed-fast;
     }
     .dropdown-toggled-container {
         width: 100%;
@@ -200,6 +289,9 @@
     }
     label {
         transition: $speed-medium;
+    }
+    img {
+        transition: $speed-fast;
     }
     .list-item-no-edit {
 

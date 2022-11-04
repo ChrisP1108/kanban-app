@@ -1,7 +1,7 @@
 <template>
     <li class="task-list-item" @click="itemClicked">
         <h3>{{ task.title }}</h3>
-        <b>0 of {{ task.subtasks.length }} subtasks</b>
+        <b>{{ subtasksCheckedQty() }} of {{ task.subtasks.length }} subtasks</b>
     </li>
 </template>
 
@@ -17,6 +17,9 @@
             itemClicked() {
                 this.$store.commit('selectTask', this.task._id);
                 this.$store.commit('toggleModal', 'viewTask');
+            },
+            subtasksCheckedQty() {
+                return this.task.subtasks.filter(subtask => subtask.checked).length
             }
         }
     }
@@ -24,7 +27,6 @@
 
 <style lang="scss" scoped>
     .task-list-item {
-        color: $color-white;
         padding: 1.5rem 1rem;
         border-radius: 0.5rem;
         cursor: pointer;
