@@ -187,9 +187,18 @@ const updateTask = asyncHandler(async (req, res) => {
         title, description, subtasks, status, board: checkTask.board, user: checkTask.user
     });
 
+    // Check for error updating task
+
     if (!updateTask) {
         res.status(500);
         throw new Error('Error updating task data to MongoDB')
+    }
+
+    // Check if subtask was added during update
+
+    if (subtasks.length > checkTask.subtasks.length) {
+        const updatedTask = await Task.findById(req.params.id);
+        res.status(201).json({ _id: updatedTask._id, subtasks: updatedTask.subtasks })
     } else res.status(200).json({ _id: updateTask._id })
 });
 

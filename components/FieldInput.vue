@@ -11,11 +11,11 @@
             <input v-if="text || password" 
                 v-model="value" :class="[fieldEmpty(value) || hasError ? 'field-error-border' : '']"
                 name="field" :placeholder="placeholder" :type="[text ? 'text' : 'password']" 
-                @change="updateValue" 
+                @input="updateValue" 
             />
-            <textarea v-if="textarea" v-model="value" name="field" 
+            <textarea v-if="textarea" v-model="value" name="field" :value.prop="value"
                 :class="[fieldEmpty(value) || hasError ? 'field-error-border' : '']" 
-                :placeholder="placeholder" @change="updateValue">
+                :placeholder="placeholder" @input="updateValue">
             </textarea>
         </div>
 
@@ -28,7 +28,7 @@
                     <input v-model="value[index].value" name="field" 
                         :class="[fieldEmpty(field.value) && index === 0 ? 'field-error-border' : '',
                         field.checked ? 'checked-text' : '']"
-                        :placeholder="placeholder" type="text" @change="updateValue" 
+                        :placeholder="placeholder" type="text" @input="updateValue" 
                     />
                     <span @click="deleteValue(index)">
                         <Xicon />

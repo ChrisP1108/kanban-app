@@ -181,9 +181,13 @@
                 }
                 if (this.mode === 'editTask') {
                     const updatedTask = { _id: this.selectedTask._id, title, description, subtasks, status }
-                    console.log(updatedTask);
                     const updateReq = await httpPut(`/tasks/${this.selectedTask._id}`, updatedTask);
                     if (updateReq.status === 200) {
+                        this.$store.commit('updateTask', updatedTask);
+                        this.$store.commit('toggleModal');
+                    } else if (updateReq.status === 201) {
+                        console.log(updateReq);
+                        updatedTask.subtasks = updateReq.data.subtasks
                         this.$store.commit('updateTask', updatedTask);
                         this.$store.commit('toggleModal');
                     } else {
