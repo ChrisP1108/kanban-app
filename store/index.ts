@@ -167,6 +167,15 @@ export const mutations = {
             } else return board
         });
     },
+    deleteTask(state: State, _id: string): void {
+        state.userData.boards = state.userData.boards = state.userData.boards.map((board: Board) => {
+            if (board.tasks.some((task: Task) => task._id.toString() === state.taskSelected)) {
+                return {...board, tasks: board.tasks.filter((t: Task) => 
+                    t._id.toString() !== state.taskSelected)
+                }
+            } else return board
+        });
+    },
     setModalErrorMessage(state: State, message: string): void {
         state.modalErrorMessage = message;
     }

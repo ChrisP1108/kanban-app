@@ -1,7 +1,7 @@
 <template>
     <div class="modal-styling">
         <h2>Delete this {{ deletingTask ? 'task' : deletingBoard ? 'board' : '[Error]'}}?</h2>
-        <p>Are you sure you want to delete the '{{ deletingBoard ? boardName : '' }}' 
+        <p>Are you sure you want to delete the '{{ deletingBoard ? boardName : deletingTask ? taskTitle : '' }}' 
             {{ deletingTask ? 'task and its subtasks' 
             : deletingBoard ? 'board' : '[Error]'}}? This action {{ deletingTask  
             ? '' : deletingBoard ? 'will remove all columns and tasks and' : '[Error]'}} 
@@ -31,6 +31,7 @@
         data() {
             return {
                 boardName: '',
+                taskTitle: '',
                 isLoading: false
             }
         },
@@ -47,15 +48,18 @@
             selectedBoardId() {
                 return this.$store.state.boardSelected
             },
+            selectedTaskId() {
+                return this.$store.state.taskSelected
+            },
             boardList() {
                 return this.$store.state.userData.boards
             }
         },
         created() {
-            if (this.deletingBoard) {
-                const boardSelected = [...this.boardList].find(board => board.id === this.selectedBoardId);
-                this.boardName = boardSelected.name
-            }
+            const boardSelected = [...this.boardList].find(board => board._id.toString() === this.selectedBoardId);
+            this.boardName = boardSelected.name;
+            const taskSelected = boardSelected.tasks.find(task => task._id.toString() === this.selectedTaskId);
+            this.taskTitle = taskSelected.title
         },
         methods: {
             async confirmDelete() {
@@ -66,7 +70,18 @@
                         this.$store.commit('deleteBoard', this.selectedBoardId);
                         this.$store.commit('toggleModal');
                     } else {
-                        isLoading = false;
+                        this.isLoading = false;
+                        console.error('Error deleting board')
+                    }
+                }
+                if (this.deletingTask) {
+                    const taskDelReq = await httpDelete(`/tasks/${this.selectedTaskId}`);
+                    if (taskDelReq.status === 200) {
+                        this.$store.commit('deleteTask', this.selectedTaskId);
+                        this.$store.commit('toggleModal');
+                    } else {
+                        console.log(taskDelReq);
+                        this.isLoading = false;
                         console.error('Error deleting board')
                     }
                 }

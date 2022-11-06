@@ -70,12 +70,13 @@
                 }
             },
             async subtaskChecked(value) {
+                console.log(value);
                 const updateReq = await httpPut(`/tasks/${this.selectedTask._id}/subtasks`, { subtasks: value });
                 if (updateReq.status === 200) {
                     this.$store.commit('updateTask', {...this.selectedTask, subtasks: cloneDeep(value) })
                 } else {
                     console.error(httpErrMsg(updateReq));
-                    this.$store.commit('setModalErrorMessage', `checking subtask in ${this.selectedTask.title}`)
+                    this.$store.commit('setModalErrorMessage', `checking subtask in "${this.selectedTask.title}"`)
                     this.$store.commit('toggleModal', 'error')
                 }
             }
