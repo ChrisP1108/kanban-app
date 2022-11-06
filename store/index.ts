@@ -133,6 +133,7 @@ export const mutations = {
     },
     selectBoard(state: State, _id: string): void {
         state.boardSelected = _id;
+        localStorage.setItem("lastBoardSelected", state.boardSelected.toString());
     },
     addBoard(state: State, newBoard: Board): void {
         state.userData.boards = boardSorter([...state.userData.boards, { ...newBoard, tasks: [] }]);
@@ -149,6 +150,7 @@ export const mutations = {
         state.userData.boards = boardSorter(state.userData.boards.filter((board: Board) => 
             board._id.toString() !== _id));
         state.boardSelected = state.userData.boards.length ? state.userData.boards[0]._id : '';
+        localStorage.setItem("lastBoardSelected", state.boardSelected.toString());
     },
     selectTask(state: State, _id: string): void {
         state.taskSelected = _id;

@@ -23,7 +23,11 @@ import { httpGet } from '../services/httpClient';
                     this.$store.commit('setUserData', getDataAttempt.data);
                     const boards = getDataAttempt.data.boards;
                     if (boards.length) {
-                        this.$store.commit('selectBoard', boards[0]._id)
+                        const storedBoardSelected = localStorage.getItem("lastBoardSelected");
+                        if (storedBoardSelected && boards.some(board => 
+                            board._id.toString() === storedBoardSelected)) {
+                                this.$store.commit('selectBoard', storedBoardSelected)
+                        } else this.$store.commit('selectBoard', boards[0]._id)
                     }
                     this.$router.push('/dashboard')
                 } else {
