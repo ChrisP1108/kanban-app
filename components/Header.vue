@@ -12,7 +12,7 @@
             </span>
         </button>
         <img class="dot-nav" src="assets/images/dot-nav.svg" @click="toggleBoardDropdown">
-        <nav @click="toggleBoardDropdown" class="dropdown-list">
+        <nav class="dropdown-list">
             <DropdownList :dropdown-toggled="boardDropdownToggled" :dropdown-options="boardDropdownOptions" 
                 @option-selected="toggleOption" />
         </nav>
@@ -38,7 +38,7 @@
         },
         mounted() {
             window.addEventListener('click', e => {
-                if (e.target.id !== 'dot-nav') {
+                if (![...e.target.classList].includes('dot-nav')) {
                     this.boardDropdownToggled = false
                 }
             });

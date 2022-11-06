@@ -58,8 +58,10 @@
         created() {
             const boardSelected = [...this.boardList].find(board => board._id.toString() === this.selectedBoardId);
             this.boardName = boardSelected.name;
-            const taskSelected = boardSelected.tasks.find(task => task._id.toString() === this.selectedTaskId);
-            this.taskTitle = taskSelected.title
+            if (this.deletingTask) {
+                const taskSelected = boardSelected.tasks.find(task => task._id.toString() === this.selectedTaskId);
+                this.taskTitle = taskSelected.title
+            }
         },
         methods: {
             async confirmDelete() {

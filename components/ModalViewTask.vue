@@ -70,7 +70,6 @@
                 }
             },
             async subtaskChecked(value) {
-                console.log(value);
                 const updateReq = await httpPut(`/tasks/${this.selectedTask._id}/subtasks`, { subtasks: value });
                 if (updateReq.status === 200) {
                     this.$store.commit('updateTask', {...this.selectedTask, subtasks: cloneDeep(value) })
@@ -96,13 +95,13 @@
     }
     .heading-nav-container {
         display: flex;
+        gap: 10%;
         position: relative;
         justify-content: space-between;
         margin-bottom: 1rem;
 
         h2 {
             margin: 0 !important;
-            width: 90%;
         }
     }
     nav {

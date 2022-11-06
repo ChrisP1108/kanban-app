@@ -171,20 +171,20 @@ const updateTask = asyncHandler(async (req, res) => {
 
     // Capitalize First Character Of Description
 
-    description = caseFormatFirst(columns);
+    description = caseFormatFirst(description);
 
     // Capitalize First Character Of Each Subtask
     
-    subtasks = subtasks.map(subtask => caseFormatAll(subtask));
+    subtasks = subtasks.map(subtask => ({ name: caseFormatFirst(subtask.name), checked: subtask.checked }));
 
-    // Capitalize First Character Of Each Subtask
+    // Capitalize First Character Of Status
     
     status = caseFormatFirst(status);
 
     // Update Task
 
     const updateTask = await Task.findByIdAndUpdate(req.params.id, {
-        title, description, subtasks, status
+        title, description, subtasks, status, board: checkTask.board, user: checkTask.user
     });
 
     if (!updateTask) {

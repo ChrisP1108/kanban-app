@@ -36,7 +36,7 @@
 
 <script>
     import { httpPost, httpPut, httpErrMsg } from '../services/httpClient';
-    import { caseFormatFirst , caseFormatAll } from '../services/caseFormatting';
+    import { caseFormatFirst } from '../services/caseFormatting';
 
     export default {
         props: {
@@ -95,7 +95,6 @@
             }
             if (this.mode === 'editTask') {
                 this.task.title.value = this.selectedTask.title;
-                console.log('updating')
                 this.task.description.value = this.selectedTask.description;
                 this.task.subtasks.values = this.selectedTask.subtasks.map(subtask => 
                 ({ _id: subtask._id, canModify: true, value: subtask.name, checked: subtask.checked }));
@@ -132,7 +131,7 @@
 
                 // Capitalize Fields
 
-                this.task.title.value = caseFormatAll(this.task.title.value);
+                this.task.title.value = caseFormatFirst(this.task.title.value);
                 this.task.description.value = caseFormatFirst(this.task.description.value);
                 this.task.subtasks.values = this.task.subtasks.values
                     .filter(task => task !== '')
@@ -183,13 +182,13 @@
                 if (this.mode === 'editTask') {
                     const updatedTask = { _id: this.selectedTask._id, title, description, subtasks, status }
                     console.log(updatedTask);
-                    const addReq = await httpPut(`/tasks/${this.selectedTask._id}`, updatedTask);
-                    if (addReq.status === 200) {
+                    const updateReq = await httpPut(`/tasks/${this.selectedTask._id}`, updatedTask);
+                    if (updateReq.status === 200) {
                         this.$store.commit('updateTask', updatedTask);
                         this.$store.commit('toggleModal');
                     } else {
                         reqError = true;
-                        reqMade = addReq;
+                        reqMade = updateReq;
                     }
                 }
                 if (reqError) {

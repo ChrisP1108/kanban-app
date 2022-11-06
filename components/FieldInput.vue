@@ -14,7 +14,7 @@
                 @change="updateValue" 
             />
             <textarea v-if="textarea" v-model="value" name="field" 
-                :class="[fieldEmpty(value) ? 'field-error-border' : '']" 
+                :class="[fieldEmpty(value) || hasError ? 'field-error-border' : '']" 
                 :placeholder="placeholder" @change="updateValue">
             </textarea>
         </div>
@@ -26,7 +26,8 @@
                 <div :class="[field.canModify === false ? 'list-item-no-edit' : '', 'field-container d-flex']">
                     <p v-if="fieldEmpty(field.value) && index === 0" class="list-item-error-indent">{{ emptyMsg }}</p>
                     <input v-model="value[index].value" name="field" 
-                        :class="[fieldEmpty(field.value) && index === 0 ? 'field-error-border' : '']"
+                        :class="[fieldEmpty(field.value) && index === 0 ? 'field-error-border' : '',
+                        field.checked ? 'checked-text' : '']"
                         :placeholder="placeholder" type="text" @change="updateValue" 
                     />
                     <span @click="deleteValue(index)">
