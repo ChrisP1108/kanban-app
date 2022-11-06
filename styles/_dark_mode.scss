@@ -49,6 +49,10 @@
 
     .checklist-item-container {
         background: $color-d;
+
+        b {
+            color: $color-white;
+        }
     }
     
     .dropdown-toggled-container {

@@ -35,6 +35,9 @@ export interface State {
         userMenu: {
             toggled: boolean
         };
+        error: {
+            toggled: boolean
+        }
     },
     boardSelected: string,
     taskSelected: string,
@@ -43,6 +46,7 @@ export interface State {
         user: Object
     }
     loginRedirect: boolean;
+    modalErrorMessage: string;
 }
 
 export interface Board {
@@ -54,11 +58,12 @@ export interface Board {
 
 export interface Task {
     _id: ObjectId,
+    board: ObjectId
     title: String,
     description: String,
     subtasks: [{
         name: string,
         checked: boolean
     }],
-    status: string
+    status: string,
 }

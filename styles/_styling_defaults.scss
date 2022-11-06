@@ -94,6 +94,18 @@ body {
     align-items: center;
 }
 
+.dot-nav {
+    cursor: pointer;
+    padding: 1rem;
+    margin: -1rem;
+    width: 2.3125rem;
+}
+
+.dropdown-list {
+    position: absolute;
+    min-width: 12rem;
+}
+
 input, textarea, .dropdown, .dropdown-toggled-container {
     width: 100%;
     min-height: 2.5rem;

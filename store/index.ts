@@ -14,6 +14,7 @@ function resetModals(state: State) {
     state.modals.deleteBoard.toggled = false;
     state.modals.deleteUser.toggled = false;
     state.modals.userMenu.toggled = false;
+    state.modals.error.toggled = false;
 }
 
 // State Declarations
@@ -52,6 +53,9 @@ export const state = (): State => ({
         },
         userMenu: {
             toggled: false
+        },
+        error: {
+            toggled: false
         }
     },
     boardSelected: '',
@@ -61,6 +65,7 @@ export const state = (): State => ({
         user: {}
     },
     loginRedirect: false,
+    modalErrorMessage: ''
 });
 
 // Sort Boards
@@ -79,7 +84,7 @@ export const mutations = {
     toggleSidebar(state: State): void {
         state.sidebarToggled = !state.sidebarToggled
     },
-    toggleModal(state: State, type: string, selectedId: string): void {
+    toggleModal(state: State, type: string): void {
         resetModals(state);
         switch(type) {
             case 'mobileBoards':
@@ -112,6 +117,9 @@ export const mutations = {
             case 'userMenu':
                 state.modals.userMenu.toggled = true;
                 break;
+            case 'error':
+                state.modals.error.toggled = true;
+                break;
             default:
                 resetModals(state);
         }
@@ -131,14 +139,15 @@ export const mutations = {
         state.boardSelected = newBoard._id.toString();
     },
     updateBoard(state: State, updatedBoard: Board): void {
-        state.userData.boards = boardSorter(state.userData.boards.map(board => 
-            board._id === state.boardSelected 
+        state.userData.boards = boardSorter(state.userData.boards.map((board: Board) => 
+            board._id.toString() === state.boardSelected 
             ? {...board, name: updatedBoard.name, columns: updatedBoard.columns} 
             : board
         ));
     },
     deleteBoard(state: State, _id: string): void {
-        state.userData.boards = boardSorter(state.userData.boards.filter(board => board._id !== _id));
+        state.userData.boards = boardSorter(state.userData.boards.filter((board: Board) => 
+            board._id.toString() !== _id));
         state.boardSelected = state.userData.boards.length ? state.userData.boards[0]._id : '';
     },
     selectTask(state: State, _id: string): void {
@@ -148,18 +157,17 @@ export const mutations = {
         state.userData.boards = state.userData.boards.map(board => 
             board._id === state.boardSelected ? {...board, tasks: [...board.tasks, newTask]} : board)
     },
-    updateTaskStatus(state: State, updatedTaskStatus: Pick<Task, 'status'>): void {
-        const boardIndex = state.userData.boards.findIndex(board => board._id === state.boardSelected);
-        const taskIndex = state.userData.boards[boardIndex].tasks.findIndex((task: any) => 
-            task._id === state.taskSelected
-        );
-        state.userData.boards[boardIndex].tasks[taskIndex].status = updatedTaskStatus;
+    updateTask(state: State, updatedTask: Task): void {
+        state.userData.boards = state.userData.boards.map((board: Board) => {
+            if (board.tasks.some((task: Task) => task._id.toString() === state.taskSelected)) {
+                return {...board, tasks: board.tasks.map((t: Task) => 
+                    t._id.toString() === state.taskSelected ? updatedTask
+                    : t)
+                }
+            } else return board
+        });
     },
-    updateTaskSubtasks(state: State, updatedSubtasks: Pick<Task, 'subtasks'>): void {
-        const boardIndex = state.userData.boards.findIndex(board => board._id === state.boardSelected);
-        const taskIndex = state.userData.boards[boardIndex].tasks.findIndex((task: any) => 
-            task._id === state.taskSelected
-        );
-        state.userData.boards[boardIndex].tasks[taskIndex].subtasks = updatedSubtasks;
+    setModalErrorMessage(state: State, message: string): void {
+        state.modalErrorMessage = message;
     }
 }

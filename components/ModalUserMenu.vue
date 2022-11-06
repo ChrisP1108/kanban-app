@@ -29,7 +29,7 @@
         width: 100%;
     }
     h2 {
-        margin-bottom: 2rem !important;
+        margin-bottom: 6.25rem !important;
     }
     p {
         color: $color-g !important;

@@ -63,6 +63,14 @@
 
     .checklist-item-container {
         background: $color-i;
+
+        b {
+            color: $color-c;
+        }
+    }
+
+    .field-input-label {
+        color: $color-g;
     }
 
     .dropdown-toggled-container {

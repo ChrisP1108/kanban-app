@@ -28,6 +28,7 @@
         <ModalDeleteTaskBoard v-if="modalToggled === 'deleteTask' || modalToggled ==='deleteBoard'" :mode="modalToggled" />
         <ModalDeleteUser v-if="modalToggled === 'deleteUser'" />
         <ModalUserMenu v-if="modalToggled === 'userMenu'" />
+        <ModalError v-if="modalToggled === 'error'" />
         <LoadingIcon v-if="isLoading" class="loading-icon-full" />
       </div>
     </div>
@@ -52,7 +53,8 @@
       },
       modalToggled() {
         const { mobileBoards, addTask, editTask, 
-          addBoard, editBoard, deleteTask, viewTask, deleteBoard, deleteUser, userMenu } = this.$store.state.modals;
+          addBoard, editBoard, deleteTask, viewTask, deleteBoard, 
+          deleteUser, userMenu, error } = this.$store.state.modals;
         if (mobileBoards.toggled) {
           return 'mobileBoards'
         }
@@ -82,6 +84,9 @@
         }
         if (userMenu.toggled) {
           return 'userMenu'
+        }
+        if (error.toggled) {
+          return 'error'
         }
         return null
       } 

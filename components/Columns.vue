@@ -49,11 +49,11 @@
             },
             columns() {
                 if (this.selectedBoard && this.selectedBoard.columns.length) {
-                    const columnTasks = this.selectedBoard.columns.map(column => {
+                    const columnTasks = [...this.selectedBoard.columns].map(column => {
                         return { 
                             name: column, 
                             tasks: this.selectedBoard.tasks && this.selectedBoard.tasks.length 
-                                ? this.selectedBoard.tasks.filter(task => task.status === column) : []
+                                ? [...this.selectedBoard.tasks].filter(task => task.status === column) : []
                         }
                     });
                     return columnTasks

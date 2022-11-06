@@ -80,13 +80,27 @@
             }
         },
         computed: {
-            selectedBoard() {
-                return this.$store.state.userData.boards.find(board => board._id === this.$store.state.boardSelected)
+            selectedTask() {
+                const board = [...this.$store.state.userData.boards].find(b => b._id === this.$store.state.boardSelected);
+                return board.tasks.find(task => task._id.toString() === this.$store.state.taskSelected)
+            },
+            boardColumns() {
+                return [...this.$store.state.userData.boards]
+                    .find(b => b._id === this.$store.state.boardSelected).columns
             }
         },
         created() {
-            this.task.status.value = this.selectedBoard.columns[0];
-            this.dropdownOptions = this.selectedBoard.columns;
+            this.dropdownOptions = this.boardColumns;
+            if (this.mode === 'addTask') {
+                this.task.status.value = this.boardColumns[0]
+            }
+            if (this.mode === 'editTask') {
+                this.task.title.value = this.selectedTask.title;
+                this.task.description.value = this.selectedTask.description;
+                this.task.subtasks.values = this.selectedTask.subtasks.map(subtask => 
+                ({ canModify: true, value: subtask.name }));
+                this.task.status.value = this.selectedTask.status;
+            }
         },
         methods: {
             addSubTask() {

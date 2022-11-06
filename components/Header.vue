@@ -11,8 +11,8 @@
                 Add New Task
             </span>
         </button>
-        <img id="dot-nav" class="dot-nav" src="assets/images/dot-nav.svg" @click="toggleBoardDropdown">
-        <nav @click="toggleBoardDropdown">
+        <img class="dot-nav" src="assets/images/dot-nav.svg" @click="toggleBoardDropdown">
+        <nav @click="toggleBoardDropdown" class="dropdown-list">
             <DropdownList :dropdown-toggled="boardDropdownToggled" :dropdown-options="boardDropdownOptions" 
                 @option-selected="toggleOption" />
         </nav>
@@ -128,13 +128,6 @@
         font-size: $heading-xl-size;
         min-height: 2rem;
         min-width: 3rem;
-    }
-
-    .dot-nav {
-        cursor: pointer;
-        padding: 1rem;
-        margin: -1rem;
-        width: 2.3125rem;
     }
 
     nav {

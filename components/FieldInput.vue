@@ -1,6 +1,6 @@
 <template>
     <div>
-        <label :class="[dropdown ? 'select-heading' : '']">{{ label }}</label>
+        <label class="field-input-label">{{ label }}</label>
 
         <!-- Text, Textarea, And Password Inputs -->
 
@@ -38,19 +38,19 @@
 
         <!-- Checklist Input -->
 
-        <div v-if="checklist" class="list-items-container">
+        <div v-if="checklist" class="checklist-items-container">
             <div v-for="(field, index) in value" :key="index" class="checklist-item-container">
                 <input v-model="value[index].checked" type="checkbox" class="checklist-checkbox"  
                     @change="updateValue">
-                <b>{{ field.name }}</b>
+                <b :class="field.checked ? 'checked-text' : ''">{{ field.name }}</b>
             </div>
         </div>
 
         <!-- Dropdown List Input -->
 
         <div class="field-container">
-            <div v-if="dropdown" class="dropdown-select-container">
-                <div id="dropdown-container" name="task-status" class="dropdown" @click="toggleDropdown">
+            <div v-if="dropdown" class="dropdown-select-container" @click="toggleDropdown">
+                <div id="dropdown-container" name="task-status" class="dropdown">
                     <span>{{ input }}</span>
                     <img :class="[dropdownToggled ? 'dropdown-rotate-arrow' : '', 'dropdown-arrow']" src="assets/images/dropdown-arrow.svg" alt="Dropdown Arrow">
                 </div>
@@ -206,6 +206,17 @@
     .dropdown-arrow {
         transition: $speed-fast;
         width: 0.625rem;
+    }
+    .checklist-items-container {
+        margin-top: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        max-height: 25vh;
+    }
+    .checked-text {
+        text-decoration: line-through;
+        color: $color-g !important;
     }
     .list-items-container {
         display: flex;
