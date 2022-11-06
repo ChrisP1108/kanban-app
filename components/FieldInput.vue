@@ -160,7 +160,7 @@
                     i !== index && item);
                     this.updateValue();
                 } else {
-                    this.value = [''];
+                    this.value = [{ value: '', canModify: true, checked: false}];
                     this.updateValue();
                 }
             },

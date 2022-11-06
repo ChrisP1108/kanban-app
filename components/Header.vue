@@ -73,7 +73,6 @@
         min-height: 4rem;
         width: 100%;
         padding: $padding-top-bottom $padding-sides;
-        transition: $speed-medium;
     }
     .logo {
         width: 1.5rem;

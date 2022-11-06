@@ -194,12 +194,11 @@ const updateTask = asyncHandler(async (req, res) => {
         throw new Error('Error updating task data to MongoDB')
     }
 
-    // Check if subtask was added during update
+    // Load updated task to return subtasks to UI 
 
-    if (subtasks.length > checkTask.subtasks.length) {
-        const updatedTask = await Task.findById(req.params.id);
-        res.status(201).json({ _id: updatedTask._id, subtasks: updatedTask.subtasks })
-    } else res.status(200).json({ _id: updateTask._id })
+    const updatedTask = await Task.findById(req.params.id);
+
+    res.status(200).json({ _id: updateTask._id, subtasks: updatedTask.subtasks })
 });
 
 // @desc    Delete task

@@ -1,5 +1,5 @@
 <template>
-    <div class="modal-styling">
+    <div class="modal-styling" @keyup="checkEnterKeypress">
         <h2>There was an error {{ errorMessage }}.  Please try again or check your internet connection.</h2>
         <button class="button-primary-s" @click="okClicked">Ok</button>
     </div>
@@ -16,6 +16,11 @@
         methods: {
             okClicked() {
                 this.$store.commit('toggleModal')
+            },
+            checkEnterKeypress(e) {
+                if (e.key === 'Enter') {
+                    this.$store.commit('toggleModal')
+                }
             }
         }
     }

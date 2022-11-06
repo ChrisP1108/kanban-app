@@ -38,7 +38,6 @@
         min-width: 0;
         position: relative;
         left: 0%;
-        transition: $speed-medium;
     }
 
     .boards-container {

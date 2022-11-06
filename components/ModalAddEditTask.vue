@@ -62,7 +62,8 @@
                         values: [
                             { 
                                 canModify: true, 
-                                value: '' 
+                                value: '',
+                                checked: false 
                             }
                         ],
                         hasError: false,
@@ -105,7 +106,7 @@
             addSubTask() {
                 const subtasks = this.task.subtasks.values;
                 if (subtasks[subtasks.length - 1].value !== '') {
-                    this.task.subtasks.values.push( { canModify: true, value: '' } )
+                    this.task.subtasks.values.push( { canModify: true, value: '', checked: false } )
                 } 
             },
             setTaskStatus(option) {
@@ -139,7 +140,7 @@
                         _id: subtask._id,
                         value: caseFormatFirst(subtask.value), 
                         canModify: subtask.canModify,
-                        checked: subtask.checked !== undefined ? subtask.checked : false
+                        checked: subtask.checked
                     }))
                 ;
 
@@ -183,10 +184,6 @@
                     const updatedTask = { _id: this.selectedTask._id, title, description, subtasks, status }
                     const updateReq = await httpPut(`/tasks/${this.selectedTask._id}`, updatedTask);
                     if (updateReq.status === 200) {
-                        this.$store.commit('updateTask', updatedTask);
-                        this.$store.commit('toggleModal');
-                    } else if (updateReq.status === 201) {
-                        console.log(updateReq);
                         updatedTask.subtasks = updateReq.data.subtasks
                         this.$store.commit('updateTask', updatedTask);
                         this.$store.commit('toggleModal');
