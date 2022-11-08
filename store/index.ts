@@ -156,8 +156,8 @@ export const mutations = {
         state.taskSelected = _id;
     },
     addTask(state: State, newTask: Task): void {
-        state.userData.boards = state.userData.boards.map(board => 
-            board._id === state.boardSelected ? {...board, tasks: [...board.tasks, newTask]} : board)
+        state.userData.boards = state.userData.boards.map((board: Board) => 
+            board._id.toString() === state.boardSelected ? {...board, tasks: [...board.tasks, newTask]} : board)
     },
     updateTask(state: State, updatedTask: Task): void {
         state.userData.boards = state.userData.boards.map((board: Board) => {
@@ -178,7 +178,7 @@ export const mutations = {
             } else return board
         });
     },
-    setModalErrorMessage(state: State, message: string): void {
-        state.modalErrorMessage = message;
+    setModalErrorMessage(state: State, errorMessage: string): void {
+        state.modalErrorMessage = errorMessage;
     }
 }

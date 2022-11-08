@@ -6,8 +6,14 @@ const baseUrl: string = '/api';
 
 // Error Message Handler
 
-export function httpErrMsg(res: any) {
+export function httpErrMsg(res: any): String {
     return res.message.response.data.message
+}
+
+// Error Status Code Handler
+
+export function httpStatusCode(res: any): Number {
+    return res.message.response.status
 }
 
 // GET Request

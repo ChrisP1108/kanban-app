@@ -1,15 +1,12 @@
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler');
-const Cryptr = require('cryptr');
-const cryptr = new Cryptr(process.env.ENCRYPTION_KEY);
 const User = require('../models/userModel');
 
 const protect = asyncHandler(async (req, res, next) => {
-    const token = req.cookies.token;
+    const { token } = req.cookies;
 
     if (token) {  
         try {
-
             const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
             // Get user from decoded token ID
@@ -27,7 +24,6 @@ const protect = asyncHandler(async (req, res, next) => {
 
             next();
         } catch (err) {
-            console.error(err);
             res.status(401);
             throw new Error('User not authorized')
         }

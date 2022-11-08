@@ -28,7 +28,7 @@
 </template>
 
 <script>
-    import { httpPut, httpPost, httpErrMsg } from '../services/httpClient';
+    import { httpPut, httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
     import { caseFormatAll } from '../services/caseFormatting';
 
     export default {
@@ -121,13 +121,13 @@
                 this.board.columns.values = this.board.columns.values ? this.board.columns.values
                     .filter(column => column.value !== '')
                     .map(column => ({ value: caseFormatAll(column.value), canModify: column.canModify }))
-                        : [{ canModify: true, value: ''}]
+                    : [{ canModify: true, value: ''}]
                 ;
 
                 // Check That Name Fields Is Not Empty.  Column Field Optional
 
                 const name = this.board.name.value;
-                const columns = this.board.columns.values[0].value !== [''] 
+                const columns = this.board.columns.values[0] !== undefined
                     ? this.board.columns.values.map(column => column.value)
                     : [];
 
@@ -144,16 +144,19 @@
                     return null
                 }
 
-                // HTTP Requests
+                // HTTP Request Variables
 
+                let addReq;
+                let updateReq;
                 let reqError = false;
                 let reqMade = null;
+
                 this.isLoading = true;
 
                 // Add Board HTTP Post Request And Store Commit If No Errors
 
                 if (this.mode === 'addBoard') {
-                    const addReq = await httpPost('/boards', { name, columns});
+                    addReq = await httpPost('/boards', { name, columns});
                     if (addReq.status === 201) {
                         const _id = addReq.data._id;
                         this.board.name.hasError = false;
@@ -161,30 +164,41 @@
                         this.$store.commit('addBoard', { _id, name, columns });
                         this.$store.commit('toggleModal');
                     } else {
-                        reqError = true;
-                        reqMade = addReq;
+                        this.isLoading = false;
+                        if (httpStatusCode(addReq) >= 404) {
+                            this.$store.commit('setModalErrorMessage', `adding board "${name}"`)
+                            this.$store.commit('toggleModal', 'error')
+                        } else {
+                            reqError = true;
+                            reqMade = addReq;
+                        }
                     }
 
                 // Edit Board HTTP Put Request And Store Commit If No Errors
 
                 } else if (this.mode === 'editBoard') {
                     const _id = this.selectedId;
-                    const updateReq = await httpPut(`/boards/${_id}`, { name, columns })
+                    updateReq = await httpPut(`/boards/${_id}`, { name, columns })
                     if (updateReq.status === 200) {
                         this.board.name.hasError = false;
                         this.board.columns.hasError = false;
                         this.$store.commit('updateBoard', { name, columns })
                         this.$store.commit('toggleModal')
                     } else {
-                        reqError = true;
-                        reqMade = updateReq;
+                        this.isLoading = false;
+                        if (httpStatusCode(updateReq) >= 404) {
+                            this.$store.commit('setModalErrorMessage', `editing board "${name}"`)
+                            this.$store.commit('toggleModal', 'error')
+                        } else {
+                            reqError = true;
+                            reqMade = updateReq;
+                        }
                     }
                 }
 
                 // Error Handling
 
                 if (reqError) {
-                    this.isLoading = false;
                     this.errorMessage = httpErrMsg(reqMade);
                     if (this.errorMessage.includes('add a board name')) {
                         this.board.name.hasError = true;

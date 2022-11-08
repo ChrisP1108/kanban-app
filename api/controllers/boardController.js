@@ -5,30 +5,6 @@ const Task = require ('../models/taskModel');
 
 const { caseFormatAll } = require('../services/caseFormatting');
 
-// @desc    Get boards
-// @route   GET /api/boards
-// @access  Private
-
-const getBoards = asyncHandler(async (req, res) => {
-    const boards = await Board.find({ user: req.user._id });
-
-    if (!boards) {
-        res.status(500);
-        throw new Error('Error getting boards from MongoDB')
-    }
-
-    if (!boards.length) {
-        res.status(200).json([])
-    } else {
-        const boardsData = [];
-        for(board of boards) {
-            boardsData.push({ name: board.name, columns: board.columns, 
-                id: board._id, tasks: await Task.find({ board: board._id }) })
-        }
-        res.status(200).json(boardsData)
-    }
-});
-
 // @desc    Add board
 // @route   POST /api/boards
 // @access  Private
@@ -196,4 +172,4 @@ const deleteBoard = asyncHandler(async (req, res) => {
     } else res.status(200).json({ _id: deleteBoard._id })
 });
 
-module.exports = { getBoards, addBoard, updateBoard, deleteBoard }
+module.exports = { addBoard, updateBoard, deleteBoard }

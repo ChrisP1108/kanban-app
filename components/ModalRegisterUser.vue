@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { httpPost, httpGet, httpErrMsg } from '../services/httpClient';
+import { httpPost, httpGet, httpErrMsg, httpStatusCode } from '../services/httpClient';
 
     export default {
         data() {
@@ -132,9 +132,9 @@ import { httpPost, httpGet, httpErrMsg } from '../services/httpClient';
 
                     this.isLoading = true;
                     const security = { question, answer };
-                    const httpReq = await httpPost('/user/register', 
+                    const registerReq = await httpPost('/user/register', 
                         { firstname, username, password, password2, pin, security });
-                    if (httpReq.status === 201) {
+                    if (registerReq.status === 201) {
                         this.credentials.firstname.hasError = false;
                         this.credentials.username.hasError = false;
                         this.credentials.password.hasError = false;
@@ -150,61 +150,66 @@ import { httpPost, httpGet, httpErrMsg } from '../services/httpClient';
                 // Error Handling
 
                         this.isLoading = false;
-                        this.errorMessage = httpErrMsg(httpReq);
-                        if (this.errorMessage.includes('add a first name')) {
-                            this.credentials.firstname.hasError = true;
-                            this.credentials.firstname.errMsg = 'add first name';
-                        } else this.credentials.firstname.hasError = false;
-                        if (this.errorMessage.includes('add a username')) {
-                            this.credentials.username.hasError = true;
-                            this.credentials.username.errMsg = 'add username 8 char min';
-                        } else this.credentials.username.hasError = false;
-                        if (this.errorMessage.includes('Username already exists')) {
-                            this.credentials.username.hasError = true;
-                            this.credentials.username.errMsg = 'username already exists';
-                        } else this.credentials.username.hasError = false;
-                        if (this.errorMessage.includes('add a password')) {
-                            this.credentials.password.hasError = true;
-                            this.credentials.password.errMsg = 'add password 8 char min';
-                        } else this.credentials.password.hasError = false;  
-                        if (this.errorMessage.includes('reenter password')) {
-                            this.credentials.password2.hasError = true;
-                            this.credentials.password2.errMsg = 'reenter password';
-                        } else this.credentials.password2.hasError = false;  
-                        if (this.errorMessage.includes('entries do not match')) {
-                            this.credentials.password.hasError = true;
-                            this.credentials.password2.hasError = true;
-                            this.credentials.password.errMsg = 'passwords must match';
-                            this.credentials.password2.errMsg = 'passwords must match';
+                        if (httpStatusCode(registerReq) >= 404) {
+                            this.$store.commit('setModalErrorMessage', `registering user`)
+                            this.$store.commit('toggleModal', 'error')
                         } else {
-                            this.credentials.password.hasError = false; 
-                            this.credentials.password2.hasError = false;  
+                            this.errorMessage = httpErrMsg(httpReq);
+                            if (this.errorMessage.includes('add a first name')) {
+                                this.credentials.firstname.hasError = true;
+                                this.credentials.firstname.errMsg = 'add first name';
+                            } else this.credentials.firstname.hasError = false;
+                            if (this.errorMessage.includes('add a username')) {
+                                this.credentials.username.hasError = true;
+                                this.credentials.username.errMsg = 'add username 8 char min';
+                            } else this.credentials.username.hasError = false;
+                            if (this.errorMessage.includes('Username already exists')) {
+                                this.credentials.username.hasError = true;
+                                this.credentials.username.errMsg = 'username already exists';
+                            } else this.credentials.username.hasError = false;
+                            if (this.errorMessage.includes('add a password')) {
+                                this.credentials.password.hasError = true;
+                                this.credentials.password.errMsg = 'add password 8 char min';
+                            } else this.credentials.password.hasError = false;  
+                            if (this.errorMessage.includes('reenter password')) {
+                                this.credentials.password2.hasError = true;
+                                this.credentials.password2.errMsg = 'reenter password';
+                            } else this.credentials.password2.hasError = false;  
+                            if (this.errorMessage.includes('entries do not match')) {
+                                this.credentials.password.hasError = true;
+                                this.credentials.password2.hasError = true;
+                                this.credentials.password.errMsg = 'passwords must match';
+                                this.credentials.password2.errMsg = 'passwords must match';
+                            } else {
+                                this.credentials.password.hasError = false; 
+                                this.credentials.password2.hasError = false;  
+                            }
+                            if (this.errorMessage.includes('4 digit numeric pin')) {
+                                this.credentials.pin.hasError = true;
+                                this.credentials.pin.errMsg = '4 numbers required';
+                            } else this.credentials.pin.hasError = false;  
+                            if (this.errorMessage.includes('provide a security question and answer')) {
+                                this.credentials.security.question.hasError = true;
+                                this.credentials.security.answer.hasError = true;
+                                this.credentials.security.question.errMsg = 'provide security question';
+                                this.credentials.security.answer.errMsg = 'provide security answer';
+                            } else {
+                                this.credentials.security.question.hasError = false;
+                                this.credentials.security.answer.hasError = false; 
+                            }
+                            if (this.errorMessage.includes('add a security question')) {
+                                this.credentials.security.question.hasError = true;
+                                this.credentials.security.question.errMsg = 'provide security question';
+                            } else this.credentials.security.question.hasError = false;
+                            if (this.errorMessage.includes('add a security answer')) {
+                                this.credentials.security.answer.hasError = true;
+                                this.credentials.security.answer.errMsg = 'provide security answer';
+                            } else this.credentials.security.answer.hasError = false;    
+                            if (this.errorMessage.includes('Security answer cannot have spaces')) {
+                                this.credentials.security.answer.hasError = true;
+                                this.credentials.security.answer.errMsg = 'no spaces';
+                            } else this.credentials.security.answer.hasError = false;    
                         }
-                        if (this.errorMessage.includes('4 digit numeric pin')) {
-                            this.credentials.pin.hasError = true;
-                            this.credentials.pin.errMsg = '4 numbers required';
-                        } else this.credentials.pin.hasError = false;  
-                        if (this.errorMessage.includes('provide a security question and answer')) {
-                            this.credentials.security.question.hasError = true;
-                            this.credentials.security.answer.hasError = true;
-                            this.credentials.security.question.errMsg = 'provide security question';
-                            this.credentials.security.answer.errMsg = 'provide security answer';
-                        } else {
-                            this.credentials.security.question.hasError = false;
-                            this.credentials.security.answer.hasError = false; 
-                        }
-                        if (this.errorMessage.includes('add a security question')) {
-                            this.credentials.security.question.hasError = true;
-                            this.credentials.security.question.errMsg = 'provide security question';
-                        } else this.credentials.security.question.hasError = false;
-                        if (this.errorMessage.includes('add a security answer')) {
-                            this.credentials.security.answer.hasError = true;
-                            this.credentials.security.answer.errMsg = 'provide security answer';
-                        } else this.credentials.security.answer.hasError = false;    
-                        if (this.errorMessage.includes('Security answer cannot have spaces')) {
-                            this.credentials.security.answer.hasError = true;
-                            this.credentials.security.answer.errMsg = 'no spaces';
-                        } else this.credentials.security.answer.hasError = false;    
                     }
                 }
             },

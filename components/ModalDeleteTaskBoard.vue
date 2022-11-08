@@ -19,7 +19,7 @@
 </template>
 
 <script>
-    import { httpDelete } from '../services/httpClient';
+    import { httpDelete  } from '../services/httpClient';
     
     export default {
         props: {
@@ -73,7 +73,8 @@
                         this.$store.commit('toggleModal');
                     } else {
                         this.isLoading = false;
-                        console.error('Error deleting board')
+                        this.$store.commit('setModalErrorMessage', `deleting board "${this.boardName}"`)
+                        this.$store.commit('toggleModal', 'error')
                     }
                 }
                 if (this.deletingTask) {
@@ -82,9 +83,9 @@
                         this.$store.commit('deleteTask', this.selectedTaskId);
                         this.$store.commit('toggleModal');
                     } else {
-                        console.log(taskDelReq);
                         this.isLoading = false;
-                        console.error('Error deleting board')
+                        this.$store.commit('setModalErrorMessage', `deleting task "${this.taskTitle}"`)
+                        this.$store.commit('toggleModal', 'error')
                     }
                 }
             },

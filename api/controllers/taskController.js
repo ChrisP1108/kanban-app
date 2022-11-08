@@ -29,9 +29,9 @@ const addTask = asyncHandler(async (req, res) => {
         throw new Error('Please add at least one subtask')
     }
 
-    if (!subtasks[0].name || typeof !subtasks[0].checked !== 'boolean') {
+    if (!subtasks[0].title || typeof !subtasks[0].checked !== 'boolean') {
         res.status(400);
-        throw new Error('Please make sure subtasks are formatted with { name: ###, checked: false }')
+        throw new Error('Please make sure subtasks are formatted with { title: ###, checked: false }')
     }
     if (!status) {
         res.status(400);

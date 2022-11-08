@@ -32,8 +32,8 @@
                 return this.$store.state.modals.mobileBoardsToggled
             },
             columnExists() {
-                return this.$store.state.userData.boards.find(board => board._id === this.$store.state.boardSelected)
-                    .columns.length > 0
+                const boardFind = this.$store.state.userData.boards.find(board => board._id === this.$store.state.boardSelected)
+                return boardFind && boardFind.columns.length > 0
             }
         },
         mounted() {

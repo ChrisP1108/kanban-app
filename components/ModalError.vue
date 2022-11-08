@@ -6,7 +6,6 @@
 </template>
 
 <script>
-    
     export default {
         computed: {
             errorMessage() {
@@ -19,7 +18,7 @@
             },
             checkEnterKeypress(e) {
                 if (e.key === 'Enter') {
-                    this.$store.commit('toggleModal')
+                    this.okClicked()
                 }
             }
         }

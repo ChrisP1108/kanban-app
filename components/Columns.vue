@@ -13,7 +13,7 @@
 
         <!-- If Selected Board Has No Columns -->
 
-        <div v-if="!columns.length" class="empty-list-container">
+        <div v-if="selectedBoard && !columns.length" class="empty-list-container">
             <h2>This board is empty.  Create a new column to get started.</h2>
             <button class="button-primary-l" @click="toggleEditBoard">
                 + <span class="add-button-text ml-1"> 
@@ -22,8 +22,20 @@
             </button>
         </div>
 
-        <!-- If Board Select And Has At Least One Column  -->
-        <div v-if="columns.length" class="all-columns">
+        <!-- If Selected Board Has No Tasks -->
+
+        <div v-if="columns.length && selectedBoard && !selectedBoard.tasks.length" class="empty-list-container">
+            <h2>This board has no tasks.  Create a new task to get started.</h2>
+            <button class="button-primary-l" @click="toggleAddTask">
+                + <span class="add-button-text ml-1"> 
+                    Add New Task
+                </span>
+            </button>
+        </div>
+
+        <!-- If Board Select And Has At Least One Column And A Task  -->
+
+        <div v-if="selectedBoard && selectedBoard.tasks.length" class="all-columns">
             <div v-for="(column, index) in columns" :key="index" class="task-column-list">
                 <TaskListHeading :index="index" :task-status-heading="column.name" :length="column.tasks.length" />
                 <ul class="task-list-items-container">
@@ -45,7 +57,7 @@
         },
         computed: {
             selectedBoard() {
-                return this.$store.state.userData.boards.find(board => board._id === this.$store.state.boardSelected)
+                return [...this.$store.state.userData.boards].find(board => board._id === this.$store.state.boardSelected)
             },
             columns() {
                 if (this.selectedBoard && this.selectedBoard.columns.length) {
@@ -66,6 +78,9 @@
             },
             toggleEditBoard() {
                 this.$store.commit('toggleModal', 'editBoard')
+            },
+            toggleAddTask() {
+                this.$store.commit('toggleModal', 'addTask')
             }
         }
     }

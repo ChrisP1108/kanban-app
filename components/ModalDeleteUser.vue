@@ -1,5 +1,5 @@
 <template>
-    <div class="modal-styling" @keyup="checkEnterKeypress">
+    <div class="modal-styling">
         <h2>Delete your user account?</h2>
         <p>Are you sure you want to delete your user account?  This action will remove all of your boards and tasks
              along with your login credentials and cannot be undone.
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-    import { httpPost, httpErrMsg } from '../services/httpClient';
+    import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
 
     export default {
         data() {
@@ -72,9 +72,10 @@
                     return null
                 } 
 
+                this.isLoading = true;
+
                 // HTTP Post Request Which Actually Deletes User To Work Around Delete Request Limitation In Node Express
 
-                this.isLoading = true;
                 const deleteReq = await httpPost('/user/delete', { username, password });
 
                 // Delete User And Store Commit If No Errors Found
@@ -92,32 +93,32 @@
                 
                 } else {
                     this.isLoading = false;
-                    this.errorMessage = httpErrMsg(deleteReq);
-                    if (this.errorMessage.includes('enter a username')) {
-                        this.credentials.username.hasError = true;
-                        this.credentials.username.errMsg = 'enter a username';
-                    } else this.credentials.username.hasError = false;
-                    if (this.errorMessage.includes('Invalid username')) {
-                        this.credentials.username.hasError = true;
-                        this.credentials.username.errMsg = 'invalid username';
-                    } else this.credentials.username.hasError = false;
-                    if (this.errorMessage.includes('enter a password')) {
-                        this.credentials.password.hasError = true;
-                        this.credentials.password.errMsg = 'enter a password';
-                    } else this.credentials.password.hasError = false;  
-                    if (this.errorMessage.includes('Invalid password')) {
-                        this.credentials.password.hasError = true;
-                        this.credentials.password.errMsg = 'invalid password';
-                    } else this.credentials.password.hasError = false;  
+                    if (httpStatusCode(deleteReq) >= 404) {
+                        this.$store.commit('setModalErrorMessage', `deleting user account`)
+                        this.$store.commit('toggleModal', 'error')
+                    } else {
+                        this.errorMessage = httpErrMsg(deleteReq);
+                        if (this.errorMessage.includes('enter a username')) {
+                            this.credentials.username.hasError = true;
+                            this.credentials.username.errMsg = 'enter a username';
+                        } else this.credentials.username.hasError = false;
+                        if (this.errorMessage.includes('Invalid username')) {
+                            this.credentials.username.hasError = true;
+                            this.credentials.username.errMsg = 'invalid username';
+                        } else this.credentials.username.hasError = false;
+                        if (this.errorMessage.includes('enter a password')) {
+                            this.credentials.password.hasError = true;
+                            this.credentials.password.errMsg = 'enter a password';
+                        } else this.credentials.password.hasError = false;  
+                        if (this.errorMessage.includes('Invalid password')) {
+                            this.credentials.password.hasError = true;
+                            this.credentials.password.errMsg = 'invalid password';
+                        } else this.credentials.password.hasError = false;  
+                    }
                 }
             },
             cancelDelete() {
                 this.$store.commit('toggleModal')
-            },
-            checkEnterKeypress(e) {
-                if (e.key === 'Enter') {
-                    this.confirmDelete();
-                }
             }
         }
     }

@@ -35,7 +35,7 @@
 </template>
 
 <script>
-    import { httpPost, httpPut, httpErrMsg } from '../services/httpClient';
+    import { httpPost, httpPut, httpErrMsg, httpStatusCode } from '../services/httpClient';
     import { caseFormatFirst } from '../services/caseFormatting';
 
     export default {
@@ -124,6 +124,8 @@
             },
             async taskSubmit() {
 
+                // Check For Empty Fields
+
                 if (!this.task.title.value || !this.task.description.value 
                     || !this.task.subtasks.values[0].value || !this.task.status.value) {
                     this.fieldsEmpty = true;
@@ -136,64 +138,75 @@
                 this.task.description.value = caseFormatFirst(this.task.description.value);
                 this.task.subtasks.values = this.task.subtasks.values
                     .filter(task => task !== '')
-                    .map(subtask => ({ 
-                        _id: subtask._id,
-                        value: caseFormatFirst(subtask.value), 
-                        canModify: subtask.canModify,
-                        checked: subtask.checked
-                    }))
-                ;
+                    .map(subtask => ({...subtask, title: caseFormatFirst(subtask.value)}
+                ));
+
+                // Destructuring Variable Names
 
                 const title = this.task.title.value;
                 const description = this.task.description.value;
                 const subtasks = this.task.subtasks.values.map(subtask => 
-                    ({  
-                        _id: subtask._id,
-                        name: subtask.value, 
-                        checked: subtask.checked !== undefined ? subtask.checked : false 
-                    })
-                );
+                    ({...subtask, checked: subtask.checked !== undefined ? subtask.checked : false} ));
                 const status = this.task.status.value;
-
                 const boardId = this.selectedBoard._id
 
-                // HTTP Requests
+                // HTTP Request Variables
 
+                let addReq;
+                let updateReq;
                 let reqError = false;
                 let reqMade = null;
+
                 this.isLoading = true;
 
                 // HTTP Post Request For Adding Task And Store Commit If No Errors
 
                 if (this.mode === 'addTask') {
-                    const addReq = await httpPost('/tasks', { title, description, subtasks, status, boardId });
+                    addReq = await httpPost('/tasks', { title, description, subtasks, status, boardId });
                     if (addReq.status === 201) {
                         const _id = addReq.data._id;
-                        this.task.title.hasError = false;;
+                        this.task.title.hasError = false;
                         this.task.description.hasError = false;
                         this.task.subtasks.hasError = false;
                         this.task.status.hasError= false;
                         this.$store.commit('addTask', { _id, title, description, subtasks, status });
                         this.$store.commit('toggleModal');
                     } else {
-                        reqError = true;
-                        reqMade = addReq;
+                        this.isLoading = false;
+                        if (httpStatusCode(addReq) >= 404) {
+                            this.$store.commit('setModalErrorMessage', `adding task "${title}"`)
+                            this.$store.commit('toggleModal', 'error')
+                        } else {
+                            reqError = true;
+                            reqMade = addReq;
+                        }
                     }
                 }
+
+                // HTTP Put Request For Updating Task And Store Commit If No Errors
+
                 if (this.mode === 'editTask') {
                     const updatedTask = { _id: this.selectedTask._id, title, description, subtasks, status }
-                    const updateReq = await httpPut(`/tasks/${this.selectedTask._id}`, updatedTask);
+                    updateReq = await httpPut(`/tasks/${this.selectedTask._id}`, updatedTask);
                     if (updateReq.status === 200) {
                         updatedTask.subtasks = updateReq.data.subtasks
                         this.$store.commit('updateTask', updatedTask);
                         this.$store.commit('toggleModal');
                     } else {
-                        reqError = true;
-                        reqMade = updateReq;
+                        this.isLoading = false;
+                        if (httpStatusCode(updateReq) >= 404) {
+                            this.$store.commit('setModalErrorMessage', `editing task "${title}"`)
+                            this.$store.commit('toggleModal', 'error')
+                        } else {
+                            reqError = true;
+                            reqMade = updateReq;
+                        }
                     }
                 }
+
+                // HTTP Error Handling
+
                 if (reqError) {
-                    this.isLoading = false;
                     this.errorMessage = httpErrMsg(reqMade);
                     if (this.errorMessage.includes('Please add a task title')) {
                         this.task.title.hasError = true;

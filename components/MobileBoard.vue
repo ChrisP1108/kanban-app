@@ -4,7 +4,6 @@
         <UserIcon  class="offset-adjust" />
     </div>
 </template>
-
 <script>
 
 </script>

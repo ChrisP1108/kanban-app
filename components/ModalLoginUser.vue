@@ -25,7 +25,7 @@
 </template>
 
 <script>
-    import { httpGet, httpPost, httpErrMsg } from '../services/httpClient';
+    import { httpGet, httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
 
     export default {
         data() {
@@ -68,11 +68,15 @@
                     return null
                 } 
 
+                // Define HTTP Data Variables
+
+                let getDataAttempt;
+
                 // HTTP Post Request For Login Authentication
 
                 this.isLoading = true;
-                const httpReq = await httpPost('/user/login', { username, password });
-                if (httpReq.status === 200) {
+                const loginReq = await httpPost('/user/login', { username, password });
+                if (loginReq.status === 200) {
                     this.credentials.username.hasError = false;
                     this.credentials.password.hasError = false;
                     if (this.$store.state.loginRedirect) {
@@ -81,7 +85,7 @@
 
                 // HTTP Get Request For All User Boards And Corresponding Tasks  And Store Commit If Login Successful
 
-                    const getDataAttempt = await httpGet('/user/data');
+                    getDataAttempt = await httpGet('/user/data');
                     if (getDataAttempt.status === 200) {
                         this.$store.commit('setUserData', getDataAttempt.data);
                         const boards = getDataAttempt.data.boards;
@@ -96,23 +100,31 @@
                 
                 else {
                     this.isLoading = false;
-                    this.errorMessage = httpErrMsg(httpReq);
-                    if (this.errorMessage.includes('enter a username')) {
-                        this.credentials.username.hasError = true;
-                        this.credentials.username.errMsg = 'enter a username';
-                    } else this.credentials.username.hasError = false;
-                    if (this.errorMessage.includes('Username does not exist')) {
-                        this.credentials.username.hasError = true;
-                        this.credentials.username.errMsg = 'username does not exist';
-                    } else this.credentials.username.hasError = false;
-                    if (this.errorMessage.includes('enter a password')) {
-                        this.credentials.password.hasError = true;
-                        this.credentials.password.errMsg = 'enter a password';
-                    } else this.credentials.password.hasError = false;  
-                    if (this.errorMessage.includes('Invalid password')) {
-                        this.credentials.password.hasError = true;
-                        this.credentials.password.errMsg = 'invalid password';
-                    } else this.credentials.password.hasError = false;  
+                    if (httpStatusCode(loginReq) >= 404) {
+                        this.$store.commit('setModalErrorMessage', `logging in`)
+                        this.$store.commit('toggleModal', 'error')
+                    } else if (getDataAttempt && httpStatusCode(getDataAttempt) >= 404) {
+                        this.$store.commit('setModalErrorMessage', `getting user data`)
+                        this.$store.commit('toggleModal', 'error')
+                    } else {
+                        this.errorMessage = httpErrMsg(loginReq);
+                        if (this.errorMessage.includes('enter a username')) {
+                            this.credentials.username.hasError = true;
+                            this.credentials.username.errMsg = 'enter a username';
+                        } else this.credentials.username.hasError = false;
+                        if (this.errorMessage.includes('Username does not exist')) {
+                            this.credentials.username.hasError = true;
+                            this.credentials.username.errMsg = 'username does not exist';
+                        } else this.credentials.username.hasError = false;
+                        if (this.errorMessage.includes('enter a password')) {
+                            this.credentials.password.hasError = true;
+                            this.credentials.password.errMsg = 'enter a password';
+                        } else this.credentials.password.hasError = false;  
+                        if (this.errorMessage.includes('Invalid password')) {
+                            this.credentials.password.hasError = true;
+                            this.credentials.password.errMsg = 'invalid password';
+                        } else this.credentials.password.hasError = false;  
+                    }
                 }
             },
             goToRegister() {

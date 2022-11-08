@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { httpPost, httpErrMsg } from '../services/httpClient';
+import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
 
     export default {
         data() {
@@ -116,6 +116,11 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
                     answer: this.credentials.security.answer.value
                 }
 
+                // HTTP Data Variable Declarations
+
+                let verifyReq;
+                let resetReq;
+
                 // Check If User Was Verified.  If Not, Start With Verification First.  Otherwise Go To Reset
 
                 // Verify User
@@ -137,7 +142,7 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
                     // HTTP Post Request To Verify First Name, Username, And Pin.  Get Security Question Response From Server
 
                         this.isLoading = true;
-                        const verifyReq = await httpPost('/user/verify', 
+                        verifyReq = await httpPost('/user/verify', 
                         { firstname, username, pin });
                         if (verifyReq.status === 200) {
                             this.fieldsEmpty = false;
@@ -149,31 +154,36 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
                     // Error Handling If User Verification Fails
 
                             this.isLoading = false;
-                            this.errorMessage = httpErrMsg(verifyReq);
-                            if (this.errorMessage.includes('enter a first name')) {
-                                this.credentials.firstname.hasError = true;
-                                this.credentials.firstname.errMsg = 'enter first name';
-                            } else this.credentials.firstname.hasError = false;
-                            if (this.errorMessage.includes('Invalid first name')) {
-                                this.credentials.firstname.hasError = true;
-                                this.credentials.firstname.errMsg = 'invalid first name';
-                            } else this.credentials.firstname.hasError = false;
-                            if (this.errorMessage.includes('enter a username')) {
-                                this.credentials.username.hasError = true;
-                                this.credentials.username.errMsg = 'enter username';
-                            } else this.credentials.username.hasError = false;
-                            if (this.errorMessage.includes('Username does not exist')) {
-                                this.credentials.username.hasError = true;
-                                this.credentials.username.errMsg = 'invalid username';
-                            } else this.credentials.username.hasError = false;
-                            if (this.errorMessage.includes('4 digit numeric pin')) {
-                                this.credentials.pin.hasError = true;
-                                this.credentials.pin.errMsg = '4 numbers required';
-                            } else this.credentials.pin.hasError = false;  
-                            if (this.errorMessage.includes('Invalid pin')) {
-                                this.credentials.pin.hasError = true;
-                                this.credentials.pin.errMsg = 'invalid pin';
-                            } else this.credentials.pin.hasError = false;  
+                            if (httpStatusCode(verifyReq) >= 404) {
+                                this.$store.commit('setModalErrorMessage', `verifying user`)
+                                this.$store.commit('toggleModal', 'error')
+                            } else {
+                                this.errorMessage = httpErrMsg(verifyReq);
+                                if (this.errorMessage.includes('enter a first name')) {
+                                    this.credentials.firstname.hasError = true;
+                                    this.credentials.firstname.errMsg = 'enter first name';
+                                } else this.credentials.firstname.hasError = false;
+                                if (this.errorMessage.includes('Invalid first name')) {
+                                    this.credentials.firstname.hasError = true;
+                                    this.credentials.firstname.errMsg = 'invalid first name';
+                                } else this.credentials.firstname.hasError = false;
+                                if (this.errorMessage.includes('enter a username')) {
+                                    this.credentials.username.hasError = true;
+                                    this.credentials.username.errMsg = 'enter username';
+                                } else this.credentials.username.hasError = false;
+                                if (this.errorMessage.includes('Username does not exist')) {
+                                    this.credentials.username.hasError = true;
+                                    this.credentials.username.errMsg = 'invalid username';
+                                } else this.credentials.username.hasError = false;
+                                if (this.errorMessage.includes('4 digit numeric pin')) {
+                                    this.credentials.pin.hasError = true;
+                                    this.credentials.pin.errMsg = '4 numbers required';
+                                } else this.credentials.pin.hasError = false;  
+                                if (this.errorMessage.includes('Invalid pin')) {
+                                    this.credentials.pin.hasError = true;
+                                    this.credentials.pin.errMsg = 'invalid pin';
+                                } else this.credentials.pin.hasError = false;  
+                            }
                         }
                     } 
 
@@ -199,7 +209,7 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
                     // HTTP Post For Reset User Password
 
                         this.isLoading = true;
-                        const resetReq = await httpPost('/user/reset', 
+                        resetReq = await httpPost('/user/reset', 
                             { firstname, username, password, password2, pin, security });
                         if (resetReq.status === 200) {
                             if (this.$store.state.loginRedirect) {
@@ -211,28 +221,33 @@ import { httpPost, httpErrMsg } from '../services/httpClient';
                     // Reset User Password Error Handling
 
                             this.isLoading = false;
-                            this.errorMessage = httpErrMsg(resetReq);
-                            if (this.errorMessage.includes('add a password')) {
-                                this.credentials.password.hasError = true;
-                                this.credentials.password.errMsg = 'add password 8 char min';
-                            } else this.credentials.password.hasError = false;  
-                            if (this.errorMessage.includes('reenter password')) {
-                                this.credentials.password2.hasError = true;
-                                this.credentials.password2.errMsg = 'reenter password';
-                            } else this.credentials.password2.hasError = false;  
-                            if (this.errorMessage.includes('entries do not match')) {
-                                this.credentials.password.hasError = true;
-                                this.credentials.password2.hasError = true;
-                                this.credentials.password.errMsg = 'passwords must match';
-                                this.credentials.password2.errMsg = 'passwords must match';
+                            if (httpStatusCode(resetReq) >= 404) {
+                                this.$store.commit('setModalErrorMessage', `resetting user credentials`)
+                                this.$store.commit('toggleModal', 'error')
                             } else {
-                                this.credentials.password.hasError = false; 
-                                this.credentials.password2.hasError = false;  
+                                this.errorMessage = httpErrMsg(resetReq);
+                                if (this.errorMessage.includes('add a password')) {
+                                    this.credentials.password.hasError = true;
+                                    this.credentials.password.errMsg = 'add password 8 char min';
+                                } else this.credentials.password.hasError = false;  
+                                if (this.errorMessage.includes('reenter password')) {
+                                    this.credentials.password2.hasError = true;
+                                    this.credentials.password2.errMsg = 'reenter password';
+                                } else this.credentials.password2.hasError = false;  
+                                if (this.errorMessage.includes('entries do not match')) {
+                                    this.credentials.password.hasError = true;
+                                    this.credentials.password2.hasError = true;
+                                    this.credentials.password.errMsg = 'passwords must match';
+                                    this.credentials.password2.errMsg = 'passwords must match';
+                                } else {
+                                    this.credentials.password.hasError = false; 
+                                    this.credentials.password2.hasError = false;  
+                                }
+                                if (this.errorMessage.includes('Invalid security answer')) {
+                                    this.credentials.security.answer.hasError = true;
+                                    this.credentials.security.answer.errMsg = 'invalid answer';
+                                } else this.credentials.security.answer.hasError = false;  
                             }
-                            if (this.errorMessage.includes('Invalid security answer')) {
-                                this.credentials.security.answer.hasError = true;
-                                this.credentials.security.answer.errMsg = 'invalid answer';
-                            } else this.credentials.security.answer.hasError = false;  
                         }
                     }
                 }
