@@ -4,16 +4,24 @@ import axios from 'axios';
 
 const baseUrl: string = '/api';
 
-// Error Message Handler
+// HTTP Error Handling
 
-export function httpErrMsg(res: any): String {
-    return res.message.response.data.message
+export function httpErrMsg(res: any): any {
+    if (res && res.message && res.message.response 
+        && res.message.response.data && res.message.response.data.message) {
+        return res.message.response.data.message
+    }
+    if (res.message) {
+        return res.message
+    } else return null
 }
 
 // Error Status Code Handler
 
-export function httpStatusCode(res: any): Number {
-    return res.message.response.status
+export function httpStatusCode(res: any): any {
+    if (res && res.message && res.message.response && res.message.response.status) {
+        return res.message.response.status
+    } else return null
 }
 
 // GET Request

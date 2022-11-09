@@ -29,10 +29,11 @@ const addTask = asyncHandler(async (req, res) => {
         throw new Error('Please add at least one subtask')
     }
 
-    if (!subtasks[0].title || typeof !subtasks[0].checked !== 'boolean') {
+    if (!subtasks[0].name|| typeof !subtasks[0].checked !== 'boolean') {
         res.status(400);
-        throw new Error('Please make sure subtasks are formatted with { title: ###, checked: false }')
+        throw new Error('Please make sure subtasks are formatted with { name: ###, checked: false }')
     }
+
     if (!status) {
         res.status(400);
         throw new Error('Please add a task status')
@@ -40,6 +41,15 @@ const addTask = asyncHandler(async (req, res) => {
     if (!boardId) {
         res.status(400);
         throw new Error('Corresponding board ID must be provided')
+    }
+
+    // Check If Two Subtasks Of The Same Name Are Being Added
+
+    const subtaskInputNames = subtasks.map(subtask => subtask.name).sort();
+
+    if (subtaskInputNames.some((name, index) => name === subtaskInputNames[index + 1])) {
+        res.status(400);
+        throw new Error('Cannot have two subtasks with the same name')
     }
 
     // Check If Board For Task Exists
@@ -119,7 +129,7 @@ const addTask = asyncHandler(async (req, res) => {
     if (!createTask) {
         res.status(500);
         throw new Error('Error saving task data to MongoDB')
-    } else res.status(201).json({ _id: createTask._id })
+    } else res.status(201).json({ _id: createTask._id, subtasks: createTask.subtasks })
 
 });
 

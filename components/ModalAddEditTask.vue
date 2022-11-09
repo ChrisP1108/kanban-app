@@ -98,7 +98,7 @@
                 this.task.title.value = this.selectedTask.title;
                 this.task.description.value = this.selectedTask.description;
                 this.task.subtasks.values = this.selectedTask.subtasks.map(subtask => 
-                ({ _id: subtask._id, canModify: true, value: subtask.name, checked: subtask.checked }));
+                ({ ...subtask, canModify: true, value: subtask.name  }));
                 this.task.status.value = this.selectedTask.status;
             }
         },
@@ -138,7 +138,7 @@
                 this.task.description.value = caseFormatFirst(this.task.description.value);
                 this.task.subtasks.values = this.task.subtasks.values
                     .filter(task => task !== '')
-                    .map(subtask => ({...subtask, title: caseFormatFirst(subtask.value)}
+                    .map(subtask => ({...subtask, name: caseFormatFirst(subtask.value)}
                 ));
 
                 // Destructuring Variable Names
@@ -146,14 +146,12 @@
                 const title = this.task.title.value;
                 const description = this.task.description.value;
                 const subtasks = this.task.subtasks.values.map(subtask => 
-                    ({...subtask, checked: subtask.checked !== undefined ? subtask.checked : false} ));
+                    ({ name: subtask.value , checked: subtask.checked !== undefined ? subtask.checked : false } ));
                 const status = this.task.status.value;
                 const boardId = this.selectedBoard._id
 
                 // HTTP Request Variables
 
-                let addReq;
-                let updateReq;
                 let reqError = false;
                 let reqMade = null;
 
@@ -162,14 +160,17 @@
                 // HTTP Post Request For Adding Task And Store Commit If No Errors
 
                 if (this.mode === 'addTask') {
-                    addReq = await httpPost('/tasks', { title, description, subtasks, status, boardId });
+                    const addedTask = { title, description, subtasks, status }
+                    const addReq = await httpPost('/tasks', {...addedTask, boardId });
                     if (addReq.status === 201) {
-                        const _id = addReq.data._id;
+                        reqError = false;
+                        addedTask.subtasks = addReq.data.subtasks;
+                        addedTask._id = addReq.data._id;
                         this.task.title.hasError = false;
                         this.task.description.hasError = false;
                         this.task.subtasks.hasError = false;
                         this.task.status.hasError= false;
-                        this.$store.commit('addTask', { _id, title, description, subtasks, status });
+                        this.$store.commit('addTask', addedTask);
                         this.$store.commit('toggleModal');
                     } else {
                         this.isLoading = false;
@@ -187,9 +188,10 @@
 
                 if (this.mode === 'editTask') {
                     const updatedTask = { _id: this.selectedTask._id, title, description, subtasks, status }
-                    updateReq = await httpPut(`/tasks/${this.selectedTask._id}`, updatedTask);
+                    const updateReq = await httpPut(`/tasks/${this.selectedTask._id}`, updatedTask);
                     if (updateReq.status === 200) {
-                        updatedTask.subtasks = updateReq.data.subtasks
+                        reqError = false;
+                        updatedTask.subtasks = updateReq.data.subtasks;
                         this.$store.commit('updateTask', updatedTask);
                         this.$store.commit('toggleModal');
                     } else {
@@ -208,6 +210,7 @@
 
                 if (reqError) {
                     this.errorMessage = httpErrMsg(reqMade);
+                    console.error(this.errorMessage)
                     if (this.errorMessage.includes('Please add a task title')) {
                         this.task.title.hasError = true;
                         this.task.title.errMsg = 'add title';
@@ -224,10 +227,14 @@
                         this.task.subtasks.hasError = true;
                         this.task.subtasks.errMsg = 'one subtask minimum';
                     } else this.task.subtasks.hasError = false;
-                    if (this.errorMessage.includes('Please add a task status')) {
+                    if (this.errorMessage.includes('Cannot have two subtasks with the same name')) {
                         this.task.subtasks.hasError = true;
-                        this.task.subtasks.errMsg = 'select task status';
+                        this.task.subtasks.errMsg = 'no duplicate names';
                     } else this.task.subtasks.hasError = false;
+                    if (this.errorMessage.includes('Please add a task status')) {
+                        this.task.status.hasError = true;
+                        this.task.status.errMsg = 'select task status';
+                    } else this.task.status.hasError = false;
                 }
             }
         }

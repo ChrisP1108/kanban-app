@@ -24,9 +24,11 @@
         <div v-if="list" class="list-items-container">
             <div v-for="(field, index) in value" :key="index" class="list-item-container">
                 <div :class="[field.canModify === false ? 'list-item-no-edit' : '', 'field-container d-flex']">
-                    <p v-if="fieldEmpty(field.value) && index === 0" class="list-item-error-indent">{{ emptyMsg }}</p>
+                    <p v-if="fieldEmpty(field.value) && index === 0 || hasError" class="list-item-error-indent">
+                        {{ hasError ? errorMessage : emptyMsg }}
+                    </p>
                     <input v-model="value[index].value" name="field" 
-                        :class="[fieldEmpty(field.value) && index === 0 ? 'field-error-border' : '',
+                        :class="[fieldEmpty(field.value) && index === 0 || hasError ? 'field-error-border' : '',
                         field.checked ? 'checked-text' : '']"
                         :placeholder="placeholder" type="text" @input="updateValue" 
                     />

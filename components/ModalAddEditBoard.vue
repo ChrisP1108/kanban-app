@@ -146,8 +146,6 @@
 
                 // HTTP Request Variables
 
-                let addReq;
-                let updateReq;
                 let reqError = false;
                 let reqMade = null;
 
@@ -156,8 +154,9 @@
                 // Add Board HTTP Post Request And Store Commit If No Errors
 
                 if (this.mode === 'addBoard') {
-                    addReq = await httpPost('/boards', { name, columns});
+                    const addReq = await httpPost('/boards', { name, columns});
                     if (addReq.status === 201) {
+                        reqError = false;
                         const _id = addReq.data._id;
                         this.board.name.hasError = false;
                         this.board.columns.hasError = false;
@@ -178,8 +177,9 @@
 
                 } else if (this.mode === 'editBoard') {
                     const _id = this.selectedId;
-                    updateReq = await httpPut(`/boards/${_id}`, { name, columns })
+                    const updateReq = await httpPut(`/boards/${_id}`, { name, columns })
                     if (updateReq.status === 200) {
+                        reqError = false;
                         this.board.name.hasError = false;
                         this.board.columns.hasError = false;
                         this.$store.commit('updateBoard', { name, columns })
