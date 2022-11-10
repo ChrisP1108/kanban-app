@@ -87,7 +87,7 @@ const addTask = asyncHandler(async (req, res) => {
         });
     });
 
-    if (subtasks.some(subtask => subtaskNamesCheck.includes(subtask.name))) {
+    if (subtasks.some(subtask => subtasks.filter(sub => sub.name === subtask.name). length > 1)) {
         res.status(400);
         throw new Error('Subtask with duplicate name exists in same task')
     }

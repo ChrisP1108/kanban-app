@@ -136,9 +136,22 @@
                     return null
                 }
 
-                // Check That There Are No Duplicate Column Names
-                
-                if (columns.length > 1 && columns.some(column => columns.filter(col => col === column).length > 1)) {
+                // Check That There Are No Duplicate Board Names For Same User
+
+                const boards = this.$store.state.userData.boards;
+
+                const idIfEditing = this.mode === 'editBoard' ? this.selectedBoard._id : null
+                console.log(this.selectedBoard._id)
+                if (boards.some(board => board.name === name && board._id !== idIfEditing)) {
+                    console.log('caught')
+                    this.board.name.hasError = true;
+                    this.board.name.errMsg = 'name already exists';
+                    return null
+                }
+
+                // Check That There Are No Duplicate Column Names 
+
+                if (columns.some(column => columns.filter(col => col === column).length > 1)) {
                     this.board.columns.hasError = true;
                     this.board.columns.errMsg = 'no duplicate names';
                     return null

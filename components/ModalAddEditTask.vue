@@ -132,6 +132,23 @@
                     return
                 } else this.fieldsEmpty = false;
 
+                // Check That There Are No Duplicate Task Names For Same Board
+
+                if (this.selectedBoard.tasks.some(task => task.title === this.task.title.value && task._id !== this.selectedTask._id)) {
+                    this.task.title.hasError = true;
+                    this.task.title.errMsg = 'duplicate name exists';
+                    return null
+                }
+
+                // Check That There Are No Duplicate Subtask Names
+
+                if (this.task.subtasks.values.some(subtask => 
+                    this.task.subtasks.values.filter(sub => sub.value === subtask.value).length > 1)) {
+                        this.task.subtasks.hasError = true;
+                        this.task.subtasks.errMsg = 'no duplicate names';
+                        return null
+                }
+
                 // Capitalize Fields
 
                 this.task.title.value = caseFormatFirst(this.task.title.value);
@@ -145,18 +162,10 @@
 
                 const title = this.task.title.value;
                 const description = this.task.description.value;
-                const subtasks = this.task.subtasks.values.map(subtask => 
+                const subtasks = [...this.task.subtasks.values].map(subtask => 
                     ({ name: subtask.value , checked: subtask.checked !== undefined ? subtask.checked : false } ));
                 const status = this.task.status.value;
-                const boardId = this.selectedBoard._id
-
-                // Check That There Are No Duplicate Subtask Names
-
-                if (subtasks.length > 1 && subtasks.some(subtask => subtasks.filter(sub => sub.name === subtask.name).length > 1)) {
-                    this.task.subtasks.hasError = true;
-                    this.task.subtasks.errMsg = 'no duplicate names';
-                    return null
-                }
+                const boardId = this.selectedBoard._id;
 
                 // HTTP Request Variables
 
@@ -225,7 +234,7 @@
                     } else this.task.title.hasError = false;
                     if (this.errorMessage.includes('duplicate title in the same board already exists')) {
                         this.task.title.hasError = true;
-                        this.task.title.errMsg = 'duplicate task exists';
+                        this.task.title.errMsg = 'duplicate name exists';
                     } else this.task.title.hasError = false;
                     if (this.errorMessage.includes('Please add a task description')) {
                         this.task.description.hasError = true;
