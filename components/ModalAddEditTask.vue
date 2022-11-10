@@ -134,7 +134,9 @@
 
                 // Check That There Are No Duplicate Task Names For Same Board
 
-                if (this.selectedBoard.tasks.some(task => task.title === this.task.title.value && task._id !== this.selectedTask._id)) {
+                const idIfEditing = this.mode === 'editTask' ? this.selectedTask._id : null;
+
+                if (this.selectedBoard.tasks.some(task => task.title === this.task.title.value && task._id !== idIfEditing)) {
                     this.task.title.hasError = true;
                     this.task.title.errMsg = 'duplicate name exists';
                     return null
@@ -227,7 +229,6 @@
 
                 if (reqError) {
                     this.errorMessage = httpErrMsg(reqMade);
-                    console.error(this.errorMessage)
                     if (this.errorMessage.includes('Please add a task title')) {
                         this.task.title.hasError = true;
                         this.task.title.errMsg = 'add title';

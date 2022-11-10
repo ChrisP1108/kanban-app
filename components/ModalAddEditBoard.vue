@@ -115,20 +115,12 @@
             },
             async boardSubmit() {
 
-                // Capitalize Name And Title And Filter Empty Columns
-
-                this.board.name.value = this.board.name.value ? caseFormatAll(this.board.name.value) : '';
-                this.board.columns.values = this.board.columns.values ? this.board.columns.values
-                    .filter(column => column.value !== '')
-                    .map(column => ({ value: caseFormatAll(column.value), canModify: column.canModify }))
-                    : [{ canModify: true, value: ''}]
-                ;
-
                 // Check That Name Fields Is Not Empty.  Column Field Optional
 
-                const name = this.board.name.value;
+                const name = caseFormatAll(this.board.name.value);
                 const columns = this.board.columns.values[0] !== undefined
-                    ? this.board.columns.values.map(column => column.value)
+                    ? this.board.columns.values.map(column => caseFormatAll(column.value))
+                        .filter(column => column.value !== '')
                     : [];
 
                 if (!name) {
@@ -141,9 +133,7 @@
                 const boards = this.$store.state.userData.boards;
 
                 const idIfEditing = this.mode === 'editBoard' ? this.selectedBoard._id : null
-                console.log(this.selectedBoard._id)
                 if (boards.some(board => board.name === name && board._id !== idIfEditing)) {
-                    console.log('caught')
                     this.board.name.hasError = true;
                     this.board.name.errMsg = 'name already exists';
                     return null
@@ -156,6 +146,14 @@
                     this.board.columns.errMsg = 'no duplicate names';
                     return null
                 }
+
+                // Capitalize Name And Title And Filter Empty Columns
+
+                this.board.name.value = this.board.name.value ? caseFormatAll(this.board.name.value) : '';
+                this.board.columns.values = this.board.columns.values ? this.board.columns.values
+                    .map(column => ({ value: caseFormatAll(column.value), canModify: column.canModify }))
+                    : [{ canModify: true, value: ''}]
+                ;
 
                 // HTTP Request Variables
 
