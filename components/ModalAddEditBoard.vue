@@ -137,7 +137,7 @@
                 }
 
                 // Check That There Are No Duplicate Column Names
-
+                
                 if (columns.length > 1 && columns.some(column => columns.filter(col => col === column).length > 1)) {
                     this.board.columns.hasError = true;
                     this.board.columns.errMsg = 'no duplicate names';

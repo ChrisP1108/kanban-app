@@ -24,11 +24,15 @@
         <div v-if="list" class="list-items-container">
             <div v-for="(field, index) in value" :key="index" class="list-item-container">
                 <div :class="[field.canModify === false ? 'list-item-no-edit' : '', 'field-container d-flex']">
-                    <p v-if="fieldEmpty(field.value) && index === 0 || hasError" class="list-item-error-indent">
-                        {{ hasError ? errorMessage : emptyMsg }}
+                    <p v-if="fieldEmpty(field.value) && index === 0 || hasError || duplicateNames(field.value, value)" 
+                        class="list-item-error-indent">
+                            {{ duplicateNames(field.value, value) ? duplicatesMsg
+                                : hasError && !duplicateNames(field.value, value) ? errorMessage 
+                                : fieldEmpty(field.value) ? emptyMsg : ''}}
                     </p>
                     <input v-model="value[index].value" name="field" 
-                        :class="[fieldEmpty(field.value) && index === 0 || hasError ? 'field-error-border' : '',
+                        :class="[fieldEmpty(field.value) && index === 0 || hasError 
+                        || duplicateNames(field.value, value) ? 'field-error-border' : '',
                         field.checked ? 'checked-text' : '']"
                         :placeholder="placeholder" type="text" @input="updateValue" 
                     />
@@ -106,7 +110,8 @@
             return {
                 value: '',
                 dropdownToggled: false,
-                emptyMsg: "Can't be empty"
+                emptyMsg: "can't be empty",
+                duplicatesMsg: "no duplicate names"
             }
         },
         computed: {
@@ -149,6 +154,9 @@
                 } else {
                     return false
                 }
+            },
+            duplicateNames(input, array) {
+                return array.filter(val => val.value === input).length > 1
             },
             toggleDropdown() {
                 this.dropdownToggled = !this.dropdownToggled;

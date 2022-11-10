@@ -150,6 +150,14 @@
                 const status = this.task.status.value;
                 const boardId = this.selectedBoard._id
 
+                // Check That There Are No Duplicate Subtask Names
+
+                if (subtasks.length > 1 && subtasks.some(subtask => subtasks.filter(sub => sub.name === subtask.name).length > 1)) {
+                    this.task.subtasks.hasError = true;
+                    this.task.subtasks.errMsg = 'no duplicate names';
+                    return null
+                }
+
                 // HTTP Request Variables
 
                 let reqError = false;
