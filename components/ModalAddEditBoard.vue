@@ -4,11 +4,11 @@
         <FieldInput class="board-name" label="Board Name" type="text" :input="board.name" 
             placeholder="e.g. Web Design" :empty-check="fieldsEmpty" :error-message="board.name.errMsg" 
             :has-error="board.name.hasError" :duplicates="{ haveDuplicates: false, array: boardNames, multiInputs: false }" 
-            @value-change="(value) => board.name.value = value" @error-found="(value) => errFound = value"
+            @value-change="(value) => board.name.value = value" @error-found="(value) => board.name.errFound = value"
         />
         <FieldInput class="board-columns" label="Board Columns" type="list" :input="{ value: board.columns.values }"
             placeholder="e.g. Todo" :duplicates="{ haveDuplicates: false, array: board.columns.values, multiInputs: true }"
-            @value-change="(value) => board.columns.values = value" @error-found="(value) => errFound = value"
+            @value-change="(value) => board.columns.values = value" @error-found="(value) => board.columns.errFound = value"
         />
         <button v-if="board.columns.values.length <= 8" 
             :class="[board.columns.values[board.columns.values.length - 1] === '' ?'add-column-disabled' : '', 'button-secondary']" 
@@ -46,7 +46,8 @@
                     name: {
                         value: '',
                         hasError: false,
-                        errMsg: ''
+                        errMsg: '',
+                        errFound: false
                     },
                     columns: {
                         values: [
@@ -56,12 +57,12 @@
                             }
                         ],
                         hasError: false,
-                        errMsg: ''
+                        errMsg: '',
+                        errFound: false
                     }
                 },
                 fieldsEmpty: false,
                 isLoading: false,
-                errFound: false
             }
         },
         computed: {
@@ -123,7 +124,7 @@
 
                 // Exit If Field Input Component Found An Error
 
-                if (this.errFound) {
+                if (this.board.name.errFound || this.board.columns.errFound) {
                     return null
                 }
 

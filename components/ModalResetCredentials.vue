@@ -5,25 +5,25 @@
             <div class="verify-container">
                 <FieldInput  class="firstname" label="First Name" type="text" :input="{ value: credentials.firstname.value }" placeholder="" 
                     :empty-check="fieldsEmpty" :error-message="credentials.firstname.errMsg" :has-error="credentials.firstname.hasError"
-                    @value-change="(value) => credentials.firstname.value = value" @error-found="(value) => errFound = value" />
+                    @value-change="(value) => credentials.firstname.value = value" @error-found="(value) => credentials.firstname.errFound = value" />
                 <FieldInput  class="username" label="Username" type="text" :input="{ value: credentials.username.value }" placeholder="" 
                     :empty-check="fieldsEmpty" :error-message="credentials.username.errMsg" :has-error="credentials.username.hasError"
-                    @value-change="(value) => credentials.username.value = value" @error-found="(value) => errFound = value" />
+                    @value-change="(value) => credentials.username.value = value" @error-found="(value) => credentials.username.errFound = value" />
                 <FieldInput class="pin" label="4 Digit Security PIN" type="password" :input="{ value: credentials.pin.value }" 
                     placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.pin.errMsg" :has-error="credentials.pin.hasError"
-                    @value-change="(value) => credentials.pin.value = value" @error-found="(value) => errFound = value" />
+                    @value-change="(value) => credentials.pin.value = value" @error-found="(value) => credentials.pin.errFound = value" />
             </div>
             <div class="reset-container">
-                <FieldInput class="security-question" :label="'Provide Security Answer To Question: ' + credentials.security.question.value" type="text" 
+                <FieldInput class="security-answer" :label="'Provide Security Answer To Question: ' + credentials.security.question.value" type="password" 
                     :input="{ value: credentials.security.answer.value }" placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.security.answer.errMsg" 
                     :has-error="credentials.security.answer.hasError" 
-                    @value-change="(value) => credentials.security.answer.value = value" @error-found="(value) => errFound = value" />
+                    @value-change="(value) => credentials.security.answer.value = value" @error-found="(value) => credentials.security.question.errFound = value" />
                 <FieldInput class="password" label="Enter New Password" type="password" :input="{ value: credentials.password.value }" 
                     placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.password.errMsg" :has-error="credentials.password.hasError"
-                    @value-change="(value) => credentials.password.value = value" @error-found="(value) => errFound = value" />
+                    @value-change="(value) => credentials.password.value = value" @error-found="(value) => credentials.password.errFound = value" />
                 <FieldInput class="password" label="Re-Enter New Password" type="password" :input="{ value: credentials.password2.value }" 
                     placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.password2.errMsg" :has-error="credentials.password2.hasError"
-                    @value-change="(value) => credentials.password2.value = value" @error-found="(value) => errFound = value" />
+                    @value-change="(value) => credentials.password2.value = value" @error-found="(value) => credentials.password2.errFound = value" />
             </div>
         </div>
         <button :class="[isLoading ? 'button-primary-active' : '', 'button-primary-s']" @click="verifyOrReset" >
@@ -50,45 +50,51 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
                     firstname: {
                         value: '',
                         hasError: false,
-                        errMsg: ''
+                        errMsg: '',
+                        errFound: false
                     },
                     username: {
                         value: '',
                         hasError: false,
-                        errMsg: ''
+                        errMsg: '',
+                        errFound: false
                     },
                     password: {
                         value: '',
                         hasError: false,
-                        errMsg: ''
+                        errMsg: '',
+                        errFound: false
                     },
                     password2: {
                         value: '',
                         hasError: false,
-                        errMsg: ''
+                        errMsg: '',
+                        errFound: false
                     },
                     pin: {
                         value: '',
                         hasError: false,
-                        errMsg: ''
+                        errMsg: '',
+                        errFound: false
                     },
                     security: {
                         question: {
                             value: '',
                             hasError: false,
-                            errMsg: ''
+                            errMsg: '',
+                            errFound: false
                         },
                         answer: {
                             value: '',
                             hasError: false,
-                            errMsg: ''
+                            errMsg: '',
+                            errFound: false
                         }
                     }
                 },
                 fieldsEmpty: false,
                 isLoading: false,
                 errorMessage: '',
-                errFound: false
             }
         },
         methods: {
@@ -103,12 +109,6 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
                 }
             },
             async verifyOrReset() {
-
-                // Exit If Field Input Component Found An Error
-
-                if (this.errFound) {
-                    return null
-                }
 
                 // Field Declarations
 

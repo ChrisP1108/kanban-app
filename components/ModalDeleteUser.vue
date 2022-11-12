@@ -1,15 +1,15 @@
 <template>
-    <div class="modal-styling scrollbar-styling">
+    <div class="modal-styling scrollbar-styling" @keyup="checkEnterKeypress">
         <h2>Delete your user account?</h2>
         <p>Are you sure you want to delete your user account?  This action will remove all of your boards and tasks
              along with your login credentials and cannot be undone.
         </p>
         <FieldInput class="username" label="Username" type="text" :input="{ value: credentials.username.value }" placeholder="" 
             :empty-check="fieldsEmpty" :error-message="credentials.username.errMsg" :has-error="credentials.username.hasError"
-            @value-change="(value) => credentials.username.value = value" @error-found="(value) => errFound = value" />
+            @value-change="(value) => credentials.username.value = value" @error-found="(value) => credentials.username.errFound = value" />
         <FieldInput class="password" label="Password" type="password" :input="{ value: credentials.password.value }" 
             placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.password.errMsg" :has-error="credentials.password.hasError"
-            @value-change="(value) => credentials.password.value = value" @error-found="(value) => errFound = value" />
+            @value-change="(value) => credentials.password.value = value" @error-found="(value) => credentials.password.errFound = value" />
         <button class="button-destructive" @click="confirmDelete">
             <div v-if="isLoading" class="button-content">
                 <LoadingIcon />
@@ -32,17 +32,18 @@
                     username: {
                         value: '',
                         hasError: false,
-                        errMsg: ''
+                        errMsg: '',
+                        errFound: false
                     },
                     password: {
                         value: '',
                         hasError: false,
-                        errMsg: ''
+                        errMsg: '',
+                        errFound: false
                     },
                 },
                 fieldsEmpty: false,
                 isLoading: false,
-                errFound: false
             }
         },
         computed: {
@@ -57,18 +58,17 @@
             }
         },
         methods: {
+            checkEnterKeypress(e) {
+                if (e.key === 'Enter') {
+                    this.confirmDelete();
+                }
+            },
             fieldEmpty(field) {
                 if (!field && this.fieldsEmpty) {
                     return true
                 } else return false
             },
             async confirmDelete() {
-
-                // Exit If Field Input Component Found An Error
-
-                if (this.errFound) {
-                    return null
-                }
 
                 // Check That No Fields Are Empty
 

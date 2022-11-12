@@ -4,17 +4,17 @@
         <FieldInput class="task-title" label="Title" type="text" :input="task.title" 
             placeholder="e.g. Take coffee break" :empty-check="fieldsEmpty" :error-message="task.title.errMsg" 
             :has-error="task.title.hasError" :duplicates="{ haveDuplicates: false, array: selectedBoardTaskNames, multiInputs: false }"
-            @value-change="(value) => task.title.value = value" @error-found="(value) => errFound = value"
+            @value-change="(value) => task.title.value = value" @error-found="(value) => task.title.errFound = value"
         />
         <FieldInput class="task-description" label="Description" type="textarea" :input="task.description" 
             placeholder="e.g. It’s always good to take a break. This 15 minute break will recharge the batteries a little." 
             :empty-check="fieldsEmpty" :error-message="task.description.errMsg" :has-error="task.description.hasError"
-            @value-change="(value) => task.description.value = value" @error-found="(value) => errFound = value"
+            @value-change="(value) => task.description.value = value" @error-found="(value) => task.description.errFound = value"
         />
         <FieldInput class="task-subtasks" label="Subtasks" type="list" :input="{ value: task.subtasks.values }" 
             placeholder="e.g. Make coffee" :empty-check="fieldsEmpty" :error-message="task.subtasks.errMsg" 
             :has-error="task.subtasks.hasError" :duplicates="{ haveDuplicates: false, array: task.subtasks.values, multiInputs: true }"
-            @value-change="(value) => task.subtasks.values = value" @error-found="(value) => errFound = value"  
+            @value-change="(value) => task.subtasks.values = value" @error-found="(value) => task.subtasks.errFound = value"  
         />
         <button v-if="task.subtasks.values.length <= 8" class="button-secondary" @click="addSubTask">
             + <span class="ml-1"> 
@@ -24,7 +24,7 @@
         <FieldInput class="task-status" label="Status" type="dropdown" :input="task.status" 
             :dropdown-options="dropdownOptions" :empty-check="fieldsEmpty" :error-message="task.status.errMsg" 
             :has-error="task.status.hasError" @value-change="(value) => task.status.value = value" 
-            @error-found="(value) => errFound = value"
+            @error-found="(value) => task.status.errFound = value"
         />
         <button class="button-primary-s" @click="taskSubmit">
             <div v-if="isLoading" class="button-content">
@@ -54,12 +54,14 @@
                     title: {
                         value: '',
                         hasError: false,
-                        errMsg: ''
+                        errMsg: '',
+                        errFound: false
                     },
                     description: {
                         value: '',
                         hasError: false,
-                        errMsg: ''
+                        errMsg: '',
+                        errFound: false
                     },
                     subtasks: {
                         values: [
@@ -70,18 +72,19 @@
                             }
                         ],
                         hasError: false,
-                        errMsg: ''
+                        errMsg: '',
+                        errFound: false
                     },
                     status: {
                         value: '',
                         hasError: false,
-                        errMsg: ''
+                        errMsg: '',
+                        errFound: false
                     }
                 },
                 dropdownOptions: [],
                 fieldsEmpty: false,
                 isLoading: false,
-                errFound: false
             }
         },
         computed: {
@@ -133,8 +136,9 @@
 
                 // Exit If Field Input Component Found An Error
 
-                if (this.errFound) {
-                    return null
+                if (this.task.title.errFound || this.task.description.errFound || this.task.subtasks.errFound
+                    || this.task.status.errFound) {
+                        return null
                 }
 
                 // Check For Empty Fields
