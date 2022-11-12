@@ -131,18 +131,6 @@ textarea {
     max-height: 7rem;
 }
 
-.field-error-border {
-    border: field-border-error();
-
-    &:hover {
-        border: field-border-error();
-    }
-
-    &:focus {
-        border: field-border-error();
-    }
-}
-
 .hide-scroll {
     overflow: hidden!important;
     color: $color-j;
@@ -154,11 +142,15 @@ button {
 
 .modal-styling {
     padding: 1.5rem;
+    overflow-y: auto;
+    overflow-x: hidden;
     z-index: 101;
+    max-height: 90vh;
     border-radius: 0.5rem;
     animation-name: fade-in-upward;
     animation-duration: $speed-fast;
     width: 100%;
+    height: auto;
     max-width: 30rem;
 
     h2 {
@@ -234,4 +226,35 @@ button .button-content {
     max-height: 50vh;
     max-width: 50vh;
     z-index: 100;
+}
+
+.scrollbar-styling {
+    &::-webkit-scrollbar {
+        width: 1rem;
+        box-sizing: border-box;
+        background: transparent;
+        border-radius: 0;
+        padding: 5px;
+        border-right: 4px $color-a solid;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: transparent;
+        border-right: 4px white solid;
+        height: 0.25rem;
+        max-height: 60px;
+    }
+}
+
+.scrollbar-styling-horizontal {
+    &::-webkit-scrollbar {
+        height: 0.25rem;
+        box-sizing: border-box;
+        background: $color-a;
+        border-radius: 0;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: white;
+    }
 }

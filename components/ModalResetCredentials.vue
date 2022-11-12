@@ -1,28 +1,29 @@
 <template>
-    <div class="modal-styling" @keyup="checkEnterKeypress">
+    <div class="modal-styling scrollbar-styling" @keyup="checkEnterKeypress">
         <h2>{{ userVerified ? 'Reset User Credentials' : 'Verify Credentials' }}</h2>
         <div :class="[userVerified ? 'user-verified' : '', 'fields-container']">
             <div class="verify-container">
-                <FieldInput  class="firstname" label="First Name" type="text" :input="credentials.firstname.value" placeholder="" 
+                <FieldInput  class="firstname" label="First Name" type="text" :input="{ value: credentials.firstname.value }" placeholder="" 
                     :empty-check="fieldsEmpty" :error-message="credentials.firstname.errMsg" :has-error="credentials.firstname.hasError"
-                    @value-change="(value) => credentials.firstname.value = value"  />
-                <FieldInput  class="username" label="Username" type="text" :input="credentials.username.value" placeholder="" 
+                    @value-change="(value) => credentials.firstname.value = value" @error-found="(value) => errFound = value" />
+                <FieldInput  class="username" label="Username" type="text" :input="{ value: credentials.username.value }" placeholder="" 
                     :empty-check="fieldsEmpty" :error-message="credentials.username.errMsg" :has-error="credentials.username.hasError"
-                    @value-change="(value) => credentials.username.value = value"  />
-                <FieldInput class="pin" label="4 Digit Security PIN" type="password" :input="credentials.pin.value" 
+                    @value-change="(value) => credentials.username.value = value" @error-found="(value) => errFound = value" />
+                <FieldInput class="pin" label="4 Digit Security PIN" type="password" :input="{ value: credentials.pin.value }" 
                     placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.pin.errMsg" :has-error="credentials.pin.hasError"
-                    @value-change="(value) => credentials.pin.value = value" />
+                    @value-change="(value) => credentials.pin.value = value" @error-found="(value) => errFound = value" />
             </div>
             <div class="reset-container">
                 <FieldInput class="security-question" :label="'Provide Security Answer To Question: ' + credentials.security.question.value" type="text" 
-                    :input="credentials.security.answer.value" placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.security.answer.errMsg" 
-                    :has-error="credentials.security.answer.hasError" @value-change="(value) => credentials.security.answer.value = value" />
-                <FieldInput class="password" label="Enter New Password" type="password" :input="credentials.password.value" 
+                    :input="{ value: credentials.security.answer.value }" placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.security.answer.errMsg" 
+                    :has-error="credentials.security.answer.hasError" 
+                    @value-change="(value) => credentials.security.answer.value = value" @error-found="(value) => errFound = value" />
+                <FieldInput class="password" label="Enter New Password" type="password" :input="{ value: credentials.password.value }" 
                     placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.password.errMsg" :has-error="credentials.password.hasError"
-                    @value-change="(value) => credentials.password.value = value" />
-                <FieldInput class="password" label="Re-Enter New Password" type="password" :input="credentials.password2.value" 
+                    @value-change="(value) => credentials.password.value = value" @error-found="(value) => errFound = value" />
+                <FieldInput class="password" label="Re-Enter New Password" type="password" :input="{ value: credentials.password2.value }" 
                     placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.password2.errMsg" :has-error="credentials.password2.hasError"
-                    @value-change="(value) => credentials.password2.value = value" />
+                    @value-change="(value) => credentials.password2.value = value" @error-found="(value) => errFound = value" />
             </div>
         </div>
         <button :class="[isLoading ? 'button-primary-active' : '', 'button-primary-s']" @click="verifyOrReset" >
@@ -86,7 +87,8 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
                 },
                 fieldsEmpty: false,
                 isLoading: false,
-                errorMessage: ''
+                errorMessage: '',
+                errFound: false
             }
         },
         methods: {
@@ -101,6 +103,12 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
                 }
             },
             async verifyOrReset() {
+
+                // Exit If Field Input Component Found An Error
+
+                if (this.errFound) {
+                    return null
+                }
 
                 // Field Declarations
 

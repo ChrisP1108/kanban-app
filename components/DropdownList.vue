@@ -1,8 +1,8 @@
 <template>
     <ul id="dropdown-container" :class="[dropdownToggled ? 'dropdown-active' : '' ,'dropdown-toggled-container curved-border']">
-        <li @click="setOptionSelected(option)" v-for="option in dropdownOptions" :key="option"
-            :class="[optionSelected === option ? 'dropdown-item-active' : '', 
-            option.includes('Delete') ? 'delete-board-text-color' : '']">{{ option }}
+        <li v-for="option in dropdownOptions" :key="option" :class="[optionSelected === option ? 'dropdown-item-active' : '', 
+            option.includes('Delete') ? 'delete-board-text-color' : '']" @click="setOptionSelected(option)">
+                {{ option }}
         </li>
     </ul>
 </template>
@@ -10,9 +10,18 @@
 <script>
     export default {
         props: {
-            dropdownToggled: Boolean,
-            dropdownOptions: [String, Array],
-            optionSelected: String
+            dropdownToggled: {
+                type: Boolean,
+                default: false
+            },
+            dropdownOptions: {
+                type: [String, Array],
+                default: () => ''
+            },
+            optionSelected: {
+                type: String,
+                default: ''
+            }
         },
         methods: {
             setOptionSelected(option) {
@@ -27,13 +36,14 @@
         width: 100%;
         top: 100%;
         position: absolute;
+        height: 0;
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
         background: red;
         transform: rotateX(90deg);
         transform-origin: top;
-        transition: 0s;
+        transition: 0s !important;
         padding: 1rem !important;
         li {
             cursor: pointer;
@@ -46,9 +56,11 @@
     }
 
     .dropdown-active {
+        position: relative;
+        height: 100% !important;
         transform: rotateX(0deg);
-        transition: $speed-fast;
     }
+
 
     .delete-board-text-color {
         color: $color-j !important;

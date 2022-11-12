@@ -1,5 +1,5 @@
 <template>
-    <div class="modal-styling">
+    <div class="modal-styling scrollbar-styling">
         <h2>User Menu</h2>
         <button class="button-primary-s" @click="logout">Logout</button>
         <button class="button-destructive" @click="deleteUser">Delete Account</button>

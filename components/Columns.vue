@@ -1,5 +1,5 @@
 <template>
-    <main>
+    <main class="scrollbar-styling-horizontal">
         <!-- If There Are No Boards Found For User -->
 
         <div v-if="!selectedBoard" class="empty-list-container">
@@ -38,7 +38,7 @@
         <div v-if="selectedBoard && selectedBoard.tasks.length" class="all-columns">
             <div v-for="(column, index) in columns" :key="index" class="task-column-list">
                 <TaskListHeading :index="index" :task-status-heading="column.name" :length="column.tasks.length" />
-                <ul class="task-list-items-container">
+                <ul class="task-list-items-container scrollbar-styling">
                     <TaskListItem v-for="task in column.tasks" :key="task._id" :task="task" />
                 </ul>
             </div>
@@ -88,14 +88,15 @@
 
 <style lang="scss" scoped>
     main {
-        display: flex;
         width: 100%;
         height: 100%;
-        overflow: auto;
+        overflow-x: auto;
+        overflow-y: hidden;
         padding: 1.5rem 1rem;
     }
     .empty-list-container {
         width: 100%;
+        height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -110,17 +111,22 @@
     }
     .all-columns {
         width: 100%;
+        height: 100%;
         display: flex;
         gap: 1.5rem;
     }
     .task-column-list {
         width: 17.5rem;
+        height: 100%;
         min-width: 17.5rem;
     }
     .task-list-items-container {
+        min-height: 100%;
+        height: 0;
         display: flex;
         flex-direction: column;
         gap: 1.25rem;
-        margin-top: 1.5rem;
+        padding: 1.5rem 0 1.25rem;
+        overflow-y: auto;
     }
 </style>

@@ -191,6 +191,15 @@ const updateTask = asyncHandler(async (req, res) => {
     
     status = caseFormatFirst(status);
 
+    // Check If Two Subtasks Of The Same Name Are Being Added
+
+    const subtaskInputNames = subtasks.map(subtask => subtask.name).sort();
+
+    if (subtaskInputNames.some((name, index) => name === subtaskInputNames[index + 1])) {
+        res.status(400);
+        throw new Error('Cannot have two subtasks with the same name')
+    }
+
     // Update Task
 
     const updateTask = await Task.findByIdAndUpdate(req.params.id, {

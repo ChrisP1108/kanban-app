@@ -1,27 +1,33 @@
 <template>
-    <div class="modal-styling" @keyup="checkEnterKeypress">
+    <div class="modal-styling scrollbar-styling" @keyup="checkEnterKeypress">
         <h2>Register New User</h2>
-        <FieldInput  class="firstname" label="First Name" type="text" :input="credentials.firstname.value" placeholder="" 
+        <FieldInput  class="firstname" label="First Name" type="text" :input="{ value: credentials.firstname.value }" placeholder="" 
             :empty-check="fieldsEmpty" :error-message="credentials.firstname.errMsg" :has-error="credentials.firstname.hasError"
-            @value-change="(value) => credentials.firstname.value = value"  />
-        <FieldInput  class="username" label="Username" type="text" :input="credentials.username.value" placeholder="" 
-            :empty-check="fieldsEmpty" :error-message="credentials.username.errMsg" :has-error="credentials.username.hasError"
-            @value-change="(value) => credentials.username.value = value"  />
-        <FieldInput class="password" label="Password" type="password" :input="credentials.password.value" 
+            @value-change="(value) => credentials.firstname.value = value" @error-found="(value) => errFound = value" />
+        <FieldInput  class="username" label="Username" type="text" :input="{ value: credentials.username.value }" placeholder="" 
+            :empty-check="fieldsEmpty" :error-message="credentials.username.errMsg" :has-error="credentials.username.hasError" 
+            @value-change="(value) => credentials.username.value = value" @error-found="(value) => errFound = value" />
+        <FieldInput class="password" label="Password" type="password" :input="{ value: credentials.password.value }" 
             placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.password.errMsg" :has-error="credentials.password.hasError"
-            @value-change="(value) => credentials.password.value = value" />
-        <FieldInput class="password" label="Re-Enter Password" type="password" :input="credentials.password2.value" 
+            @value-change="(value) => credentials.password.value = value" @error-found="(value) => errFound = value" />
+        <FieldInput class="password" label="Re-Enter Password" type="password" :input="{ value: credentials.password2.value }" 
             placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.password2.errMsg" :has-error="credentials.password2.hasError"
-            @value-change="(value) => credentials.password2.value = value" />
-        <FieldInput class="pin" label="4 Digit Security PIN" type="password" :input="credentials.pin.value" 
+            @value-change="(value) => credentials.password2.value = value" @error-found="(value) => errFound = value" />
+        <FieldInput class="pin" label="4 Digit Security PIN" type="password" :input="{ value: credentials.pin.value }" 
             placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.pin.errMsg" :has-error="credentials.pin.hasError"
-            @value-change="(value) => credentials.pin.value = value" />
+            @value-change="(value) => credentials.pin.value = value" @error-found="(value) => errFound = value" />
         <FieldInput class="security-question" label="Enter A Unique Security Question For Password Recovery" type="text" 
-            :input="credentials.security.question.value" placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.security.question.errMsg" 
-            :has-error="credentials.security.question.hasError" @value-change="(value) => credentials.security.question.value = value" />
-        <FieldInput class="security-question" label="Answer To Unique Security Question.  Must Be One Word With No Spaces" type="text" 
-            :input="credentials.security.answer.value" placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.security.answer.errMsg" 
-            :has-error="credentials.security.answer.hasError" @value-change="(value) => credentials.security.answer.value = value" />
+            :input="{ value: credentials.security.question.value }" placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.security.question.errMsg" 
+            :has-error="credentials.security.question.hasError" 
+            @value-change="(value) => credentials.security.question.value = value" @error-found="(value) => errFound = value" />
+        <FieldInput class="security-answer" label="Answer To Unique Security Question.  Must Be One Word With No Spaces" type="password" 
+            :input="{ value: credentials.security.answer.value }" placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.security.answer.errMsg" 
+            :has-error="credentials.security.answer.hasError" 
+            @value-change="(value) => credentials.security.answer.value = value" />
+        <FieldInput class="security-answer-2" label="Reenter Security Answer" type="password" 
+            :input="{ value: credentials.security.answer.value2 }" placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.security.answer2.errMsg" 
+            :has-error="credentials.security.answer2.hasError" 
+            @value-change="(value) => credentials.security.answer2.value = value" @error-found="(value) => errFound = value" />
         <button :class="[isLoading ? 'button-primary-active' : '', 'button-primary-s']" @click="register" >
             <div v-if="isLoading" class="button-content">
                 <LoadingIcon />
@@ -78,12 +84,18 @@ import { httpPost, httpGet, httpErrMsg, httpStatusCode } from '../services/httpC
                             value: '',
                             hasError: false,
                             errMsg: ''
+                        },
+                        answer2: {
+                            value: '',
+                            hasError: false,
+                            errMsg: ''
                         }
                     }
                 },
                 fieldsEmpty: false,
                 isLoading: false,
-                errorMessage: ''
+                errorMessage: '',
+                errFound: false
             }
         },
         methods: {
@@ -99,6 +111,12 @@ import { httpPost, httpGet, httpErrMsg, httpStatusCode } from '../services/httpC
             },
             async register() {
 
+                // Exit If Field Input Component Found An Error
+
+                if (this.errFound) {
+                    return null
+                }
+
                 // Check That No Fields Are Empty
 
                 const firstname = this.credentials.firstname.value;
@@ -108,8 +126,9 @@ import { httpPost, httpGet, httpErrMsg, httpStatusCode } from '../services/httpC
                 const pin = this.credentials.pin.value;
                 const question = this.credentials.security.question.value;
                 const answer = this.credentials.security.answer.value;
+                const answer2 = this.credentials.security.answer2.value;
 
-                if (!firstname || !username || !password || !password2 || !pin || !question || !answer) {
+                if (!firstname || !username || !password || !password2 || !pin || !question || !answer || !answer2) {
                     this.fieldsEmpty = true;
                 } else if (password !== password2){
                     this.credentials.password.hasError = true;
@@ -117,6 +136,12 @@ import { httpPost, httpGet, httpErrMsg, httpStatusCode } from '../services/httpC
                     const nonMatchPasswordMsg = 'enter matching passwords'
                     this.credentials.password.errMsg = nonMatchPasswordMsg;
                     this.credentials.password2.errMsg = nonMatchPasswordMsg;
+                } else if (answer !== answer2) {
+                    this.credentials.security.answer.hasError = true;
+                    this.credentials.security.answer2.hasError = true;
+                    const nonMatchAnswerMsg = 'enter matching answers'
+                    this.credentials.security.answer.errMsg = nonMatchAnswerMsg;
+                    this.credentials.security.answer2.errMsg = nonMatchAnswerMsg;
                 } else if (username.length < 8) { 
                     this.credentials.username.hasError = true;
                     this.credentials.username.errMsg = '8 characters minimum';
@@ -131,7 +156,7 @@ import { httpPost, httpGet, httpErrMsg, httpStatusCode } from '../services/httpC
                 // HTTP Post Request For User Registration And Store Commit If Registration Successful
 
                     this.isLoading = true;
-                    const security = { question, answer };
+                    const security = { question, answer, answer2 };
                     const registerReq = await httpPost('/user/register', 
                         { firstname, username, password, password2, pin, security });
                     if (registerReq.status === 201) {
@@ -154,7 +179,7 @@ import { httpPost, httpGet, httpErrMsg, httpStatusCode } from '../services/httpC
                             this.$store.commit('setModalErrorMessage', `registering user`)
                             this.$store.commit('toggleModal', 'error')
                         } else {
-                            this.errorMessage = httpErrMsg(httpReq);
+                            this.errorMessage = httpErrMsg(registerReq);
                             if (this.errorMessage.includes('add a first name')) {
                                 this.credentials.firstname.hasError = true;
                                 this.credentials.firstname.errMsg = 'add first name';
@@ -209,6 +234,16 @@ import { httpPost, httpGet, httpErrMsg, httpStatusCode } from '../services/httpC
                                 this.credentials.security.answer.hasError = true;
                                 this.credentials.security.answer.errMsg = 'no spaces';
                             } else this.credentials.security.answer.hasError = false;    
+                            if (this.errorMessage.includes('Security answer entries do not match')) {
+                                this.credentials.security.answer.hasError = true;
+                                this.credentials.security.answer2.hasError = true;
+                                const nonMatchAnswerMsg = 'enter matching answers'
+                                this.credentials.security.answer.errMsg = nonMatchAnswerMsg;
+                                this.credentials.security.answer2.errMsg = nonMatchAnswerMsg;
+                            } else {
+                                this.credentials.security.answer.hasError = false;  
+                                this.credentials.security.answer2.hasError = false;  
+                            }
                         }
                     }
                 }

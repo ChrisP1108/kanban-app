@@ -4,9 +4,11 @@
             <Logo />
             <UserIcon />
         </div>
-        <Boards class="boards-container board-side-item-minwidth" />
-        <div @click="toggleSidebar">
-            <HideSidebar  />
+        <div class="boards-toggle-container scrollbar-styling">
+            <Boards class="boards-container board-side-item-minwidth" />
+            <div @click="toggleSidebar">
+                <HideSidebar  />
+            </div>
         </div>
     </aside>
 </template>
@@ -30,7 +32,7 @@
     aside {
         display: flex;
         flex-direction: column;
-        padding-top: 2rem;
+        padding: 2rem 0 2rem;
         height: 100vh;
         z-index: 2;
         flex-basis: 0;
@@ -41,8 +43,17 @@
     }
 
     .boards-container {
+        padding-top: 3.5rem;
+        flex: 1;
+    }
+
+    .boards-toggle-container {
         height: 100%;
-        margin-top: 3.5rem;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-right: 1.5rem !important;
     }
 
     .logo-user-container {

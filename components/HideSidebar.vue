@@ -9,7 +9,7 @@
 
 <style lang="scss" scoped>
     .board-sidebar-item {
-        margin: 1rem $padding-sides-tablet 2rem 0;
+        margin: 1rem $padding-sides-tablet 0 0;
 
         svg, h3 {
             transition: $speed-medium;

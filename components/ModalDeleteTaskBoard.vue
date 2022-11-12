@@ -1,5 +1,5 @@
 <template>
-    <div class="modal-styling">
+    <div class="modal-styling scrollbar-styling">
         <h2>Delete this {{ deletingTask ? 'task' : deletingBoard ? 'board' : '[Error]'}}?</h2>
         <p>Are you sure you want to delete the '{{ deletingBoard ? boardName : deletingTask ? taskTitle : '' }}' 
             {{ deletingTask ? 'task and its subtasks' 
@@ -32,7 +32,7 @@
             return {
                 boardName: '',
                 taskTitle: '',
-                isLoading: false
+                isLoading: false,
             }
         },
         computed: {
@@ -65,6 +65,7 @@
         },
         methods: {
             async confirmDelete() {
+
                 this.isLoading = true;
                 if (this.deletingBoard) {
                     const boardDelReq = await httpDelete(`/boards/${this.selectedBoardId}`);

@@ -1,12 +1,14 @@
 <template>
-    <div class="modal-styling" @keyup="checkEnterKeypress">
+    <div class="modal-styling scrollbar-styling" @keyup="checkEnterKeypress">
         <h2>{{ mode === 'addBoard' ? 'Add New Board' : mode === 'editBoard' ? 'Edit Board' : 'Error'}}</h2>
-        <FieldInput class="board-name" label="Board Name" type="text" :input="board.name.value" 
+        <FieldInput class="board-name" label="Board Name" type="text" :input="board.name" 
             placeholder="e.g. Web Design" :empty-check="fieldsEmpty" :error-message="board.name.errMsg" 
-            :has-error="board.name.hasError" @value-change="(value) => board.name.value = value" 
+            :has-error="board.name.hasError" :duplicates="{ haveDuplicates: false, array: boardNames, multiInputs: false }" 
+            @value-change="(value) => board.name.value = value" @error-found="(value) => errFound = value"
         />
-        <FieldInput class="board-columns" label="Board Columns" type="list" :input="board.columns.values"
-            placeholder="e.g. Todo" @value-change="(value) => board.columns.values = value" 
+        <FieldInput class="board-columns" label="Board Columns" type="list" :input="{ value: board.columns.values }"
+            placeholder="e.g. Todo" :duplicates="{ haveDuplicates: false, array: board.columns.values, multiInputs: true }"
+            @value-change="(value) => board.columns.values = value" @error-found="(value) => errFound = value"
         />
         <button v-if="board.columns.values.length <= 8" 
             :class="[board.columns.values[board.columns.values.length - 1] === '' ?'add-column-disabled' : '', 'button-secondary']" 
@@ -58,7 +60,8 @@
                     }
                 },
                 fieldsEmpty: false,
-                isLoading: false
+                isLoading: false,
+                errFound: false
             }
         },
         computed: {
@@ -67,6 +70,9 @@
             },
             boardList() {
                 return this.$store.state.userData.boards
+            },
+            boardNames() {
+                return this.boardList.map(board => ({ _id: board._id, value: board.name }) )
             },
             selectedId() {
                 return this.$store.state.boardSelected
@@ -78,7 +84,7 @@
         },
         created() {
             if (this.mode === 'editBoard') {
-                this.board.name.value = this.selectedBoard.name;
+                this.board.name= { ...this.board.name, _id: this.selectedBoard._id, value: this.selectedBoard.name };
                 this.board.columns.values = this.selectedBoard.columns.length !== 0 
                     ? this.selectedBoard.columns.map(column => {
                         return {
@@ -114,6 +120,12 @@
                 }
             },
             async boardSubmit() {
+
+                // Exit If Field Input Component Found An Error
+
+                if (this.errFound) {
+                    return null
+                }
 
                 // Check That Name Fields Is Not Empty.  Column Field Optional
 

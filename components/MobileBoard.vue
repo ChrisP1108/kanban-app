@@ -1,5 +1,5 @@
 <template>
-    <div class="mobile-board-container modal-styling">
+    <div class="mobile-board-container modal-styling scrollbar-styling">
         <Boards class="mobile-boards" />
         <UserIcon  class="offset-adjust" />
     </div>
@@ -11,7 +11,7 @@
 <style lang="scss" scoped>
     .mobile-board-container {
         top: 5rem !important;
-        padding: 1rem 0 !important;
+        padding: 1rem 1.5rem 1rem 0 !important;
         transform: translateX(-50%) !important;
         max-width: 16.5rem !important;
         width: calc(100% - 2rem);

@@ -1,27 +1,30 @@
 <template>
-    <div class="modal-styling" @keyup="checkEnterKeypress">
+    <div class="modal-styling scrollbar-styling" @keyup="checkEnterKeypress">
         <h2>{{ mode === 'addTask' ? 'Add New Task' : mode === 'editTask' ? 'Edit Task' : 'Error'}}</h2>
-        <FieldInput class="task-title" label="Title" type="text" :input="task.title.value" 
+        <FieldInput class="task-title" label="Title" type="text" :input="task.title" 
             placeholder="e.g. Take coffee break" :empty-check="fieldsEmpty" :error-message="task.title.errMsg" 
-            :has-error="task.title.hasError" @value-change="(value) => task.title.value = value"  
+            :has-error="task.title.hasError" :duplicates="{ haveDuplicates: false, array: selectedBoardTaskNames, multiInputs: false }"
+            @value-change="(value) => task.title.value = value" @error-found="(value) => errFound = value"
         />
-        <FieldInput class="task-description" label="Description" type="textarea" :input="task.description.value" 
+        <FieldInput class="task-description" label="Description" type="textarea" :input="task.description" 
             placeholder="e.g. It’s always good to take a break. This 15 minute break will recharge the batteries a little." 
             :empty-check="fieldsEmpty" :error-message="task.description.errMsg" :has-error="task.description.hasError"
-            @value-change="(value) => task.description.value = value"  
+            @value-change="(value) => task.description.value = value" @error-found="(value) => errFound = value"
         />
-        <FieldInput class="task-subtasks" label="Subtasks" type="list" :input="task.subtasks.values" 
+        <FieldInput class="task-subtasks" label="Subtasks" type="list" :input="{ value: task.subtasks.values }" 
             placeholder="e.g. Make coffee" :empty-check="fieldsEmpty" :error-message="task.subtasks.errMsg" 
-            :has-error="task.subtasks.hasError" @value-change="(value) => task.subtasks.values = value"  
+            :has-error="task.subtasks.hasError" :duplicates="{ haveDuplicates: false, array: task.subtasks.values, multiInputs: true }"
+            @value-change="(value) => task.subtasks.values = value" @error-found="(value) => errFound = value"  
         />
         <button v-if="task.subtasks.values.length <= 8" class="button-secondary" @click="addSubTask">
             + <span class="ml-1"> 
                 Add New Subtask
             </span>
         </button>
-        <FieldInput class="task-status" label="Status" type="dropdown" :input="task.status.value" 
+        <FieldInput class="task-status" label="Status" type="dropdown" :input="task.status" 
             :dropdown-options="dropdownOptions" :empty-check="fieldsEmpty" :error-message="task.status.errMsg" 
             :has-error="task.status.hasError" @value-change="(value) => task.status.value = value" 
+            @error-found="(value) => errFound = value"
         />
         <button class="button-primary-s" @click="taskSubmit">
             <div v-if="isLoading" class="button-content">
@@ -77,13 +80,17 @@
                 },
                 dropdownOptions: [],
                 fieldsEmpty: false,
-                isLoading: false
+                isLoading: false,
+                errFound: false
             }
         },
         computed: {
             selectedBoard() {
                 return [...this.$store.state.userData.boards].find(board => 
                     board._id.toString() === this.$store.state.boardSelected)
+            },
+            selectedBoardTaskNames() {
+                return this.selectedBoard.tasks.map(task => ({ _id: task._id, value: task.title }) )
             },
             selectedTask() {
                 return this.selectedBoard.tasks.find(task => task._id.toString() === this.$store.state.taskSelected)
@@ -95,7 +102,7 @@
                 this.task.status.value = this.selectedBoard.columns[0]
             }
             if (this.mode === 'editTask') {
-                this.task.title.value = this.selectedTask.title;
+                this.task.title = { ...this.task.title, _id: this.selectedTask._id, value: this.selectedTask.title };
                 this.task.description.value = this.selectedTask.description;
                 this.task.subtasks.values = this.selectedTask.subtasks.map(subtask => 
                 ({ ...subtask, canModify: true, value: subtask.name  }));
@@ -124,12 +131,18 @@
             },
             async taskSubmit() {
 
+                // Exit If Field Input Component Found An Error
+
+                if (this.errFound) {
+                    return null
+                }
+
                 // Check For Empty Fields
 
                 if (!this.task.title.value || !this.task.description.value 
                     || !this.task.subtasks.values[0].value || !this.task.status.value) {
                     this.fieldsEmpty = true;
-                    return
+                    return null
                 } else this.fieldsEmpty = false;
 
                 // Check That There Are No Duplicate Task Names For Same Board
@@ -145,9 +158,10 @@
                 // Check That There Are No Duplicate Subtask Names
 
                 if (this.task.subtasks.values.some(subtask => 
-                    this.task.subtasks.values.filter(sub => sub.value === subtask.value).length > 1)) {
-                        this.task.subtasks.hasError = true;
-                        this.task.subtasks.errMsg = 'no duplicate names';
+                    this.task.subtasks.values.filter(sub => 
+                        sub.value.toLowerCase() === subtask.value.toLowerCase()).length > 1)) {
+                            this.task.subtasks.hasError = true;
+                            this.task.subtasks.errMsg = 'duplicate exists';
                         return null
                 }
 
@@ -156,7 +170,7 @@
                 this.task.title.value = caseFormatFirst(this.task.title.value);
                 this.task.description.value = caseFormatFirst(this.task.description.value);
                 this.task.subtasks.values = this.task.subtasks.values
-                    .filter(task => task !== '')
+                    .filter(task => task.value !== '' && typeof task.value === 'string')
                     .map(subtask => ({...subtask, name: caseFormatFirst(subtask.value)}
                 ));
 

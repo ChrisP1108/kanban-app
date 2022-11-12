@@ -91,6 +91,11 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error('Security answer cannot have spaces')
     }
 
+    if (security.answer !== security.answer2) {
+        res.status(400);
+        throw new Error('Security answer entries do not match.  Please reenter matching answers')
+    }
+
     // Destructure security
 
     const { question, answer } = security;

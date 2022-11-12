@@ -2,7 +2,7 @@
     <div class="boards-mode-container">
         <h4>{{ boardList.length ? `ALL BOARDS (${boardList.length })` : 'NO BOARDS'}}</h4> 
         <ul>
-            <div class="board-list">
+            <div class="board-list scrollbar-styling">
                 <li v-for="(board, index) in boardList" :key="board._id" 
                     :class="[selectedBoard === board._id ? 'board-active' : !selectedBoard && index === 0 ? 'board-active' : ''
                     , 'board-sidebar-item  board-side-item-minwidth']" 
@@ -62,21 +62,16 @@
         display: flex;
         flex-direction: column;
     }
-    ul {
-        margin-right: $padding-sides-tablet !important;
-        
-    }
 
     .board-list {
-        max-height: 50vh;
-        overflow-y: scroll;
+        overflow-y: auto;
         overflow-x: hidden;
         box-sizing: border-box;
         scrollbar-width: thin;
 
-        &::-webkit-scrollbar {
-            width: 0;
-        }
+        // &::-webkit-scrollbar {
+        //     width: 0;
+        // }
     }
 
     .create-board-sidebar-item {

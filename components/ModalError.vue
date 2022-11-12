@@ -1,5 +1,5 @@
 <template>
-    <div class="modal-styling" @keyup="checkEnterKeypress">
+    <div class="modal-styling scrollbar-styling" @keyup="checkEnterKeypress">
         <h2>There was an error {{ errorMessage }}.  Please try again or check your internet connection.</h2>
         <button class="button-primary-s" @click="okClicked">Ok</button>
     </div>

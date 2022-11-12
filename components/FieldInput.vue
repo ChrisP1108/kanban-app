@@ -5,34 +5,32 @@
         <!-- Text, Textarea, And Password Inputs -->
 
         <div v-if="text || textarea || password" class="field-container">
-            <p v-if="fieldEmpty(value) || hasError" :class="[textarea ? 'textarea-err-msg' : '']">
-                {{ hasError ? errorMessage : emptyMsg }}
+            <p v-if="errorCheck(value, duplicates.array).error" :class="[textarea ? 'textarea-err-msg' : '']">
+                {{ errorCheck(value, duplicates.array).message }}
             </p>
             <input v-if="text || password" 
-                v-model="value" :class="[fieldEmpty(value) || hasError ? 'field-error-border' : '']"
+                v-model="value" :class="[errorCheck(value, duplicates.array).error ? 'field-error-border' : '']"
                 name="field" :placeholder="placeholder" :type="[text ? 'text' : 'password']" 
                 @input="updateValue" 
             />
             <textarea v-if="textarea" v-model="value" name="field" :value.prop="value"
-                :class="[fieldEmpty(value) || hasError ? 'field-error-border' : '']" 
+                :class="[errorCheck(value, duplicates.array).error ? 'field-error-border' : '']" 
                 :placeholder="placeholder" @input="updateValue">
             </textarea>
         </div>
 
         <!-- List Input -->
 
-        <div v-if="list" class="list-items-container">
+        <div v-if="list" class="list-items-container scrollbar-styling">
             <div v-for="(field, index) in value" :key="index" class="list-item-container">
                 <div :class="[field.canModify === false ? 'list-item-no-edit' : '', 'field-container d-flex']">
-                    <p v-if="fieldEmpty(field.value) && index === 0 || hasError || duplicateNames(field.value, value)" 
+                    <p v-if="errorCheck(field.value, duplicates.array).error && index === 0 || errorCheck(field.value, duplicates.array).error" 
                         class="list-item-error-indent">
-                            {{ duplicateNames(field.value, value) ? duplicatesMsg
-                                : hasError && !duplicateNames(field.value, value) ? errorMessage 
-                                : fieldEmpty(field.value) ? emptyMsg : ''}}
+                            {{ errorCheck(field.value, duplicates.array).message }}
                     </p>
                     <input v-model="value[index].value" name="field" 
-                        :class="[fieldEmpty(field.value) && index === 0 || hasError 
-                        || duplicateNames(field.value, value) ? 'field-error-border' : '',
+                        :class="[errorCheck(field.value, duplicates.array).error && index === 0 || hasError 
+                        || errorCheck(field.value, duplicates.array).error ? 'field-error-border' : '',
                         field.checked ? 'checked-text' : '']"
                         :placeholder="placeholder" type="text" @input="updateValue" 
                     />
@@ -58,12 +56,12 @@
         <div class="field-container">
             <div v-if="dropdown" class="dropdown-select-container" @click="toggleDropdown">
                 <div id="dropdown-container" name="task-status" class="dropdown">
-                    <span>{{ input }}</span>
+                    <span>{{ value }}</span>
                     <img :class="[dropdownToggled ? 'dropdown-rotate-arrow' : '', 'dropdown-arrow']" src="assets/images/dropdown-arrow.svg" alt="Dropdown Arrow">
                 </div>
                 <nav @click="toggleDropdown">
                     <DropdownList :dropdown-toggled="dropdownToggled" :dropdown-options="dropdownOptions" 
-                    :option-selected="input" @option-selected="setOptionSelected" />
+                    :option-selected="value" @option-selected="setOptionSelected" />
                 </nav>
             </div>
         </div>
@@ -82,8 +80,8 @@
                 default: ''
             },
             input: {
-                type: [String, Number, Array],
-                default: ''
+                type: Object,
+                default: () => {}
             },
             dropdownOptions: {
                 type: [String, Array],
@@ -96,6 +94,23 @@
             emptyCheck: {
                 type: Boolean,
                 default: false
+            },
+            duplicates: {
+                type: Object,
+                default: () => ({
+                    haveDuplicates: {
+                        type: Boolean,
+                        default: true
+                    },
+                    array: {
+                        type: [String, Array],
+                        default: ['']
+                    },
+                    multiInputs: {
+                        type: Boolean,
+                        default: false
+                    }
+                })
             },
             hasError: {
                 type: Boolean,
@@ -110,8 +125,6 @@
             return {
                 value: '',
                 dropdownToggled: false,
-                emptyMsg: "can't be empty",
-                duplicatesMsg: "no duplicate names"
             }
         },
         computed: {
@@ -138,7 +151,7 @@
             if (this.hasError) {
                 this.value = '';
             }
-            this.value = this.input;
+            this.value = this.input.value;
         },
         mounted() {
             window.addEventListener('click', e => {
@@ -148,15 +161,35 @@
             });
         },
         methods: {
-            fieldEmpty(field) {
-                if (!field && this.emptyCheck) {
-                    return true
-                } else {
-                    return false
-                }
+            emptyIdCheck(id) {
+                if (!id) {
+                    return 0
+                } else return id
             },
-            duplicateNames(input, array) {
-                return array.filter(val => val.value === input).length > 1
+            errorCheck(input, array) {
+                let err = { error: false, message: ""}
+                if (!input && this.emptyCheck === true) {
+                    err = { error: true, message: "can't be empty"};
+                }
+                if (this.duplicates.multiInputs && typeof array === 'object' && array.length
+                    && array.filter(val => val.value.toLowerCase() === input.toLowerCase() 
+                        && this.input._id !== this.emptyIdCheck(val._id)).length > 1 
+                    && this.duplicates && this.duplicates.haveDuplicates === false) {
+                        err = { error: true, message: "duplicate exists"}
+                }
+                if (!this.duplicates.multiInputs && typeof array === 'object' && array.length
+                    && array.filter(val => val.value.toLowerCase() === input.toLowerCase() 
+                        && this.input._id !== this.emptyIdCheck(val._id)).length === 1 
+                    && this.duplicates && this.duplicates.haveDuplicates === false) {
+                        err = { error: true, message: "duplicate exists"}
+                }
+                if (this.hasError) {
+                    err = { error: true, message: this.errorMessage }
+                }
+                if (err.error) {
+                    this.$emit('error-found', true)
+                } else this.$emit('error-found', false)
+                return err
             },
             toggleDropdown() {
                 this.dropdownToggled = !this.dropdownToggled;
@@ -205,6 +238,18 @@
         margin: 0.25rem 0 1rem;
         font-size: $body-l-size;
         line-height: $body-l-height;
+    }
+
+    .field-error-border {
+        border: field-border-error();
+
+        &:hover {
+            border: field-border-error();
+        }
+
+        &:focus {
+            border: field-border-error() !important;
+        }
     }
 
     .dropdown {
@@ -281,30 +326,6 @@
         transition: $speed-fast;
         position: relative;
         margin-bottom: 1.5rem !important;
-    }
-    .dropdown-toggled-container {
-        width: 100%;
-        top: 100%;
-        position: absolute;
-        background: red;
-        transform: rotateX(90deg);
-        transform-origin: top;
-        transition: 0s;
-        padding: 1rem !important;
-        li {
-            cursor: pointer;
-            color: $color-g;
-            font-weight: $semi-bold;
-            transition: $speed-fast;
-
-            &:not(li:nth-of-type(3)) {
-                margin-bottom: 0.75rem;
-            }
-        }
-    }
-    .dropdown-active {
-        transform: rotateX(0deg);
-        transition: $speed-fast;
     }
     .dropdown-rotate-arrow {
         transform: rotate(180deg);

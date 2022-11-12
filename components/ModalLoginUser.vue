@@ -1,13 +1,13 @@
 <template>
-    <div class="modal-styling" @keyup="checkEnterKeypress">
+    <div class="modal-styling scrollbar-styling" @keyup="checkEnterKeypress">
         <Logo class="center-logo" />
         <h2>Login</h2>
-        <FieldInput class="username" label="Username" type="text" :input="credentials.username.value" placeholder="" 
+        <FieldInput class="username" label="Username" type="text" :input="{value: credentials.username.value } " placeholder="" 
             :empty-check="fieldsEmpty" :error-message="credentials.username.errMsg" :has-error="credentials.username.hasError"
-            @value-change="(value) => credentials.username.value = value"  />
-        <FieldInput class="password" label="Password" type="password" :input="credentials.password.value" 
+            @value-change="(value) => credentials.username.value = value" @error-found="(value) => errFound = value" />
+        <FieldInput class="password" label="Password" type="password" :input="{ value: credentials.password.value }" 
             placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.password.errMsg" :has-error="credentials.password.hasError"
-            @value-change="(value) => credentials.password.value = value" />
+            @value-change="(value) => credentials.password.value = value" @error-found="(value) => errFound = value" />
         <button :class="[isLoading ? 'button-primary-active' : '', 'button-primary-s']" @click="login" >
             <div v-if="isLoading" class="button-content">
                 <LoadingIcon />
@@ -43,7 +43,8 @@
                     },
                 },
                 fieldsEmpty: false,
-                isLoading: false
+                isLoading: false,
+                errFound: false
             }
         },
         methods: {
@@ -58,6 +59,12 @@
                 }
             },
             async login() {
+
+                // Exit If Field Input Component Found An Error
+
+                if (this.errFound) {
+                    return null
+                }
 
                 // Check That No Fields Are Empty
 

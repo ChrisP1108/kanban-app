@@ -1,5 +1,5 @@
 <template>
-    <div class="modal-styling">
+    <div class="modal-styling scrollbar-styling">
         <div class="heading-nav-container">
             <h2>{{ selectedTask.title }}</h2>
             <img class="dot-nav" src="assets/images/dot-nav.svg" @click="toggleTaskDropdown">
@@ -10,9 +10,9 @@
         </div>
         <p class="task-description-text">{{ selectedTask.description }}</p>
         <FieldInput class="task-subtask-checklist" :label="subtasksCheckedQty()" type="checklist" 
-            :input="subtasks" @value-change="(value) => subtaskChecked(value)"  
+            :input="{ value: subtasks } " @value-change="(value) => subtaskChecked(value)"  
         />
-        <FieldInput class="task-status" label="Current Status" type="dropdown" :input="selectedTask.status" 
+        <FieldInput class="task-status" label="Current Status" type="dropdown" :input="{ value: selectedTask.status }" 
             :dropdown-options="boardColumns" @value-change="(value) => statusValueChange(value)" 
         />
     </div>
@@ -20,7 +20,7 @@
 
 <script>
     import { cloneDeep } from 'lodash-es'
-    import { httpPut, httpErrMsg } from '../services/httpClient';
+    import { httpPut } from '../services/httpClient';
 
     export default {
         data() {
@@ -64,7 +64,6 @@
                 if (updateReq.status === 200) {
                     this.$store.commit('updateTask', {...this.selectedTask, status: value })
                 } else {
-                    console.error(httpErrMsg(updateReq));
                     this.$store.commit('setModalErrorMessage', `changing task status in ${this.selectedTask.title}`)
                     this.$store.commit('toggleModal', 'error')
                 }
@@ -74,7 +73,6 @@
                 if (updateReq.status === 200) {
                     this.$store.commit('updateTask', {...this.selectedTask, subtasks: cloneDeep(value) })
                 } else {
-                    console.error(httpErrMsg(updateReq));
                     this.$store.commit('setModalErrorMessage', `checking subtask in "${this.selectedTask.title}"`)
                     this.$store.commit('toggleModal', 'error')
                 }
