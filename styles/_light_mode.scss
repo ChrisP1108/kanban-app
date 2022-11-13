@@ -36,11 +36,18 @@
         &:hover {
             background: $color-a-25;
         }
-
     }
 
     .button-secondary-active {
         background: $color-a-25;
+    }
+
+    .new-column-container {
+        background: $color-h;
+
+        h1 {
+            font-weight: 700;
+        }
     }
 
     .modal-styling {
@@ -90,6 +97,26 @@
 
     .board-sidebar-item:hover:not(.board-active) {
         background: $color-a-10;
+    }
+
+    .scrollbar-styling {
+
+        &::-webkit-scrollbar {
+            border-right: 4px $color-h solid;
+        }
+    }
+
+    .scrollbar-styling-horizontal {
+
+        &::-webkit-scrollbar {
+            background: $color-h;
+        }
+    }
+
+    .logo-full-container {
+        span {
+            color: $color-b;
+        }
     }
 
     @media(min-width: $tablet) {

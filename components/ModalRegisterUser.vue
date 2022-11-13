@@ -16,6 +16,9 @@
         <FieldInput class="pin" label="4 Digit Security PIN" type="password" :input="{ value: credentials.pin.value }" 
             placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.pin.errMsg" :has-error="credentials.pin.hasError"
             @value-change="(value) => credentials.pin.value = value" @error-found="(value) => credentials.pin.errFound = value" />
+        <FieldInput class="pin2" label="Reenter 4 Digit Security PIN" type="password" :input="{ value: credentials.pin2.value }" 
+            placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.pin2.errMsg" :has-error="credentials.pin2.hasError"
+            @value-change="(value) => credentials.pin2.value = value" @error-found="(value) => credentials.pin2.errFound = value" />
         <FieldInput class="security-question" label="Enter A Unique Security Question For Password Recovery" type="text" 
             :input="{ value: credentials.security.question.value }" placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.security.question.errMsg" 
             :has-error="credentials.security.question.hasError" 
@@ -79,6 +82,12 @@ import { httpPost, httpGet, httpErrMsg, httpStatusCode } from '../services/httpC
                         errMsg: '',
                         errFound: false
                     },
+                    pin2: {
+                        value: '',
+                        hasError: false,
+                        errMsg: '',
+                        errFound: false
+                    },
                     security: {
                         question: {
                             value: '',
@@ -118,6 +127,18 @@ import { httpPost, httpGet, httpErrMsg, httpStatusCode } from '../services/httpC
             },
             async register() {
 
+                // Clear Any Previous Error Highlighted Fields For Fresh Check
+
+                this.credentials.firstname.hasError = false;
+                this.credentials.username.hasError = false;
+                this.credentials.password.hasError = false;
+                this.credentials.password2.hasError = false;
+                this.credentials.pin.hasError = false;
+                this.credentials.pin2.hasError = false;
+                this.credentials.security.question.hasError = false;
+                this.credentials.security.answer.hasError = false;
+                this.credentials.security.answer2.hasError = false;
+
                 // Check That No Fields Are Empty
 
                 const firstname = this.credentials.firstname.value;
@@ -125,20 +146,26 @@ import { httpPost, httpGet, httpErrMsg, httpStatusCode } from '../services/httpC
                 const password = this.credentials.password.value;
                 const password2 = this.credentials.password2.value;
                 const pin = this.credentials.pin.value;
+                const pin2 = this.credentials.pin2.value;
                 const question = this.credentials.security.question.value;
                 const answer = this.credentials.security.answer.value;
                 const answer2 = this.credentials.security.answer2.value;
 
-                if (!firstname || !username || !password || !password2 || !pin || !question || !answer || !answer2) {
+                if (!firstname || !username || !password || !password2 || !pin || !pin2
+                    || !question || !answer || !answer2) {
                     this.fieldsEmpty = true;
                 } else if (password !== password2) {
-                    console.log(password);
-                    console.log(password2);
                     this.credentials.password.hasError = true;
                     this.credentials.password2.hasError = true;
                     const nonMatchPasswordMsg = 'enter matching passwords'
                     this.credentials.password.errMsg = nonMatchPasswordMsg;
                     this.credentials.password2.errMsg = nonMatchPasswordMsg;
+                } else if (pin !== pin2) {
+                    this.credentials.pin.hasError = true;
+                    this.credentials.pin2.hasError = true;
+                    const nonMatchPinMsg = 'enter matching pins'
+                    this.credentials.pin.errMsg = nonMatchPinMsg;
+                    this.credentials.pin2.errMsg = nonMatchPinMsg;
                 } else if (answer !== answer2) {
                     this.credentials.security.answer.hasError = true;
                     this.credentials.security.answer2.hasError = true;
@@ -161,7 +188,7 @@ import { httpPost, httpGet, httpErrMsg, httpStatusCode } from '../services/httpC
                     this.isLoading = true;
                     const security = { question, answer, answer2 };
                     const registerReq = await httpPost('/user/register', 
-                        { firstname, username, password, password2, pin, security });
+                        { firstname, username, password, password2, pin, pin2, security });
                     if (registerReq.status === 201) {
                         this.credentials.firstname.hasError = false;
                         this.credentials.username.hasError = false;
@@ -184,6 +211,7 @@ import { httpPost, httpGet, httpErrMsg, httpStatusCode } from '../services/httpC
                             this.$store.commit('toggleModal', 'error')
                         } else {
                             this.errorMessage = httpErrMsg(registerReq);
+                            console.log(this.errorMessage)
                             if (this.errorMessage.includes('add a first name')) {
                                 this.credentials.firstname.hasError = true;
                                 this.credentials.firstname.errMsg = 'add first name';
@@ -204,7 +232,7 @@ import { httpPost, httpGet, httpErrMsg, httpStatusCode } from '../services/httpC
                                 this.credentials.password2.hasError = true;
                                 this.credentials.password2.errMsg = 'reenter password';
                             } else this.credentials.password2.hasError = false;  
-                            if (this.errorMessage.includes('entries do not match')) {
+                            if (this.errorMessage.includes('Password entries do not match')) {
                                 this.credentials.password.hasError = true;
                                 this.credentials.password2.hasError = true;
                                 this.credentials.password.errMsg = 'passwords must match';
@@ -217,6 +245,15 @@ import { httpPost, httpGet, httpErrMsg, httpStatusCode } from '../services/httpC
                                 this.credentials.pin.hasError = true;
                                 this.credentials.pin.errMsg = '4 numbers required';
                             } else this.credentials.pin.hasError = false;  
+                            if (this.errorMessage.includes('Pin entries do not match.  Please reenter matching 4 digit pins')) {
+                                this.credentials.pin.hasError = true;
+                                this.credentials.pin2.hasError = true;
+                                this.credentials.pin.errMsg = 'pins must match';
+                                this.credentials.pin2.errMsg = 'pins must match';
+                            } else {
+                                this.credentials.pin.hasError = false; 
+                                this.credentials.pin2.hasError = false;  
+                            }
                             if (this.errorMessage.includes('provide a security question and answer')) {
                                 this.credentials.security.question.hasError = true;
                                 this.credentials.security.answer.hasError = true;

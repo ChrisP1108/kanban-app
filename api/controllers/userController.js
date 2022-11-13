@@ -34,7 +34,7 @@ async function hasher(input) {
 // @access  Public
 
 const registerUser = asyncHandler(async (req, res) => {
-    const { firstname, username, password, password2, pin, security } = req.body;
+    const { firstname, username, password, password2, pin, pin2, security } = req.body;
 
     // Check For Empty Or Invalid Fields
 
@@ -67,6 +67,11 @@ const registerUser = asyncHandler(async (req, res) => {
     if (pin.includes(' ')) {
         res.status(400);
         throw new Error('Pin cannot have spaces')
+    }
+
+    if (pin !== pin2) {
+        res.status(400);
+        throw new Error('Pin entries do not match.  Please reenter matching 4 digit pins')
     }
 
     // Check if security question and answer is blank

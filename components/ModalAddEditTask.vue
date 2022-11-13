@@ -134,6 +134,13 @@
             },
             async taskSubmit() {
 
+                // Clear Any Previous Error Highlighted Fields For Fresh Check
+
+                this.task.title.hasError = false;
+                this.task.description.hasError = false;
+                this.task.subtasks.hasError = false;
+                this.task.status.hasError = false;
+
                 // Exit If Field Input Component Found An Error
 
                 if (this.task.title.errFound || this.task.description.errFound || this.task.subtasks.errFound
@@ -148,26 +155,6 @@
                     this.fieldsEmpty = true;
                     return null
                 } else this.fieldsEmpty = false;
-
-                // Check That There Are No Duplicate Task Names For Same Board
-
-                const idIfEditing = this.mode === 'editTask' ? this.selectedTask._id : null;
-
-                if (this.selectedBoard.tasks.some(task => task.title === this.task.title.value && task._id !== idIfEditing)) {
-                    this.task.title.hasError = true;
-                    this.task.title.errMsg = 'duplicate name exists';
-                    return null
-                }
-
-                // Check That There Are No Duplicate Subtask Names
-
-                if (this.task.subtasks.values.some(subtask => 
-                    this.task.subtasks.values.filter(sub => 
-                        sub.value.toLowerCase() === subtask.value.toLowerCase()).length > 1)) {
-                            this.task.subtasks.hasError = true;
-                            this.task.subtasks.errMsg = 'duplicate exists';
-                        return null
-                }
 
                 // Capitalize Fields
 

@@ -63,6 +63,9 @@
 
                 // Check That No Fields Are Empty
 
+                this.credentials.username.hasError = false;
+                this.credentials.password.hasError = false;
+
                 const username = this.credentials.username.value;
                 const password = this.credentials.password.value;
                 if (!username || !password) {
@@ -79,8 +82,6 @@
                 this.isLoading = true;
                 const loginReq = await httpPost('/user/login', { username, password });
                 if (loginReq.status === 200) {
-                    this.credentials.username.hasError = false;
-                    this.credentials.password.hasError = false;
                     if (this.$store.state.loginRedirect) {
                         this.$store.commit('toggleLoginRedirect');
                     }

@@ -30,6 +30,10 @@
         }
     }
 
+    .new-column-container {
+        background: $color-new-column-dark;
+    }
+
     .task-list-item {
         color: $color-white;
     }
@@ -80,6 +84,26 @@
     main {
         h2 {
             color: $color-g;
+        }
+    }
+
+    .scrollbar-styling {
+
+        &::-webkit-scrollbar {
+            border-right: 4px $color-f solid;
+        }
+    }
+
+    .scrollbar-styling-horizontal {
+
+        &::-webkit-scrollbar {
+            background: $color-f;
+        }
+    }
+
+    .logo-full-container {
+        span {
+            color: $color-a;
         }
     }
 

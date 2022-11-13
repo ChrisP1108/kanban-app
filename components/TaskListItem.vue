@@ -26,9 +26,15 @@
 </script>
 
 <style lang="scss" scoped>
+    h3 {
+        margin-bottom: 0.25rem;
+    }
+    b {
+        color: $color-g !important;
+    }
     .task-list-item {
         padding: 1.5rem 1rem;
-        border-radius: 0.5rem;
+        border-radius: $button-container-radius;
         cursor: pointer;
 
         &:hover {
@@ -36,11 +42,5 @@
                 color: $color-a !important;
             }
         }
-    }
-    h3 {
-        margin-bottom: 0.25rem;
-    }
-    b {
-        color: $color-g !important;
     }
 </style>

@@ -122,6 +122,11 @@
             },
             async boardSubmit() {
 
+                // Clear Any Previous Error Highlighted Fields For Fresh Check
+
+                this.board.name.hasError = false;
+                this.board.columns.hasError = false;
+
                 // Exit If Field Input Component Found An Error
 
                 if (this.board.name.errFound || this.board.columns.errFound) {
@@ -130,40 +135,23 @@
 
                 // Check That Name Fields Is Not Empty.  Column Field Optional
 
+                if (!this.board.name.value) {
+                    this.fieldsEmpty = true;
+                    return null
+                } else this.fieldsEmpty = false;
+
+                // Format Fields For HTTP
+
                 const name = caseFormatAll(this.board.name.value);
-                const columns = this.board.columns.values[0] !== undefined
+                const columns = this.board.columns.values[0].value !== ''
                     ? this.board.columns.values.map(column => caseFormatAll(column.value))
                         .filter(column => column.value !== '')
                     : [];
 
-                if (!name) {
-                    this.fieldsEmpty = true;
-                    return null
-                }
-
-                // Check That There Are No Duplicate Board Names For Same User
-
-                const boards = this.$store.state.userData.boards;
-
-                const idIfEditing = this.mode === 'editBoard' ? this.selectedBoard._id : null
-                if (boards.some(board => board.name === name && board._id !== idIfEditing)) {
-                    this.board.name.hasError = true;
-                    this.board.name.errMsg = 'name already exists';
-                    return null
-                }
-
-                // Check That There Are No Duplicate Column Names 
-
-                if (columns.some(column => columns.filter(col => col === column).length > 1)) {
-                    this.board.columns.hasError = true;
-                    this.board.columns.errMsg = 'no duplicate names';
-                    return null
-                }
-
                 // Capitalize Name And Title And Filter Empty Columns
 
                 this.board.name.value = this.board.name.value ? caseFormatAll(this.board.name.value) : '';
-                this.board.columns.values = this.board.columns.values ? this.board.columns.values
+                this.board.columns.values = this.board.columns.values[0].value !== '' ? this.board.columns.values
                     .map(column => ({ value: caseFormatAll(column.value), canModify: column.canModify }))
                     : [{ canModify: true, value: ''}]
                 ;

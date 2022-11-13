@@ -1,6 +1,6 @@
 <template>
     <div :class="[darkModeToggled ? 'dark-mode' : 'light-mode', 'root-background']">
-        <div class="root-full-container">
+        <div class="root-full-container padding-cover">
             <LoadingIcon class="loading-icon-full" />
         </div>
     </div>
@@ -48,5 +48,8 @@ import { httpGet } from '../services/httpClient';
 <style lang="scss" scoped>
     .root-full-container {
         display: flex;
+    }
+    .padding-cover {
+        padding: 1.5rem !important;
     }
 </style>

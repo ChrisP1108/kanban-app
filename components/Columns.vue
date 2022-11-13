@@ -42,6 +42,11 @@
                     <TaskListItem v-for="task in column.tasks" :key="task._id" :task="task" />
                 </ul>
             </div>
+            <button class="new-column-container" @click="toggleEditBoard">
+                <h1>+ <span class="add-button-text ml-1"> 
+                        New Column
+                    </span></h1>
+            </button>
         </div>
 
     </main>
@@ -114,6 +119,21 @@
         height: 100%;
         display: flex;
         gap: 1.5rem;
+    }
+    .new-column-container {
+        width: 17.5rem;
+        min-width: 17.5rem;
+        margin-top: 2.5rem;
+        padding: 1rem;
+        border-radius: $button-container-radius;
+
+        h1 {
+            color: $color-g;
+        }
+
+        &:hover h1 {
+            color: $color-a;
+        }
     }
     .task-column-list {
         width: 17.5rem;

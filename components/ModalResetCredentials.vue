@@ -110,6 +110,16 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
             },
             async verifyOrReset() {
 
+                // Clear Any Previous Error Highlighted Fields For Fresh Check
+
+                this.credentials.firstname.hasError = false;
+                this.credentials.username.hasError = false;
+                this.credentials.password.hasError = false;
+                this.credentials.password2.hasError = false;
+                this.credentials.pin.hasError = false;
+                this.credentials.security.question.hasError = false;
+                this.credentials.security.answer.hasError = false;
+
                 // Field Declarations
 
                 const firstname = this.credentials.firstname.value;
