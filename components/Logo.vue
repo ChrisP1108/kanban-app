@@ -4,7 +4,7 @@
             <img class="logo" src="assets/images/logo.svg" alt="Logo">
             <h1>kanban</h1>
         </div>
-        <span>UI Design By Frontendmentor.io</span>
+        <span v-if="$route.name === 'login'">UI Design By Frontendmentor.io</span>
     </a>
 </template>
 
