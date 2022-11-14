@@ -1,6 +1,7 @@
 <template>
     <div class="modal-styling scrollbar-styling" @keyup="checkEnterKeypress">
         <Logo class="center-logo" />
+        <p class="frontendmentor-watermark">UI Design By Frontendmentor.io</p>
         <h2>Login</h2>
         <FieldInput class="username" label="Username" type="text" :input="{value: credentials.username.value } " placeholder="" 
             :empty-check="fieldsEmpty" :error-message="credentials.username.errMsg" :has-error="credentials.username.hasError"
@@ -177,5 +178,10 @@
             flex: 1;
             flex-basis: 7.8125rem;
         }
+    }
+    .frontendmentor-watermark {
+        text-align: center;
+        margin: 0.25rem 1rem 0 0;
+        color: $color-g !important;
     }
 </style>

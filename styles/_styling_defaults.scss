@@ -14,7 +14,8 @@ a {
     text-decoration: none;
 }
 
-h1, h2, h3, h4, h5, h6, p, b, header, main, aside, ul, li, .root-full-container, .modal-styling {
+h1, h2, h3, h4, h5, h6, p, b, header, main, aside, ul, 
+li, .root-full-container, .modal-styling, .new-column-container {
     transition: $speed-fast;
 }
 
@@ -174,7 +175,7 @@ button {
             top: 75% !important;
         }
         .list-item-error-indent {
-            left: calc(100% - 34vw) !important;
+            left: calc(100% - 8vw) !important;
         }
     }
 }

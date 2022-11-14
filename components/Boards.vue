@@ -67,11 +67,6 @@
         overflow-y: auto;
         overflow-x: hidden;
         box-sizing: border-box;
-        scrollbar-width: thin;
-
-        // &::-webkit-scrollbar {
-        //     width: 0;
-        // }
     }
 
     .create-board-sidebar-item {

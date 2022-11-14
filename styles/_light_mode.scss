@@ -113,12 +113,6 @@
         }
     }
 
-    .logo-full-container {
-        span {
-            color: $color-b;
-        }
-    }
-
     @media(min-width: $tablet) {
         aside {
             border-right: light-sidebar-border(); 

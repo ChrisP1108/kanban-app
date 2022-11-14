@@ -4,7 +4,7 @@
             <img class="logo" src="assets/images/logo.svg" alt="Logo">
             <h1>kanban</h1>
         </div>
-        <span v-if="$route.name === 'login'">UI Design By Frontendmentor.io</span>
+        
     </a>
 </template>
 
@@ -26,14 +26,5 @@
 
     h1 {
         font-size: 1.875rem;
-    }
-    span {
-        font-size: 0.625rem;
-        width: 100%;
-        margin-top: 0.25rem;
-        left: -1.125rem;
-        top: 100%;
-        text-align: center;
-        position: absolute;
     }
 </style>

@@ -101,12 +101,6 @@
         }
     }
 
-    .logo-full-container {
-        span {
-            color: $color-g;
-        }
-    }
-
     @media(min-width: $tablet) {
         aside {
             border-left: dark-sidebar-border();

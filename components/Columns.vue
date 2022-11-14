@@ -66,12 +66,15 @@
             },
             columns() {
                 if (this.selectedBoard && this.selectedBoard.columns.length) {
-                    const columnTasks = [...this.selectedBoard.columns].map(column => {
-                        return { 
-                            name: column, 
-                            tasks: this.selectedBoard.tasks && this.selectedBoard.tasks.length 
-                                ? [...this.selectedBoard.tasks].filter(task => task.status === column) : []
-                        }
+                    const tasksStatus = this.selectedBoard.tasks.map(task => task.status);
+                    const columnTasks = [...this.selectedBoard.columns]
+                        .filter(col => tasksStatus.includes(col))
+                        .map(column => {
+                            return { 
+                                name: column, 
+                                tasks: this.selectedBoard.tasks && this.selectedBoard.tasks.length 
+                                    ? [...this.selectedBoard.tasks].filter(task => task.status === column) : []
+                            }
                     });
                     return columnTasks
                 } else return []
@@ -97,7 +100,8 @@
         height: 100%;
         overflow-x: auto;
         overflow-y: hidden;
-        padding: 1.5rem 1rem;
+        padding: 1.5rem 1rem 2rem;
+        box-sizing: border-box;
     }
     .empty-list-container {
         width: 100%;
@@ -146,7 +150,8 @@
         display: flex;
         flex-direction: column;
         gap: 1.25rem;
-        padding: 1.5rem 0 1.25rem;
+        margin-top: 1.5rem;
+        padding-bottom: 2.5rem;
         overflow-y: auto;
     }
 </style>
