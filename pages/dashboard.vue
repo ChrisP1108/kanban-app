@@ -25,6 +25,7 @@
         <ModalAddEditTask v-if="modalToggled === 'addTask' || modalToggled ==='editTask'" :mode="modalToggled" />
         <ModalViewTask v-if="modalToggled === 'viewTask'" />
         <ModalAddEditBoard v-if="modalToggled === 'addBoard' || modalToggled ==='editBoard'" :mode="modalToggled" />
+        <ModalAddBoardColumn v-if="modalToggled === 'addColumn'" />
         <ModalDeleteTaskBoard v-if="modalToggled === 'deleteTask' || modalToggled ==='deleteBoard'" :mode="modalToggled" />
         <ModalDeleteUser v-if="modalToggled === 'deleteUser'" />
         <ModalUserMenu v-if="modalToggled === 'userMenu'" />
@@ -53,7 +54,7 @@
       },
       modalToggled() {
         const { mobileBoards, addTask, editTask, 
-          addBoard, editBoard, deleteTask, viewTask, deleteBoard, 
+          addBoard, addColumn, editBoard, deleteTask, viewTask, deleteBoard, 
           deleteUser, userMenu, error } = this.$store.state.modals;
         if (mobileBoards.toggled) {
           return 'mobileBoards'
@@ -66,6 +67,9 @@
         }
         if (addBoard.toggled) {
           return 'addBoard'
+        }
+        if (addColumn.toggled) {
+          return 'addColumn'
         }
         if (editBoard.toggled) {
           return 'editBoard'

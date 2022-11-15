@@ -17,6 +17,9 @@ export interface State {
         addBoard: {
             toggled: boolean
         };
+        addColumn: {
+            toggled: boolean
+        };
         editBoard: {
             toggled: boolean
         };

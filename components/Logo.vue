@@ -4,7 +4,6 @@
             <img class="logo" src="assets/images/logo.svg" alt="Logo">
             <h1>kanban</h1>
         </div>
-        
     </a>
 </template>
 

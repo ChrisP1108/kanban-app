@@ -8,6 +8,7 @@ function resetModals(state: State) {
     state.modals.addTask.toggled = false;
     state.modals.editTask.toggled= false;
     state.modals.addBoard.toggled= false;
+    state.modals.addColumn.toggled= false;
     state.modals.editBoard.toggled = false;
     state.modals.deleteTask.toggled = false;
     state.modals.viewTask.toggled = false;
@@ -34,6 +35,9 @@ export const state = (): State => ({
             taskSelected: ''
         },
         addBoard: {
+            toggled: false
+        },
+        addColumn: {
             toggled: false
         },
         editBoard: {
@@ -98,6 +102,9 @@ export const mutations = {
                 break;
             case 'addBoard':
                 state.modals.addBoard.toggled = true;
+                break;
+            case 'addColumn':
+                state.modals.addColumn.toggled = true;
                 break;
             case 'editBoard':
                 state.modals.editBoard.toggled = true;

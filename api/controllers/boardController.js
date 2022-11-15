@@ -57,6 +57,43 @@ const addBoard = asyncHandler(async (req, res) => {
     } else res.status(201).json({ _id: createBoard._id })
 });
 
+// @desc    Add board column
+// @route   POST /api/boards/:id/column
+// @access  Private
+
+const addBoardColumn = asyncHandler(async (req, res) => {
+    let { column } = req.body
+
+    // Check if column is empty
+
+    if (!column) {
+        res.status(400);
+        throw new Error('Please add a column')
+    }
+
+    // Check if duplicate column name exists on same board
+
+    const board = await Board.findById(req.params.id);
+
+    if (board.columns.map(col => col.toLowerCase()).includes(column.toLowerCase())) {
+        res.status(400);
+        throw new Error('Column with duplicate name already exists in the same board')
+    }
+
+    // Capitalize First Characters Of Names And Columns
+
+    column = caseFormatAll(column);
+
+    // Update Board For New Column
+
+    const updateBoard = await Board.findByIdAndUpdate(req.params.id, { columns: [...board.columns, column] })
+
+    if (!updateBoard) {
+        res.status(500);
+        throw new Error('Error saving board data to MongoDB')
+    } else res.status(200).json({ _id: updateBoard._id })
+});
+
 // @desc    Update board
 // @route   PUT /api/boards/:id
 // @access  Private
@@ -172,4 +209,4 @@ const deleteBoard = asyncHandler(async (req, res) => {
     } else res.status(200).json({ _id: deleteBoard._id })
 });
 
-module.exports = { addBoard, updateBoard, deleteBoard }
+module.exports = { addBoard, addBoardColumn, updateBoard, deleteBoard }

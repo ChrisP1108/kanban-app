@@ -42,7 +42,7 @@
                     <TaskListItem v-for="task in column.tasks" :key="task._id" :task="task" />
                 </ul>
             </div>
-            <button class="new-column-container" @click="toggleEditBoard">
+            <button class="new-column-container" @click="toggleAddColumn">
                 <h1>+ <span class="add-button-text ml-1"> 
                         New Column
                     </span></h1>
@@ -83,6 +83,9 @@
         methods: {
             toggleAddBoard() {
                 this.$store.commit('toggleModal', 'addBoard')
+            },
+            toggleAddColumn() {
+                this.$store.commit('toggleModal', 'addColumn')
             },
             toggleEditBoard() {
                 this.$store.commit('toggleModal', 'editBoard')
