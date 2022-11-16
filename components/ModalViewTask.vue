@@ -64,7 +64,7 @@
                 if (updateReq.status === 200) {
                     this.$store.commit('updateTask', {...this.selectedTask, status: value })
                 } else {
-                    this.$store.commit('setModalErrorMessage', `changing task status in ${this.selectedTask.title}`)
+                    this.$store.commit('setModalErrorMessage', `changing task status in "${this.selectedTask.title}"`)
                     this.$store.commit('toggleModal', 'error')
                 }
             },

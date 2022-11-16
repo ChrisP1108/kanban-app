@@ -1,7 +1,12 @@
 <template>
     <div class="modal-styling scrollbar-styling" @keyup="checkEnterKeypress">
         <Logo class="center-logo" />
-        <p class="frontendmentor-watermark">UI Design By Frontendmentor.io</p>
+        <a href="https://www.frontendmentor.io/challenges/kanban-task-management-web-app-wgQLt-HlbB" target="_blank">
+            UI Design By Frontendmentor.io
+        </a>
+        <a href="https://www.linkedin.com/in/christopher-paschall/" target="_blank" class="frontendmentor-watermark author-watermark">
+            App Developed By Chris Paschall
+        </a>
         <h2>Login</h2>
         <FieldInput class="username" label="Username" type="text" :input="{value: credentials.username.value } " placeholder="" 
             :empty-check="fieldsEmpty" :error-message="credentials.username.errMsg" :has-error="credentials.username.hasError"
@@ -107,7 +112,7 @@
                     if (httpStatusCode(loginReq) >= 404) {
                         this.$store.commit('setModalErrorMessage', `logging in`)
                         this.$store.commit('toggleModal', 'error')
-                    } else if (getDataAttempt && httpStatusCode(getDataAttempt) >= 404) {
+                    } else if (httpStatusCode(getDataAttempt) >= 404) {
                         this.$store.commit('setModalErrorMessage', `getting user data`)
                         this.$store.commit('toggleModal', 'error')
                     } else {
@@ -154,6 +159,7 @@
     .center-logo {
         display: flex;
         justify-content: center;
+        margin-bottom: 0.5rem;
 
     }
     h2 {
@@ -179,9 +185,20 @@
             flex-basis: 7.8125rem;
         }
     }
-    .frontendmentor-watermark {
-        text-align: center;
-        margin: 0.25rem 1rem 0 0;
+    a {
+        font-size: 0.8125rem;
+        display: block;
+        width: 100%;
         color: $color-g !important;
+        margin: 0.25rem 1rem 0 0;
+        text-align: center;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+    .author-watermark {
+        font-size: 0.6875rem !important;
+        line-height: 0.9em !important;
     }
 </style>
