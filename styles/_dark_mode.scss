@@ -17,7 +17,7 @@
         background: $color-d;
     }
 
-    h1, h2, p, b, label {
+    h1, h2, h3, p, b, label {
     color: $color-white;
     }
 
@@ -40,6 +40,11 @@
 
     .modal-styling {
         background: $color-e;
+
+        li {
+            color: $color-white;
+        }
+
     }
 
     input, textarea, .dropdown {

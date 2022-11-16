@@ -73,9 +73,11 @@
                             return { 
                                 name: column, 
                                 tasks: this.selectedBoard.tasks && this.selectedBoard.tasks.length 
-                                    ? [...this.selectedBoard.tasks].filter(task => task.status === column) : []
+                                    ? [...this.selectedBoard.tasks].filter(task => task.status === column)
+                                        .sort((a, b) => a.title > b.title ? 1 : -1)
+                                    : []
                             }
-                    });
+                    }).sort((a, b) => a.name > b.name ? 1 : -1);
                     return columnTasks
                 } else return []
             }
@@ -104,7 +106,6 @@
         overflow-x: auto;
         overflow-y: hidden;
         padding: 1.5rem 1rem 2rem;
-        box-sizing: border-box;
     }
     .empty-list-container {
         width: 100%;
@@ -148,7 +149,7 @@
         min-width: 17.5rem;
     }
     .task-list-items-container {
-        min-height: 100%;
+        min-height: calc(100% - 2.5rem);
         height: 0;
         display: flex;
         flex-direction: column;

@@ -1,6 +1,13 @@
 <template>
     <div class="modal-styling scrollbar-styling" @keyup="checkEnterKeypress">
         <h2>Add Column To Board "{{ selectedBoard.name }}"</h2>
+        <h3>Current Board Columns:</h3>
+        <ul>
+            <li v-for="(column, index) in boardColumns" :key="index">
+                {{ column  + ` (${selectedBoard.tasks.filter(task => task.status === column).length})`}}
+            </li>
+        </ul>
+        <p>Note: Columns That Have No Tasks With The Corresponding Task Status Value Will Not Display On The Dashboard Until Task(s) Have Their Status Set To Them.</p>
         <FieldInput class="column-name" label="Column" type="text" :input="column" 
             placeholder="e.g. Web Design" :empty-check="fieldsEmpty" :error-message="column.errMsg" 
             :has-error="column.hasError" :duplicates="{ haveDuplicates: false, array: columnNames, multiInputs: false }" 
@@ -38,6 +45,9 @@
             selectedBoard() {
                 return [...this.$store.state.userData.boards].find(board => 
                     board._id === this.$store.state.boardSelected);
+            },
+            boardColumns() {
+                return [...this.selectedBoard.columns.map(col => col).sort()]
             },
             columnNames() {
                 return this.selectedBoard.columns.map(col => ({ value: col }))
@@ -116,6 +126,21 @@
         cursor: auto !important;
     }
     h2 {
-        margin-bottom: 4rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+    h3 {
+        margin-bottom: 1rem;
+    }
+    .column-name {
+        margin-top: 1rem;
+    }
+    li {
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    p {
+        margin-top: 1rem;
+        font-size: 0.6875rem !important;
+        line-height: 1rem !important;
     }
 </style>
