@@ -15,7 +15,8 @@ a {
 }
 
 h1, h2, h3, h4, h5, h6, p, b, header, main, aside, ul, 
-li, .root-full-container, .modal-styling, .new-column-container {
+li, .root-full-container, .modal-styling, 
+.new-column-container, .mode-toggle-container, svg circle {
     transition: $speed-fast;
 }
 
@@ -180,6 +181,30 @@ button {
     }
 }
 
+.curved-border {
+    border-radius: 0.5rem;
+}
+
+button .button-content {
+    width: 100%;
+    height: 100%;
+}
+
+.board-icon {
+    fill: $color-g;
+    width: 1rem;
+    height: 1rem;
+}
+.board-active {
+    background: $color-a;
+    cursor: auto;
+    h3 {
+        color: $color-white;
+    }
+    .board-icon {
+        fill: $color-white;
+    }
+}
 .board-sidebar-item {
     display: flex;
     align-items: center;
@@ -207,15 +232,6 @@ button {
 
 .board-side-item-minwidth {
     min-width: $board-side-minwidth;
-}
-
-.curved-border {
-    border-radius: 0.5rem;
-}
-
-button .button-content {
-    width: 100%;
-    height: 100%;
 }
 
 .loading-icon-full {

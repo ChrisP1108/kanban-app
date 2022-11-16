@@ -19,7 +19,7 @@
 </template>
 
 <script>
-    import { cloneDeep } from 'lodash-es'
+    import { cloneDeep } from 'lodash-es';
     import { httpPut } from '../services/httpClient';
 
     export default {

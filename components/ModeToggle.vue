@@ -42,7 +42,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: $speed-medium;
     }
     .dark-mode {
         .mode-toggle-container {
@@ -75,7 +74,6 @@
         }
         circle {
             fill: $color-white;
-            transition: $speed-medium;
         }
     }
 </style>

@@ -79,19 +79,6 @@
         }
     }
     
-    .board-icon {
-        fill: $color-g;
-    }
-    .board-active {
-        background: $color-a;
-        cursor: auto;
-        h3 {
-            color: $color-white;
-        }
-        .board-icon {
-            fill: $color-white;
-        }
-    }
     .mode-toggle-outer-container {
         margin-top: auto;
         padding: 0 0.8125rem;

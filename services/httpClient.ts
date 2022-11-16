@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { cloneDeep } from 'lodash-es';
 
 // Base Url
 
@@ -7,21 +8,29 @@ const baseUrl: string = '/api';
 // HTTP Error Handling
 
 export function httpErrMsg(res: any): any {
+    if (res && res.status && res.status === 200) {
+        return 'no errors'
+    }
     if (res && res.message && res.message.response 
         && res.message.response.data && res.message.response.data.message) {
         return res.message.response.data.message
     }
     if (res.message) {
         return res.message
-    } else return null
+    } 
+    return 'no message'
 }
 
 // Error Status Code Handler
 
 export function httpStatusCode(res: any): any {
+    if (res && res.status) {
+        return res.status
+    }
     if (res && res.message && res.message.response && res.message.response.status) {
         return res.message.response.status
-    } else return null
+    } 
+    return 500
 }
 
 // GET Request

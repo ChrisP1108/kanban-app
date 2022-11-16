@@ -72,7 +72,7 @@
         align-items: center;
         min-height: 4rem;
         width: 100%;
-        padding: $padding-top-bottom $padding-sides;
+        padding: $padding-top-bottom;
     }
     .logo {
         width: 1.5rem;
