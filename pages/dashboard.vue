@@ -19,7 +19,9 @@
       <!-- Modal Overlay -->
 
       <div :class="[modalOverlay || isLoading ? 'modal-toggled' : '', 'modal-overlay']" @click="untoggleModal"></div> 
+      
       <!-- Modals -->
+      
       <div v-if="modalOverlay || isLoading" class="modals-container">
         <MobileBoard v-if="modalToggled === 'mobileBoards'" />
         <ModalAddEditTask v-if="modalToggled === 'addTask' || modalToggled ==='editTask'" :mode="modalToggled" />

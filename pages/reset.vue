@@ -4,6 +4,17 @@
             <div class="modals-container">
                 <ModalResetCredentials />
             </div>
+
+            <!-- Modal Overlay -->
+
+            <div :class="[modalError ? 'modal-toggled priority-layer' : '', 'modal-overlay']"
+                @click="untoggleError"></div> 
+            
+            <!-- Modals -->
+            
+            <div v-if="modalError" class="modals-container priority-layer">
+                <ModalError />
+            </div>
         </div>
     </div>
 </template>
@@ -15,12 +26,20 @@ import Vue from 'vue';
         computed: {
             darkModeToggled() {
                 return this.$store.state.darkModeToggled
+            },
+            modalError() {
+                return this.$store.state.modals.error.toggled
             }
         },
         mounted() {
             const storageDarkMode = localStorage.getItem("darkMode") === 'true';
             if (this.darkModeToggled !== storageDarkMode) {
                 this.$store.commit('toggleDarkMode');
+            }
+        },
+        methods: {
+            untoggleError() {
+                this.$store.commit('toggleModal')
             }
         }
     });

@@ -273,3 +273,7 @@ button .button-content {
         background: $color-a;
     }
 }
+
+.priority-layer {
+    z-index: 1000 !important;
+}
