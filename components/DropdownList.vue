@@ -1,5 +1,5 @@
 <template>
-    <ul id="dropdown-container" :class="[dropdownToggled ? 'dropdown-active' : '' ,'dropdown-toggled-container curved-border']">
+    <ul id="dropdown-container" :class="[dropdownToggled ? 'dropdown-active' : 'dropdown-inactive' ,'dropdown-toggled-container curved-border']">
         <li v-for="option in dropdownOptions" :key="option" :class="[optionSelected === option ? 'dropdown-item-active' : '', 
             option.includes('Delete') ? 'delete-board-text-color' : '']" @click="setOptionSelected(option)">
                 {{ option }}
@@ -36,14 +36,15 @@
         width: 100%;
         top: 100%;
         position: absolute;
-        height: 0;
+        // height: 0;
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
         background: red;
         transform: rotateX(90deg);
         transform-origin: top;
-        transition: 0s !important;
+        transition-timing-function: step-end;
+        // transition: 0s !important;
         padding: 1rem !important;
         li {
             cursor: pointer;
@@ -61,6 +62,9 @@
         transform: rotateX(0deg);
     }
 
+    .dropdown-inactive {
+        transition: 0s !important;
+    }
 
     .delete-board-text-color {
         color: $color-j !important;

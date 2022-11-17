@@ -6,15 +6,17 @@
             : deletingBoard ? 'board' : '[Error]'}}? This action {{ deletingTask  
             ? '' : deletingBoard ? 'will remove all columns and tasks and' : '[Error]'}} 
             cannot be reversed.</p>
-        <button class="button-destructive" @click="confirmDelete">
-            <div v-if="isLoading" class="button-content">
-                <LoadingIcon />
-            </div>
-            <div v-if="!isLoading" class="button-content">
-                Delete
-            </div>
-        </button>
-        <button class="button-secondary" @click="cancelDelete">Cancel</button>
+        <div class="stack-buttons-container">
+            <button class="button-destructive" @click="confirmDelete">
+                <div v-if="isLoading" class="button-content">
+                    <LoadingIcon />
+                </div>
+                <div v-if="!isLoading" class="button-content">
+                    Delete
+                </div>
+            </button>
+            <button class="button-secondary" @click="cancelDelete">Cancel</button>
+        </div>
     </div>
 </template>
 

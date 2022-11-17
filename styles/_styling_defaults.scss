@@ -277,3 +277,17 @@ button .button-content {
 .priority-layer {
     z-index: 1000 !important;
 }
+
+@media(min-width: 512px) {
+    .stack-buttons-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        // height: 2.5rem;
+        margin-top: 1.5rem;
+
+        button {
+            margin: 0 !important;
+        }
+    }
+}

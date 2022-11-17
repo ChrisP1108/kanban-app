@@ -10,15 +10,17 @@
         <FieldInput class="password" label="Password" type="password" :input="{ value: credentials.password.value }" 
             placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.password.errMsg" :has-error="credentials.password.hasError"
             @value-change="(value) => credentials.password.value = value" @error-found="(value) => credentials.password.errFound = value" />
-        <button class="button-destructive" @click="confirmDelete">
-            <div v-if="isLoading" class="button-content">
-                <LoadingIcon />
-            </div>
-            <div v-if="!isLoading" class="button-content">
-                Delete
-            </div>
-        </button>
-        <button class="button-secondary" @click="cancelDelete">Cancel</button>
+        <div class="stack-buttons-container">
+            <button class="button-destructive" @click="confirmDelete">
+                <div v-if="isLoading" class="button-content">
+                    <LoadingIcon />
+                </div>
+                <div v-if="!isLoading" class="button-content">
+                    Delete
+                </div>
+            </button>
+            <button class="button-secondary" @click="cancelDelete">Cancel</button>
+        </div>
     </div>
 </template>
 
