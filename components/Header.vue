@@ -1,5 +1,10 @@
 <template>
     <header>
+        <div class="logo-user-container">
+            <Logo />
+            <UserIcon class="user-icon-position" />
+        </div>
+        <div class="logo-divider"></div>
         <img class="logo" src="assets/images/logo.svg" alt="Logo">
         <h2>Platform Launch</h2>
         <div class="dropdown-container" @click="toggleMobileBoard">
@@ -78,9 +83,30 @@
         width: 1.5rem;
         height: 1.5625rem;
     }
+
+    .logo-user-container {
+        display: none;
+        position: relative;
+        padding-right: 4rem;
+        min-width: calc($sidebar-width - 1.5rem);
+        transition: $speed-fast;
+    }
+    .logo-user-width-reduced {
+        min-width: 0 !important;
+    }
     h2 {
         margin-left: 1em;
         margin-right: 0.5em;
+    }
+    .user-icon-position {
+        left: calc(100% - 2.25rem) !important;
+        top: -0.25rem;
+    }
+    .logo-divider {
+        height: calc(100% + 2rem);
+        margin-right: 1.5rem;
+        margin-left: -1px;
+        display: none;
     }
 
     @media (max-width: 340px) {
@@ -138,6 +164,12 @@
     }
 
     @media (min-width: $tablet) {
+        .logo-user-container {
+            display: block;
+        }
+        .logo-divider {
+            display: block;
+        }
         header {
             padding: $padding-top-bottom $padding-sides-tablet;
             min-height: 5.0625rem;

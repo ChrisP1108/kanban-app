@@ -3,9 +3,9 @@
     <div class="root-full-container">
       <div v-if="!isLoading">
         <div class="root-boxed-container">
-            <Sidebar />
+            <Header />
             <div class="primary-content-container">
-              <Header />
+              <Sidebar />
               <Columns />
             </div>
         </div>
@@ -132,9 +132,10 @@
 
   .primary-content-container {
     display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    flex-direction: row;
+    // overflow: hidden;
     width: 100%;
+    height: 100%;
   }
   .trans-speed {
     transition: $speed-fast; 
@@ -143,4 +144,8 @@
     opacity: 0;
   }
   
+  .root-boxed-container {
+    flex-direction: column;
+    height: 100vh;
+  }
 </style>

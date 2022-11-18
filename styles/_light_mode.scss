@@ -103,6 +103,10 @@
         background: $color-a-10;
     }
 
+    .logo-divider {
+        border-right: light-sidebar-border();
+    }
+
     .scrollbar-styling {
 
         &::-webkit-scrollbar {

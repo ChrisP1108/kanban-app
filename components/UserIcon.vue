@@ -1,5 +1,5 @@
 <template>
-    <img class="logo" src="assets/images/user-font-awesome.svg" alt="Logo" @click="toggleUserMenu">
+    <img src="assets/images/user-font-awesome.svg" alt="Logo" @click="toggleUserMenu">
 </template>
 
 <script>

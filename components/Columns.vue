@@ -105,7 +105,7 @@
         height: 100%;
         overflow-x: auto;
         overflow-y: hidden;
-        padding: 1.5rem 1rem 2rem;
+        padding: 1.5rem 1.5rem 2rem;
     }
     .empty-list-container {
         width: 100%;

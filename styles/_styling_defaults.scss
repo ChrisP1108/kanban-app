@@ -48,8 +48,8 @@ body {
 }
 
 .root-full-container {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     min-width: 100vw;
     min-height: 100vh;
     max-width: 100vw;
@@ -60,6 +60,7 @@ body {
 }
 .root-boxed-container {
     min-height: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
     max-width: 1920px;

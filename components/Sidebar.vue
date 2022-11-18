@@ -1,9 +1,5 @@
 <template>
     <aside :class="[!sidebarToggled ? 'sidebar-hidden' : '']">
-        <div class="logo-user-container">
-            <Logo />
-            <UserIcon />
-        </div>
         <div class="boards-toggle-container scrollbar-styling">
             <Boards class="boards-container board-side-item-minwidth" />
             <div @click="toggleSidebar">
@@ -33,17 +29,16 @@
         display: flex;
         flex-direction: column;
         padding: 2rem 0 2rem;
-        height: 100vh;
         z-index: 2;
         flex-basis: 0;
         overflow: hidden;
         min-width: 0;
         position: relative;
         left: 0%;
+        margin-top: -1px;
     }
 
     .boards-container {
-        padding-top: 3.5rem;
         flex: 1;
     }
 
@@ -55,15 +50,6 @@
         overflow-x: hidden;
         padding-right: 1.5rem !important;
     }
-
-    .logo-user-container {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        position: relative;
-        min-width: $board-side-minwidth;
-    }
-
 
     .sidebar-hidden {
         min-width: 0;
@@ -80,8 +66,8 @@
 
     @media (min-width: $tablet) {
         aside {
-            min-width: 16.3125rem;
-            flex-basis: 16.3125rem;
+            min-width: $sidebar-width;
+            flex-basis: $sidebar-width;
             z-index: 2;
             position: relative;
             left: 0%;

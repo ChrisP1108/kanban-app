@@ -1,6 +1,6 @@
 <template>
     <a href="." class="logo-full-container">
-        <div class="logo-title-container board-side-item-minwidth">
+        <div class="logo-title-container">
             <img class="logo" src="assets/images/logo.svg" alt="Logo">
             <h1>kanban</h1>
         </div>
@@ -13,7 +13,7 @@
     }
     .logo-title-container {
         display: flex;
-        padding: 0 $padding-sides-tablet;
+        // padding: 0 $padding-sides-tablet;
         align-items: center;
         gap: 1rem;
     }
@@ -25,5 +25,9 @@
 
     h1 {
         font-size: 1.875rem;
+    }
+
+    a {
+        text-decoration: none !important;
     }
 </style>
