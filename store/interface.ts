@@ -3,6 +3,10 @@ import { ObjectId } from "mongoose";
 export interface State {
     darkModeToggled: boolean;
     sidebarToggled: boolean;
+    taskItemDragging: {
+        isDragging: boolean;
+        columnName: string;
+    };
     modals: {
         mobileBoards: {
             toggled: boolean
@@ -69,4 +73,9 @@ export interface Task {
         checked: boolean
     }],
     status: string,
+}
+
+export interface TaskItemDragging {
+    isDragging: boolean;
+    columnName: string;
 }

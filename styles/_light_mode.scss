@@ -29,6 +29,10 @@
         font-weight: 700;
     }
 
+    header h4 {
+        font-weight: 500;
+    }
+
 
     .button-secondary {
         background: $color-a-10;
@@ -119,6 +123,10 @@
         &::-webkit-scrollbar {
             background: $color-h;
         }
+    }
+
+    .mouseover-active {
+        background: $color-h;
     }
 
     @media(min-width: $tablet) {

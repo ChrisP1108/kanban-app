@@ -1,4 +1,4 @@
-import { State, Board, Task } from './interface';
+import { State, Board, Task, TaskItemDragging } from './interface';
 
 
 // Reset Modals
@@ -23,6 +23,10 @@ function resetModals(state: State) {
 export const state = (): State => ({
     darkModeToggled: true,
     sidebarToggled: true,
+    taskItemDragging: {
+        isDragging: false,
+        columnName: ''
+    },
     modals: {
         mobileBoards: {
             toggled: false
@@ -187,5 +191,8 @@ export const mutations = {
     },
     setModalErrorMessage(state: State, errorMessage: string): void {
         state.modalErrorMessage = errorMessage;
+    },
+    setTaskItemDragging(state: State, itemDragging: TaskItemDragging): void {
+        state.taskItemDragging = itemDragging;
     }
 }

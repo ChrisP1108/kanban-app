@@ -38,8 +38,10 @@
         <div v-if="selectedBoard && selectedBoard.tasks.length" class="all-columns">
             <div v-for="(column, index) in columns" :key="index" class="task-column-list">
                 <TaskListHeading :index="index" :task-status-heading="column.name" :length="column.tasks.length" />
-                <ul class="task-list-items-container scrollbar-styling">
-                    <TaskListItem v-for="task in column.tasks" :key="task._id" :task="task" />
+                <ul :class="[itemDraggingOver === column.name && draggingEvent.isDragging 
+                    ? 'mouseover-active' : '', 'task-list-items-container scrollbar-styling']" 
+                    :data-columnName="column.name" @mouseover="itemDragging">
+                        <TaskListItem v-for="task in column.tasks" :key="task._id" :task="task" />
                 </ul>
             </div>
             <button class="new-column-container" @click="toggleAddColumn">
@@ -53,11 +55,11 @@
 </template>
 
 <script>
-
     export default {
         data() {
             return {
-                headingDotColors: ['']
+                headingDotColors: [''],
+                itemDraggingOver: null
             }
         },
         computed: {
@@ -80,7 +82,10 @@
                     }).sort((a, b) => a.name > b.name ? 1 : -1);
                     return columnTasks
                 } else return []
-            }
+            },
+            draggingEvent() {
+                return this.$store.state.taskItemDragging
+            },
         },
         methods: {
             toggleAddBoard() {
@@ -94,6 +99,22 @@
             },
             toggleAddTask() {
                 this.$store.commit('toggleModal', 'addTask')
+            },
+            itemDragging(e) {
+                let columnName = null;
+                let element = null;
+                e.path.forEach(path => {
+                    if (path.dataset && path.dataset.columnname) {
+                        element = path;
+                        columnName = path.dataset.columnname
+                    }
+                });
+                this.itemDraggingOver = columnName;
+                this.$store.commit('setTaskItemDragging', { ...this.draggingEvent, columnName })
+                if (columnName && element && this.draggingEvent.isDragging
+                    && this.draggingEvent.columnName !== columnName) {
+                        return true
+                } else return false
             }
         }
     }
@@ -157,8 +178,17 @@
         margin-top: 1.5rem;
         padding-bottom: 2.5rem;
         overflow-y: auto;
+        user-select: none;
+        -webkit-user-select: none; 
+        -moz-user-select: none; 
     }
+    .mouseover-active {
+        border-radius: 0.5rem;
 
+        li {
+            opacity: 0.5
+        }
+    }
     @media (min-width: $tablet) {
         main {
             padding: 1.5rem 1.5rem 2rem;

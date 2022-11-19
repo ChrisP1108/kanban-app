@@ -80,12 +80,16 @@
         min-height: 4rem;
         width: 100%;
         padding: $padding-top-bottom;
+        z-index: 10;
     }
     .logo {
         width: 1.5rem;
         height: 1.5625rem;
     }
-
+    h2 {
+        margin-left: 1rem;
+        margin-right: 0.5rem;
+    }
     .logo-user-container {
         display: none;
         position: relative;

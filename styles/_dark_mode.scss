@@ -110,6 +110,10 @@
         }
     }
 
+    .mouseover-active {
+        background: $color-f;
+    }
+
     @media(min-width: $tablet) {
         aside {
             border-right: dark-sidebar-border(); 
