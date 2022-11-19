@@ -35,7 +35,7 @@
         min-width: 0;
         position: relative;
         left: 0%;
-        margin-top: -1px;
+        margin-top: -0.0625rem;
     }
 
     .boards-container {

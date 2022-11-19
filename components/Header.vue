@@ -6,7 +6,9 @@
         </div>
         <div class="logo-divider"></div>
         <img class="logo" src="assets/images/logo.svg" alt="Logo">
+
         <h2>Platform Launch</h2>
+
         <div class="dropdown-container" @click="toggleMobileBoard">
             <img :class="[mobileBoardToggled ? 'dropdown-arrow-toggled' : '', 'dropdown-arrow']" src="assets/images/dropdown-arrow.svg" alt="Dropdown Arrow">
         </div>
@@ -94,10 +96,6 @@
     .logo-user-width-reduced {
         min-width: 0 !important;
     }
-    h2 {
-        margin-left: 1em;
-        margin-right: 0.5em;
-    }
     .user-icon-position {
         left: calc(100% - 2.25rem) !important;
         top: -0.25rem;
@@ -105,7 +103,7 @@
     .logo-divider {
         height: calc(100% + 2rem);
         margin-right: 1.5rem;
-        margin-left: -1px;
+        margin-left: -0.0625rem;
         display: none;
     }
 
@@ -197,6 +195,17 @@
         .button-mobile {
             padding: 1rem 1.5rem;
             font-size: inherit;
+        }
+    }
+
+    @media (min-width: $desktop) {
+        header {
+            min-height: 6rem;
+        }
+        h2 {
+            font-size: $heading-xl-size;
+            line-height: $heading-xl-height;
+            font-weight: $bold;
         }
     }
     .button-inactive {

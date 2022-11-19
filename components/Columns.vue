@@ -105,7 +105,7 @@
         height: 100%;
         overflow-x: auto;
         overflow-y: hidden;
-        padding: 1.5rem 1.5rem 2rem;
+        padding: 1.5rem 1rem 2rem;
     }
     .empty-list-container {
         width: 100%;
@@ -157,5 +157,11 @@
         margin-top: 1.5rem;
         padding-bottom: 2.5rem;
         overflow-y: auto;
+    }
+
+    @media (min-width: $tablet) {
+        main {
+            padding: 1.5rem 1.5rem 2rem;
+        }
     }
 </style>

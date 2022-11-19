@@ -1,7 +1,14 @@
 <template>
     <li class="task-list-item" @click="itemClicked">
         <h3>{{ task.title }}</h3>
-        <b>{{ subtasksCheckedQty() }} of {{ task.subtasks.length }} subtasks</b>
+        <div class="subtask-checkmark-container">
+            <b :class="[allSubtasksChecked ? 'strike-through' : '']">
+                {{ subtasksCheckedQty() }} of {{ task.subtasks.length }} subtasks
+            </b>
+            <div v-if="allSubtasksChecked">
+                <CheckmarkIcon />
+            </div>
+        </div>
     </li>
 </template>
 
@@ -11,6 +18,11 @@
             task: {
                 type: Object,
                 default: () => { }
+            }
+        },
+        computed: {
+            allSubtasksChecked() {
+                return this.task.subtasks.every(sub => sub.checked)
             }
         },
         methods: {
@@ -26,14 +38,11 @@
 </script>
 
 <style lang="scss" scoped>
-    h3 {
-        margin-bottom: 0.25rem;
-    }
     b {
         color: $color-g !important;
     }
     .task-list-item {
-        padding: 1.5rem 1rem;
+        padding: 1.25rem 1rem;
         border-radius: $button-container-radius;
         cursor: pointer;
 
@@ -42,5 +51,15 @@
                 color: $color-a !important;
             }
         }
+    }
+    .strike-through {
+        text-decoration: line-through;
+    }
+    .subtask-checkmark-container {
+        margin-top: 0.1875rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 1.625rem;
     }
 </style>
