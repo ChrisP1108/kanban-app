@@ -15,10 +15,11 @@
     "generate": "nuxt generate",
     "lint:js": "eslint --ext \".js,.vue\" --ignore-path .gitignore .",
     "lint:style": "stylelint \"**/*.{vue,css}\" --ignore-path .gitignore",
-    "prepare": "is-ci || husky install",
+    "prepare": "husky install",
     "lint": "npm run lint:js && npm run lint:style",
     "API": "nodemon ./api/api.js",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install && npm run build"
+    "heroku-prebuild": "npm config set ignore-scripts true",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=true npm install && npm run build"
   },
   "lint-staged": {
     "*.{js,vue}": "eslint",
