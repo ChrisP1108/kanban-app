@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Kanban App From FrontEndMentor.io",
   "author": "Chris Paschall",
+  "engines": {
+    "node": "18.x"
+  },
   "main": "server.js",
   "private": true,
   "scripts": {
