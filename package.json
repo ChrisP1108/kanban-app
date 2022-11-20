@@ -17,6 +17,7 @@
     "lint:style": "stylelint \"**/*.{vue,css}\" --ignore-path .gitignore",
     "lint": "npm run lint:js && npm run lint:style",
     "API": "nodemon ./api/api.js",
+    "prepare": "husky install",
     "heroku-prebuild": "npm config set ignore-scripts true",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=true npm install && npm run build"
   },
