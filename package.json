@@ -18,8 +18,8 @@
     "lint": "npm run lint:js && npm run lint:style",
     "API": "nodemon ./api/api.js",
     "prepare": "husky install",
-    "heroku-prebuild": "npm config set ignore-scripts true",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install && npm run build"
+    "heroku-prebuild": "npm install --include=dev",
+    "heroku-postbuild": "npm run build"
   },
   "lint-staged": {
     "*.{js,vue}": "eslint",
