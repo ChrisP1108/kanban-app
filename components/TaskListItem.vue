@@ -15,7 +15,6 @@
 
 <script>
     import { httpPut } from '../services/httpClient';
-
     export default {
         data() {
             return {
@@ -102,7 +101,6 @@
         padding: 1.25rem 1rem;
         border-radius: $button-container-radius;
         cursor: pointer;
-
         &:hover {
             h3 {
                 color: $color-a !important;
@@ -119,7 +117,6 @@
         align-items: center;
         min-height: 1.625rem;
     }
-
     .dragging {
         position: fixed;
         width: 17.5rem;

@@ -15,7 +15,8 @@
     "prepare": "husky install",
     "lint": "npm run lint:js && npm run lint:style",
     "server": "node server.js",
-    "API": "nodemon ./api/api.js"
+    "API": "nodemon ./api/api.js",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install && npm run build"
   },
   "lint-staged": {
     "*.{js,vue}": "eslint",

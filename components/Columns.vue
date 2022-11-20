@@ -155,11 +155,9 @@
         margin-top: 2.5rem;
         padding: 1rem;
         border-radius: $button-container-radius;
-
         h1 {
             color: $color-g;
         }
-
         &:hover h1 {
             color: $color-a;
         }
@@ -184,7 +182,6 @@
     }
     .mouseover-active {
         border-radius: 0.5rem;
-
         li {
             opacity: 0.5
         }
