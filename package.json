@@ -4,7 +4,7 @@
   "description": "Kanban App From FrontEndMentor.io",
   "author": "Chris Paschall",
   "engines": {
-    "node": "18.x"
+    "node": "14.x"
   },
   "main": "server.js",
   "private": true,
@@ -19,7 +19,7 @@
     "API": "nodemon ./api/api.js",
     "prepare": "husky install",
     "heroku-prebuild": "npm config set ignore-scripts true",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --include dev && npm run build"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install && npm run build"
   },
   "lint-staged": {
     "*.{js,vue}": "eslint",
