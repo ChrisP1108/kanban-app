@@ -44,6 +44,7 @@
     "jsonwebtoken": "^8.5.1",
     "lodash-es": "^4.17.21",
     "mongoose": "^6.6.5",
+    "morgan": "^1.10.0",
     "nuxt": "^2.15.7"
   },
   "devDependencies": {
@@ -63,7 +64,6 @@
     "eslint-plugin-vue": "^7.12.1",
     "fibers": "^5.0.3",
     "lint-staged": "^10.5.4",
-    "morgan": "^1.10.0",
     "nodemon": "^2.0.20",
     "prettier": "^2.3.2",
     "sass": "^1.55.0",
