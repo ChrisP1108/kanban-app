@@ -87,6 +87,7 @@
 
                 this.isLoading = true;
                 const loginReq = await httpPost('/user/login', { username, password });
+                console.log(loginReq);
                 if (loginReq.status === 200) {
                     if (this.$store.state.loginRedirect) {
                         this.$store.commit('toggleLoginRedirect');
@@ -112,7 +113,7 @@
                     if (httpStatusCode(loginReq) >= 404) {
                         this.$store.commit('setModalErrorMessage', `logging in`)
                         this.$store.commit('toggleModal', 'error')
-                    } else if (httpStatusCode(getDataAttempt) >= 404) {
+                    } else if (loginReq.status === 200 && httpStatusCode(getDataAttempt) >= 404) {
                         this.$store.commit('setModalErrorMessage', `getting user data`)
                         this.$store.commit('toggleModal', 'error')
                     } else {
