@@ -280,7 +280,6 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
 <style lang="scss" scoped>
     .modal-styling {
         width: 100%;
-        overflow: hidden;
     }
     .button-secondary {
         margin-bottom: 1.5rem !important;

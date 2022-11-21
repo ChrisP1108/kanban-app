@@ -299,7 +299,6 @@ import { httpPost, httpGet, httpErrMsg, httpStatusCode } from '../services/httpC
 <style lang="scss" scoped>
     .modal-styling {
         width: 100%;
-        overflow: hidden;
     }
     .button-secondary {
         margin-bottom: 1.5rem !important;
