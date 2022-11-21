@@ -87,7 +87,6 @@
 
                 this.isLoading = true;
                 const loginReq = await httpPost('/user/login', { username, password });
-                console.log(loginReq);
                 if (loginReq.status === 200) {
                     if (this.$store.state.loginRedirect) {
                         this.$store.commit('toggleLoginRedirect');

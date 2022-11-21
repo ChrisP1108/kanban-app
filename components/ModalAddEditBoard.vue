@@ -92,7 +92,7 @@
                             canModify: !this.selectedBoard.tasks.some(task => task.status === column),
                             value: column
                         } 
-                    }) 
+                    }).sort((a, b) => a.value > b.value ? 1 : -1) 
                     : [{ 
                         canModify: true, 
                         value: '' 

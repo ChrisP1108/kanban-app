@@ -41,7 +41,7 @@
             subtasks() {
                 const task = [...this.$store.state.userData.boards].find(board => board._id.toString() === this.$store.state.boardSelected)
                     .tasks.find(task => task._id.toString() === this.$store.state.taskSelected);
-                return cloneDeep(task.subtasks)
+                return cloneDeep([...task.subtasks].sort((a, b) => a.name > b.name ? 1 : -1))
             }
         },
         methods: {
