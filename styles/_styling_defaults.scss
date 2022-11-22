@@ -221,6 +221,11 @@ button .button-content {
     &:hover:not(.board-active) h3 {
         color: $color-a;
     }
+
+    &:hover:not(.board-active) .board-icon {
+        fill: $color-a;
+    }
+
     &:hover:not(.board-active) .board-sidebar-icon {
         fill: $color-a;
     }

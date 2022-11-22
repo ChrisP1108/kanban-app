@@ -9,7 +9,7 @@
 <style lang="scss" scoped>
     svg {
         g {
-            fill: $color-a;
+            fill: $color-a !important;
         }
     }
 </style>

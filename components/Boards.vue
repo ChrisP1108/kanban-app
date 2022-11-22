@@ -72,10 +72,10 @@
     .create-board-sidebar-item {
         margin-bottom: 1rem;
         .board-sidebar-icon {
-            fill: $color-a;
+            fill: $color-a !important;
         }
         h3 {
-            color: $color-a;
+            color: $color-a !important;
         }
     }
     

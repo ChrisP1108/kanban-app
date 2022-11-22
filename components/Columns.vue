@@ -13,7 +13,7 @@
 
         <!-- If Selected Board Has No Columns -->
 
-        <div v-if="selectedBoard && !columns.length" class="empty-list-container">
+        <div v-if="selectedBoard && !selectedBoard.columns.length" class="empty-list-container">
             <h2>This board is empty.  Create a new column to get started.</h2>
             <button class="button-primary-l" @click="toggleEditBoard">
                 + <span class="add-button-text ml-1"> 
@@ -24,7 +24,7 @@
 
         <!-- If Selected Board Has No Tasks -->
 
-        <div v-if="columns.length && selectedBoard && !selectedBoard.tasks.length" class="empty-list-container">
+        <div v-if="selectedBoard && selectedBoard.columns.length && !selectedBoard.tasks.length" class="empty-list-container">
             <h2>This board has no tasks.  Create a new task to get started.</h2>
             <button class="button-primary-l" @click="toggleAddTask">
                 + <span class="add-button-text ml-1"> 
@@ -156,10 +156,10 @@
         padding: 1rem;
         border-radius: $button-container-radius;
         h1 {
-            color: $color-g;
+            color: $color-g !important;
         }
         &:hover h1 {
-            color: $color-a;
+            color: $color-a !important;
         }
     }
     .task-column-list {
