@@ -21,7 +21,7 @@
 </template>
 
 <script>
-    import { httpDelete  } from '../services/httpClient';
+    import { httpDelete, httpStatusCode  } from '../services/httpClient';
     
     export default {
         props: {
@@ -75,6 +75,9 @@
                         this.$store.commit('deleteBoard', this.selectedBoardId);
                         this.$store.commit('toggleModal');
                     } else {
+                        if (httpStatusCode(boardDelReq) === 401) {
+                            this.$router.push('/login')
+                        }
                         this.isLoading = false;
                         this.$store.commit('setModalErrorMessage', `deleting board "${this.boardName}"`)
                         this.$store.commit('toggleModal', 'error')
@@ -86,6 +89,9 @@
                         this.$store.commit('deleteTask', this.selectedTaskId);
                         this.$store.commit('toggleModal');
                     } else {
+                        if (httpStatusCode(taskDelReq) === 401) {
+                            this.$router.push('/login')
+                        }
                         this.isLoading = false;
                         this.$store.commit('setModalErrorMessage', `deleting task "${this.taskTitle}"`)
                         this.$store.commit('toggleModal', 'error')

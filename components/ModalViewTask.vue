@@ -20,7 +20,7 @@
 
 <script>
     import { cloneDeep } from 'lodash-es';
-    import { httpPut } from '../services/httpClient';
+    import { httpPut, httpStatusCode } from '../services/httpClient';
 
     export default {
         data() {
@@ -64,6 +64,9 @@
                 if (updateReq.status === 200) {
                     this.$store.commit('updateTask', {...this.selectedTask, status: value })
                 } else {
+                    if (httpStatusCode(updateReq) === 401) {
+                        this.$router.push('/login')
+                    }
                     this.$store.commit('setModalErrorMessage', `changing task status in "${this.selectedTask.title}"`)
                     this.$store.commit('toggleModal', 'error')
                 }
@@ -73,6 +76,9 @@
                 if (updateReq.status === 200) {
                     this.$store.commit('updateTask', {...this.selectedTask, subtasks: cloneDeep(value) })
                 } else {
+                    if (httpStatusCode(updateReq) === 401) {
+                        this.$router.push('/login')
+                    }
                     this.$store.commit('setModalErrorMessage', `checking subtask in "${this.selectedTask.title}"`)
                     this.$store.commit('toggleModal', 'error')
                 }

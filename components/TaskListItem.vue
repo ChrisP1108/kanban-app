@@ -14,7 +14,7 @@
 </template>
 
 <script>
-    import { httpPut } from '../services/httpClient';
+    import { httpPut, httpStatusCode } from '../services/httpClient';
     export default {
         data() {
             return {
@@ -85,6 +85,9 @@
                 if (updateReq.status === 200) {
                     this.$store.commit('updateTask', {...this.task, status: value })
                 } else {
+                    if (httpStatusCode(updateReq) === 401) {
+                        this.$router.push('/login')
+                    }
                     this.$store.commit('setModalErrorMessage', `changing task status in "${this.task.title}"`)
                     this.$store.commit('toggleModal', 'error')
                 }

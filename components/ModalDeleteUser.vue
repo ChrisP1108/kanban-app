@@ -102,6 +102,9 @@
                 
                 } else {
                     this.isLoading = false;
+                    if (httpStatusCode(deleteReq) === 401) {
+                            this.$router.push('/login')
+                        }
                     if (httpStatusCode(deleteReq) >= 404) {
                         this.$store.commit('setModalErrorMessage', `deleting user account`)
                         this.$store.commit('toggleModal', 'error')

@@ -198,6 +198,9 @@
                         this.$store.commit('toggleModal');
                     } else {
                         this.isLoading = false;
+                        if (httpStatusCode(addReq) === 401) {
+                            this.$router.push('/login')
+                        }
                         if (httpStatusCode(addReq) >= 404) {
                             this.$store.commit('setModalErrorMessage', `adding task "${title}"`)
                             this.$store.commit('toggleModal', 'error')
@@ -220,6 +223,9 @@
                         this.$store.commit('toggleModal');
                     } else {
                         this.isLoading = false;
+                        if (httpStatusCode(updateReq) === 401) {
+                            this.$router.push('/login')
+                        }
                         if (httpStatusCode(updateReq) >= 404) {
                             this.$store.commit('setModalErrorMessage', `editing task "${title}"`)
                             this.$store.commit('toggleModal', 'error')
