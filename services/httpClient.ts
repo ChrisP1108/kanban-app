@@ -1,10 +1,9 @@
 import axios from 'axios';
 import { isDemo, demoIdGen, demoDelay } from './demoAccount';
-import { State } from '../store/interface'
 
 // Base Url
 
-const baseUrl: string = '/api';
+const baseUrl: any = process.env.baseUrl;
 
 // HTTP Error Handling
 

@@ -1,6 +1,6 @@
-// Usernames desisnated as demo accounts
+// Usernames designated as demo accounts
 
-export const testAccountUser: any = { username: 'username', password: 'password'};
+export const testAccountUser: any = { username: process.env.demoUsername, password: process.env.demoPassword };
 
 // Demo Delay
 
