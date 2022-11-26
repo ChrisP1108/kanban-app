@@ -23,6 +23,14 @@
             </div>
         </button>
         <button class="button-secondary button-margin" @click="goToRegister">Register New User</button>
+        <button class="button-demo" @click="previewDemo">
+            <div v-if="loadingDemo" class="button-content">
+                <LoadingIcon />
+            </div>
+            <div v-if="!loadingDemo" class="button-content">
+                Preview Demo
+            </div>
+        </button>
         <div class="mode-forgot-container">
             <ModeToggle class="mode-container" />
             <button class="button-primary-s" @click="resetCredentials">Forgot?</button>
@@ -31,6 +39,7 @@
 </template>
 
 <script>
+    import { testAccountUser } from '../services/demoAccount';
     import { httpGet, httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
 
     export default {
@@ -52,6 +61,7 @@
                 },
                 fieldsEmpty: false,
                 isLoading: false,
+                loadingDemo: false,
             }
         },
         methods: {
@@ -85,7 +95,9 @@
 
                 // HTTP Post Request For Login Authentication
 
-                this.isLoading = true;
+                if (!this.loadingDemo) {
+                    this.isLoading = true;
+                }
                 const loginReq = await httpPost('/user/login', { username, password });
                 if (loginReq.status === 200) {
                     if (this.$store.state.loginRedirect) {
@@ -93,7 +105,7 @@
                     }
 
                 // HTTP Get Request For All User Boards And Corresponding Tasks  And Store Commit If Login Successful
-
+                    
                     getDataAttempt = await httpGet('/user/data');
                     if (getDataAttempt.status === 200) {
                         this.$store.commit('setUserData', getDataAttempt.data);
@@ -109,6 +121,7 @@
                 
                 else {
                     this.isLoading = false;
+                    this.loadingDemo = false;
                     if (httpStatusCode(loginReq) >= 404) {
                         this.$store.commit('setModalErrorMessage', `logging in`)
                         this.$store.commit('toggleModal', 'error')
@@ -141,6 +154,13 @@
             },
             resetCredentials() {
                 this.$router.push('/reset');
+            },
+            previewDemo() {
+                this.credentials.username.value = testAccountUser.username
+                this.credentials.password.value = testAccountUser.password
+                this.loadingDemo = true;
+                localStorage.setItem("demoMode", "true")
+                this.login();
             }
         }
     }
@@ -174,6 +194,7 @@
         flex-flow: row wrap;
         align-items: center;
         gap: 1.5rem;
+        margin-top: 1.5rem;
 
         .mode-container {
             flex: 1;

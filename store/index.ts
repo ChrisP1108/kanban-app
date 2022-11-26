@@ -1,6 +1,6 @@
 import { isObjectIdOrHexString } from 'mongoose';
 import { State, Board, Task, TaskItemDragging } from './interface';
-
+import { isDemo } from '../services/demoAccount';
 
 // Reset Modals
 
@@ -74,13 +74,19 @@ export const state = (): State => ({
         user: {}
     },
     loginRedirect: false,
-    modalErrorMessage: ''
+    modalErrorMessage: '',
 });
 
 // Sort Boards
 
 function boardSorter(list: Array<any>): Array<any> {
     return list.sort((a: any, b: any) => a.name > b.name ? 1 : -1 )
+}
+
+// Demo Mode Update To LocalStorage
+
+function demoUpdate(data: Object): void {
+    localStorage.setItem("data", JSON.stringify(data));
 }
 
 // State Mutations
@@ -139,6 +145,12 @@ export const mutations = {
     setUserData(state: State, data: any): void {
         state.userData.user = data.user;
         state.userData.boards = boardSorter(data.boards);
+
+        // Demo Mode Only
+
+        if (isDemo(state.userData.user.username)) {
+            demoUpdate(state.userData)
+        }
     },
     toggleLoginRedirect(state: State): void {
         state.loginRedirect = !state.loginRedirect;
@@ -150,6 +162,12 @@ export const mutations = {
     addBoard(state: State, newBoard: Board): void {
         state.userData.boards = boardSorter([...state.userData.boards, { ...newBoard, tasks: [] }]);
         state.boardSelected = newBoard._id.toString();
+
+        // Demo Mode Only
+
+        if (isDemo(state.userData.user.username)) {
+            demoUpdate(state.userData)
+        }
     },
     updateBoard(state: State, updatedBoard: Board): void {
         state.userData.boards = boardSorter(state.userData.boards.map((board: Board) => 
@@ -157,19 +175,37 @@ export const mutations = {
             ? {...board, name: updatedBoard.name, columns: updatedBoard.columns} 
             : board
         ));
+
+        // Demo Mode Only
+
+        if (isDemo(state.userData.user.username)) {
+            demoUpdate(state.userData)
+        }
     },
     deleteBoard(state: State, _id: string): void {
         state.userData.boards = boardSorter(state.userData.boards.filter((board: Board) => 
             board._id.toString() !== _id));
         state.boardSelected = state.userData.boards.length ? state.userData.boards[0]._id : '';
         localStorage.setItem("lastBoardSelected", state.boardSelected.toString());
+
+        // Demo Mode Only
+
+        if (isDemo(state.userData.user.username)) {
+            demoUpdate(state.userData)
+        }
     },
     selectTask(state: State, _id: string): void {
         state.taskSelected = _id;
     },
     addTask(state: State, newTask: Task): void {
         state.userData.boards = state.userData.boards.map((board: Board) => 
-            board._id.toString() === state.boardSelected ? {...board, tasks: [...board.tasks, newTask]} : board)
+            board._id.toString() === state.boardSelected ? {...board, tasks: [...board.tasks, newTask]} : board);
+
+        // Demo Mode Only
+
+        if (isDemo(state.userData.user.username)) {
+            demoUpdate(state.userData)
+        }
     },
     updateTask(state: State, updatedTask: Task): void {
         state.userData.boards = state.userData.boards.map((board: Board) => {
@@ -180,6 +216,12 @@ export const mutations = {
                 }
             } else return board
         });
+
+        // Demo Mode Only
+
+        if (isDemo(state.userData.user.username)) {
+            demoUpdate(state.userData)
+        }
     },
     deleteTask(state: State, _id: string): void {
         state.userData.boards = state.userData.boards = state.userData.boards.map((board: Board) => {
@@ -189,6 +231,12 @@ export const mutations = {
                 }
             } else return board
         });
+
+        // Demo Mode Only
+
+        if (isDemo(state.userData.user.username)) {
+            demoUpdate(state.userData)
+        }
     },
     setModalErrorMessage(state: State, errorMessage: string): void {
         state.modalErrorMessage = errorMessage;

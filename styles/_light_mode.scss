@@ -129,6 +129,10 @@
         background: $color-h;
     }
 
+    .content-theme-text {
+        color: $color-e !important;
+    }
+
     @media(min-width: $tablet) {
         aside {
             border-right: light-sidebar-border(); 

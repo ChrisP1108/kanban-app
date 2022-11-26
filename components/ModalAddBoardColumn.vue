@@ -1,7 +1,7 @@
 <template>
     <div class="modal-styling scrollbar-styling" @keyup="checkEnterKeypress">
         <h2>Add Column To Board "{{ selectedBoard.name }}"</h2>
-        <h3>Current Board Columns:</h3>
+        <h3 class="content-theme-text">Current Board Columns:</h3>
         <ul>
             <li v-for="(column, index) in boardColumns" :key="index">
                 {{ column  + ` (${selectedBoard.tasks.filter(task => task.status === column).length})`}}

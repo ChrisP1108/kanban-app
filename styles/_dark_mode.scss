@@ -17,7 +17,7 @@
         background: $color-d;
     }
 
-    h1, h2, p, b, label {
+    h1, h2, p, b, label, .content-theme-text {
     color: $color-white;
     }
 
@@ -114,6 +114,10 @@
 
     .mouseover-active {
         background: $color-f;
+    }
+
+    .content-theme-text {
+        color: $color-white !important;
     }
 
     @media(min-width: $tablet) {

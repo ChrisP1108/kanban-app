@@ -7,7 +7,7 @@
         <div class="logo-divider"></div>
         <img class="logo" src="assets/images/logo.svg" alt="Logo">
 
-        <h2>Platform Launch</h2>
+        <h2>{{ selectedBoard.name }}</h2>
 
         <div class="dropdown-container" @click="toggleMobileBoard">
             <img :class="[mobileBoardToggled ? 'dropdown-arrow-toggled' : '', 'dropdown-arrow']" src="assets/images/dropdown-arrow.svg" alt="Dropdown Arrow">
@@ -41,6 +41,10 @@
             columnExists() {
                 const boardFind = this.$store.state.userData.boards.find(board => board._id === this.$store.state.boardSelected)
                 return boardFind && boardFind.columns.length > 0
+            },
+            selectedBoard() {
+                return this.$store.state.userData.boards.find(board => 
+                    board._id.toString() === this.$store.state.boardSelected.toString());
             }
         },
         mounted() {

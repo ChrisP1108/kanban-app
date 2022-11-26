@@ -71,3 +71,17 @@ button {
     background: $color-k;
     }
 }
+
+.button-demo {
+    background: $color-b;
+    color: $color-d;
+    font-size: $body-l-size;
+    line-height: $body-l-height;
+    border-radius: $button-s-radius;
+    min-height: $button-s-height;
+
+    &:hover {
+        background: $color-g;
+        color: $color-white;
+    }
+}

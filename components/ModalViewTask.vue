@@ -8,7 +8,7 @@
                     @option-selected="toggleOption" />
             </nav>
         </div>
-        <p class="task-description-text">{{ selectedTask.description }}</p>
+        <p class="content-theme-text">{{ selectedTask.description }}</p>
         <FieldInput class="task-subtask-checklist" :label="subtasksCheckedQty()" type="checklist" 
             :input="{ value: subtasks } " @value-change="(value) => subtaskChecked(value)"  
         />
@@ -93,7 +93,7 @@
         padding-bottom: 0.5rem !important;
     }
 
-    .task-description-text {
+    .content-theme-text {
         color: $color-g !important;
         margin-bottom: 1rem;
     }

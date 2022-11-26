@@ -50,7 +50,7 @@ export interface State {
     taskSelected: string,
     userData: {
         boards: Array<any>,
-        user: Object
+        user: any
     }
     loginRedirect: boolean;
     modalErrorMessage: string;
