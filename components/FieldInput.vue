@@ -21,7 +21,7 @@
 
         <!-- List Input -->
 
-        <div v-if="list" class="list-items-container scrollbar-styling">
+        <div v-if="list" class="list-items-container scrollbar-styling overflow-scroll">
             <div v-for="(field, index) in value" :key="index" class="list-item-container">
                 <div :class="[field.canModify === false ? 'list-item-no-edit' : '', 'field-container d-flex']">
                     <p v-if="errorCheck(field.value, duplicates.array).error && index === 0 || errorCheck(field.value, duplicates.array).error" 
@@ -43,7 +43,7 @@
 
         <!-- Checklist Input -->
 
-        <div v-if="checklist" class="checklist-items-container">
+        <div v-if="checklist" class="checklist-items-container scrollbar-styling overflow-scroll">
             <div v-for="(field, index) in value" :key="index" class="checklist-item-container">
                 <input v-model="value[index].checked" type="checkbox" class="checklist-checkbox"  
                     @change="updateValue">
@@ -278,15 +278,18 @@
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
-        max-height: 25vh;
-        overflow-x: hidden;
-        overflow-y: auto;
         padding-right: 1rem;
         margin: 0.25rem -1rem 0.5rem 0;
 
         .field-container {
             margin: 0 !important;
         }
+    }
+
+    .overflow-scroll {
+        max-height: 25vh;
+        overflow-x: hidden;
+        overflow-y: auto;
     }
     .list-item-container {
         display: flex;

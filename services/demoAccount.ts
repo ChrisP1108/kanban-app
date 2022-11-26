@@ -19,8 +19,15 @@ export function isDemo(username: string): Boolean {
     } else return false
 }
 
-// Generates ID since Demo accounts Create, Update, And Delete From Local Storage To Not Alter Original Data On Server
+// Generates ID since Demo account Creates, Updates, And Deletes From Local Storage To Not Alter Original Data On Server
+
+let lastIDGenerated: number = 0;
 
 export function demoIdGen(): String {
-    return `DEMO-${new Date().getTime()}-${Math.floor(Math.random() * 10000)}`
+    let datedId: number = new Date().getTime();
+    if (lastIDGenerated === datedId) {
+        datedId += 1;
+    }
+    lastIDGenerated = datedId;
+    return `DEMO-${datedId}-${Math.floor(Math.random() * 10000)}`
 }

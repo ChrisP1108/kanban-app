@@ -13,6 +13,7 @@
         <FieldInput class="password" label="Re-Enter Password" type="password" :input="{ value: credentials.password2.value }" 
             placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.password2.errMsg" :has-error="credentials.password2.hasError"
             @value-change="(value) => credentials.password2.value = value" @error-found="(value) => credentials.password2.errFound = value" />
+        <p>The fields below are used for password recovery in the event that you forget your password and need to reset it for identity verification.</p>
         <FieldInput class="pin" label="4 Digit Security PIN" type="password" :input="{ value: credentials.pin.value }" 
             placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.pin.errMsg" :has-error="credentials.pin.hasError"
             @value-change="(value) => credentials.pin.value = value" @error-found="(value) => credentials.pin.errFound = value" />
@@ -315,8 +316,9 @@ import { httpPost, httpGet, httpErrMsg, httpStatusCode } from '../services/httpC
         text-align: center;
     }
     p {
-        margin-bottom: 1rem;
-        color: $color-j !important;
+        margin: 2rem 0;
+        text-align: center;
+        color: $color-g !important;
     }
     .mode-toggler {
         max-width: 12.5rem !important;

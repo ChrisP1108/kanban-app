@@ -186,8 +186,10 @@
         margin-top: 2rem;
     }
     p {
-        margin-bottom: 1rem;
-        color: $color-j !important;
+        margin: 1rem 0 0;
+        font-size: 0.625rem;
+        text-align: center;
+        color: $color-g !important;
     }
     .mode-forgot-container {
         display: flex;
