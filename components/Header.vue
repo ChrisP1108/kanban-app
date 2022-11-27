@@ -115,7 +115,7 @@
         display: none;
     }
 
-    @media (max-width: 340px) {
+    @media (max-width: 360px) {
         .logo {
             width: 7vw;
         }

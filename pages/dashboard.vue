@@ -8,14 +8,15 @@
               <Sidebar />
               <Columns />
             </div>
-        </div>
 
-        <!-- Show Sidebar Icon On Bottom Left -->
+            <!-- Show Sidebar Icon On Bottom Left -->
 
-        <div @click="toggleSidebar">
-          <ShowSidebar />
+            <div @click="toggleSidebar">
+              <ShowSidebar />
+            </div>
         </div>
       </div>
+
       <!-- Modal Overlay -->
 
       <div :class="[modalOverlay || isLoading ? 'modal-toggled' : '', 'modal-overlay']" @click="untoggleModal"></div> 

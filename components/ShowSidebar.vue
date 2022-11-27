@@ -9,7 +9,7 @@
 <style lang="scss" scoped>
     .board-sidebar-item {
         padding: 0 !important;
-        position: fixed;
+        position: absolute;
         z-index: 1;
         top: 100%;
         transform: translateY(calc(-100% - 2rem));
