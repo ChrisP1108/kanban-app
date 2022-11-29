@@ -85,6 +85,7 @@
         width: 100%;
         padding: $padding-top-bottom;
         z-index: 10;
+        position: relative;
     }
     .logo {
         width: 1.5rem;
