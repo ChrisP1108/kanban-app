@@ -1,6 +1,6 @@
 <template>
     <li :class="[ dragging ? 'dragging' : '', 'task-list-item']" :data-id="task._id"
-        @click="itemClicked" @mousedown="mouseDown">
+        @click="itemClicked">
         <h3 :class="[dragging ? 'disable-highlight' : '']">{{ task.title }}</h3>
         <div class="subtask-checkmark-container">
             <b :class="[allSubtasksChecked ? 'strike-through' : '']">
@@ -35,36 +35,6 @@
                 return this.$store.state.taskItemDragging
             }
         },
-        mounted() {
-            window.addEventListener('mousemove', (e) => { 
-                const item = e.path[0];
-                if (this.dragging && item.dataset.id === this.task._id) {
-                    this.$store.commit('setTaskItemDragging', { isDragging: true, columnName: this.task.status });
-                    item.style.pointerEvents = 'none';
-                    setTimeout(() => {
-                        item.style.pointerEvents = 'auto';
-                        item.style.top = (e.y - item.scrollHeight / 2) + 'px';
-                        item.style.left = (e.x - item.scrollWidth / 2) + 'px';
-                    }, 5)
-                }
-            });
-            window.addEventListener('mouseup', () => {
-                if (this.dragging) {
-                    if (this.draggingEvent.columnName !== this.task.status) {
-                        this.dragging = false;
-                        setTimeout(() => {
-                            this.$store.commit('toggleModal');
-                        });
-                        this.statusValueChange(this.draggingEvent.columnName)
-                        this.$store.commit('setTaskItemDragging', { isDragging: false, columnName: '' });
-                    }
-                }
-            })
-            window.addEventListener('click', () => {
-                this.dragging = false;
-                this.$store.commit('setTaskItemDragging', { isDragging: false, columnName: '' });
-            })
-        },
         methods: {
             itemClicked() {
                 this.$store.commit('selectTask', this.task._id);
@@ -72,13 +42,6 @@
             },
             subtasksCheckedQty() {
                 return this.task.subtasks.filter(subtask => subtask.checked).length
-            },
-            mouseDown() {
-                setTimeout(() => {
-                    if (!this.$store.state.modals.viewTask.toggled) {
-                        this.dragging = true;
-                    }
-                }, 250)
             },
             async statusValueChange(value) {
                 const updateReq = await httpPut(`/tasks/${this.task._id}/status`, { status: value });

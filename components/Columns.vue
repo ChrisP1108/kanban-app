@@ -40,7 +40,7 @@
                 <TaskListHeading :index="index" :task-status-heading="column.name" :length="column.tasks.length" />
                 <ul :class="[itemDraggingOver === column.name && draggingEvent.isDragging 
                     ? 'mouseover-active' : '', 'task-list-items-container scrollbar-styling']" 
-                    :data-columnName="column.name" @mouseover="itemDragging">
+                    :data-columnName="column.name">
                         <TaskListItem v-for="task in column.tasks" :key="task._id" :task="task" />
                 </ul>
             </div>
@@ -99,22 +99,6 @@
             },
             toggleAddTask() {
                 this.$store.commit('toggleModal', 'addTask')
-            },
-            itemDragging(e) {
-                let columnName = null;
-                let element = null;
-                e.path.forEach(path => {
-                    if (path.dataset && path.dataset.columnname) {
-                        element = path;
-                        columnName = path.dataset.columnname
-                    }
-                });
-                this.itemDraggingOver = columnName;
-                this.$store.commit('setTaskItemDragging', { ...this.draggingEvent, columnName })
-                if (columnName && element && this.draggingEvent.isDragging
-                    && this.draggingEvent.columnName !== columnName) {
-                        return true
-                } else return false
             }
         }
     }
