@@ -29,7 +29,12 @@ async function startServer() {
         app.use(express.urlencoded({ extended: false }));
         app.use(cors());
         app.use(cookieParser());
-        app.use(morgan('tiny'));
+
+        // Run Morgan On Development Mode.  Had Issue With Installing Morgan As Dev Dependency
+        
+        if (isDev) {
+            app.use(morgan('tiny'));
+        }
 
         // API Routes
 

@@ -17,8 +17,9 @@ function generateToken(id) {
 
 // Cookie Options
 
-function cookieOptions() {
-    return { httpOnly: true, expires: new Date(Date.now() + 86400000) }
+function cookieOptions(time) {
+    const expirationTime = time || 86400000;
+    return { httpOnly: true, expires: new Date(Date.now() + expirationTime) }
 }
 
 // Bcrypt Salt And Hash
@@ -26,26 +27,86 @@ function cookieOptions() {
 async function hasher(input) {
     const salt = await bcrypt.genSalt(12);
     const hashedOutput = await bcrypt.hash(input, salt);
-    return hashedOutput
+    return hashedOutput;
 }
 
-// @desc    Register user
+// Generate Random Key 
+
+function generateKey() {
+    return (Math.ceil(Math.random() * 899999) + 100000).toString();
+}
+
+// Verify Valid Email
+
+function verifyValidEmail(email) {
+    const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+    return email.match(regex);
+}
+
+// @desc    Check For.  Ensure that user email is valid prior to registering
+// @route   POST /api/user/validate
+// @access  Public
+
+const validateUser = asyncHandler(async (req, res) => {
+    const { email, registering } = req.body;
+
+    // Check that email is in body
+
+    if (!email) {
+        res.status(400);
+        throw new Error('Please add an email')
+    } 
+
+    // Check that email is valid
+
+    if (!verifyValidEmail(email)) {
+        res.status(400);
+        throw new Error('Please enter a valid email')
+    }
+
+    // Check if user with same email exists if user is attempting to register.  If resetting password, no need to check on this route.
+
+    if (registering) {
+
+        const emailExists = await User.findOne({ email: email.toLowerCase() });
+
+        if (emailExists) {
+            res.status(400);
+            throw new Error('User email already exists.  Please enter another email')
+        }
+
+    }
+
+    // Generate Random Six Digit Number Key For Email Verification
+
+    const key = generateKey();
+
+    const hashedKey = await hasher(key);
+
+    res.cookie("key", hashedKey, cookieOptions(300000));
+    res.status(200).json({ message: 'Temporary Number Key Generated And Emailed To User For Verification', key });
+});
+
+
+// @desc    Finish Register user
 // @route   POST /api/user/register
 // @access  Public
 
 const registerUser = asyncHandler(async (req, res) => {
-    const { firstname, username, password, password2, pin, pin2, security } = req.body;
+    const { key, email, password, password2 } = req.body;
 
     // Check For Empty Or Invalid Fields
 
-    if (!firstname) {
+    if (!key) {
         res.status(400);
-        throw new Error('Please add a first name')
-    } 
-    if (!username || username.length < 8) {
-        res.status(400);
-        throw new Error('Please add a username that is at least 8 characters in length')
+        throw new Error('Email verification key must be provided')
     }
+
+    if (!email) {
+        res.status(400);
+        throw new Error('Please add an email')
+    } 
+
     if (!password || password.length < 8) {
         res.status(400);
         throw new Error('Please add a password that is at least 8 characters in length')
@@ -59,98 +120,57 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error('Password entries do not match.  Please reenter matching passwords')
     }
 
-    if (!Number(pin) || pin.toString().length !== 4) {
+    // Checks that cookie for key exists
+
+    if (!req.cookies.key) {
         res.status(400);
-        throw new Error('Please add a 4 digit numeric pin')
+        throw new Error('Could not verify key.  Please try again and do not clear browser cookies.')
     }
 
-    if (pin.includes(' ')) {
-        res.status(400);
-        throw new Error('Pin cannot have spaces')
+    // Check that key user provided matches with cookie key that was hashed
+
+    if (!await bcrypt.compare(key, req.cookies.key)) {
+        res.status(401);
+        throw new Error('Invalid key provided. Unauthorized. Please try again')
     }
 
-    if (pin !== pin2) {
+    // Check that email is valid
+
+    if (!verifyValidEmail(email)) {
         res.status(400);
-        throw new Error('Pin entries do not match.  Please reenter matching 4 digit pins')
+        throw new Error('Please add a valid email')
     }
 
-    // Check if security question and answer is blank
+    // Check if user with same email exists
 
-    if (!security) {
+    const emailExists = await User.findOne({ email: email.toLowerCase() });
+
+    if (emailExists) {
         res.status(400);
-        throw new Error('Please provide a security question and answer')
-    }
-
-    if (!security.question) {
-        res.status(400);
-        throw new Error('Please add a security question')
-    }
-
-    if (!security.answer) {
-        res.status(400);
-        throw new Error('Please add a security answer.')
-    }
-
-    if (security.answer.includes(' ')) {
-        res.status(400);
-        throw new Error('Security answer cannot have spaces')
-    }
-
-    if (security.answer !== security.answer2) {
-        res.status(400);
-        throw new Error('Security answer entries do not match.  Please reenter matching answers')
-    }
-
-    // Destructure security
-
-    const { question, answer } = security;
-
-    // Check if user with same username
-
-    const userExists = await User.findOne({ username: username.toLowerCase() });
-
-    if (userExists) {
-        res.status(400);
-        throw new Error('Username already exists.  Please enter another username')
+        throw new Error('User email already exists.  Please enter another email')
     }
 
     // Hash password, PIN and security answer
 
     const hashedPassword = await hasher(password.toLowerCase());
-    const hashedPin = await hasher(pin.toString());
-    const hashedAnswer = await hasher(answer.toLowerCase());
 
     // Encrypt Password
 
     const encryptedHashedPassword = cryptr.encrypt(hashedPassword);
 
-    // Encrypt Security Question
-
-    const encryptedQuestion = cryptr.encrypt(question);
-
-    // Encrypt Security Answer
-
-    const encryptedHashedAnswer = cryptr.encrypt(hashedAnswer);
-
     // Create user
 
     const user = await User.create({
-        firstname: cryptr.encrypt(firstname.toLowerCase()),
-        username: username.toLowerCase(),
-        password: encryptedHashedPassword,
-        pin: hashedPin,
-        security: {
-            question: encryptedQuestion,
-            answer: encryptedHashedAnswer
-        }
+        email: email.toLowerCase(),
+        password: encryptedHashedPassword
     });
 
     if (!user) {
         res.status(500);
         throw new Error('Error saving data to MongoDB')
     } else {
-        const token = generateToken(user._id)
-        res.cookie("token", token, cookieOptions());
+        res.clearCookie("key");
+        res.cookie("token", generateToken(user._id), cookieOptions(null));
         res.status(201).json({ message: 'User Successfully Registered'});
     }
 });
@@ -160,13 +180,13 @@ const registerUser = asyncHandler(async (req, res) => {
 // @access  Public
 
 const loginUser = asyncHandler(async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
     // Check for empty fields
 
-    if (!username) {
+    if (!email) {
         res.status(400);
-        throw new Error('Please enter a username')
+        throw new Error('Please enter an email')
     }
 
     if (!password) {
@@ -176,14 +196,13 @@ const loginUser = asyncHandler(async (req, res) => {
 
     // Find user
 
-
-    const user = await User.findOne({ username: username.toLowerCase() });
+    const user = await User.findOne({ email: email.toLowerCase() });
 
     // Check if user exists
 
     if (!user) {
         res.status(401);
-        throw new Error('Username does not exist')
+        throw new Error('User email does not exist')
     }
 
     // Check password
@@ -192,7 +211,7 @@ const loginUser = asyncHandler(async (req, res) => {
         res.status(401);
         throw new Error('Invalid password')
     } else {
-        res.cookie("token", generateToken(user._id), cookieOptions());
+        res.cookie("token", generateToken(user._id), cookieOptions(null));
         res.status(200).json({ message: 'User successfully logged In'});
     }
 });
@@ -204,6 +223,7 @@ const loginUser = asyncHandler(async (req, res) => {
 const logoutUser = asyncHandler((req, res) => {
     if (req) {
         res.clearCookie("token");
+        res.clearCookie("key");
         res.status(200).json({ message: 'User successfully logged out'});
     }
 });
@@ -220,8 +240,7 @@ const getUserData = asyncHandler(async (req, res) => {
 
     const userData = {
         user: {
-            firstname: cryptr.decrypt(req.user.firstname),
-            username: req.user.username,
+            email: req.user.email,
             _id: req.user._id,
             createdAt: req.user.createdAt,
             updatedAt: req.user.updatedAt,
@@ -249,83 +268,25 @@ const getUserData = asyncHandler(async (req, res) => {
     }
 });
 
-// @desc    Verify user
-// @route   POST /api/user/verify
-// @access  Public
-
-const verifyUser = asyncHandler(async (req, res) => {
-    const { firstname, username, pin } = req.body;
-
-    // Check for empty fields
-
-    if (!firstname) {
-        res.status(400);
-        throw new Error('Please enter a first name')
-    } 
-
-    if (!username) {
-        res.status(400);
-        throw new Error('Please enter a username')
-    }
-    
-    if (!Number(pin) || pin.toString().length !== 4) {
-        res.status(400);
-        throw new Error('Please enter a 4 digit numeric pin')
-    }
-
-    // Find users based upon firstname
-
-    const user = await User.findOne({ username: username.toLowerCase() });
-
-    // Check if user exists
-
-    if (!user) {
-        res.status(401);
-        throw new Error('Username does not exist')
-    }
-
-    // Check if fields match user fields
-
-    if (cryptr.decrypt(user.firstname) !== firstname.toLowerCase()) {
-        res.status(401);
-        throw new Error('Invalid first name')
-    }
-
-    if (!await bcrypt.compare(pin.toString(), user.pin)) {
-            res.status(401);
-            throw new Error('Invalid pin')
-
-    } else {
-        res.status(200).json({
-            security: {
-                question: cryptr.decrypt(user.security.question)
-            }
-        });
-    }
-});
-
-// @desc    Verify user
+// @desc    Reset User Password
 // @route   POST /api/user/reset
 // @access  Public
 
 const resetUserPassword = asyncHandler(async (req, res) => {
-    const { firstname, username, pin, security, password, password2 } = req.body;
+    const { key, email, password, password2 } = req.body;
 
-    // Check for empty fields
+    // Check For Empty Or Invalid Fields
 
-    if (!firstname) {
+    if (!key) {
         res.status(400);
-        throw new Error('Please enter a first name')
-    } 
-    if (!username) {
-        res.status(400);
-        throw new Error('Please enter a username')
+        throw new Error('Email verification key must be provided')
     }
 
-    if (!Number(pin) || pin.toString().length !== 4) {
+    if (!email) {
         res.status(400);
-        throw new Error('Please enter a 4 digit numeric pin')
+        throw new Error('Please add an email')
     }
+
     if (!password || password.length < 8) {
         res.status(400);
         throw new Error('Please add a password that is at least 8 characters in length')
@@ -334,81 +295,59 @@ const resetUserPassword = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('Please reenter password')
     }
-    if (password.toLowerCase() !== password2.toLowerCase()) {
+    if (password !== password2) {
         res.status(400);
         throw new Error('Password entries do not match.  Please reenter matching passwords')
     }
 
-    // Check if security question and answer is blank
+    // Checks that cookie for key exists
 
-    if (!security) {
+    if (!req.cookies.key) {
         res.status(400);
-        throw new Error('Please provide a security question and a security answer')
+        throw new Error('Could not verify key.  Please try again and do not clear browser cookies.')
     }
 
-    if (!security.question) {
-        res.status(400);
-        throw new Error('Please add a security question')
+    // Check that key user provided matches with cookie key that was hashed
+
+    if (!await bcrypt.compare(key, req.cookies.key)) {
+        res.status(401);
+        throw new Error('Invalid key provided. Unauthorized. Please try again.')
     }
 
-    if (!security.answer || security.answer.includes(' ')) {
+    // Check that email is valid
+
+    const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+
+    if (!email.match(regex)) {
         res.status(400);
-        throw new Error('Please add a security answer.  Answer cannot have spaces')
+        throw new Error('Please provide a valid email')
     }
-
-    // Check if security answer is blank
-
-    const { answer } = security;
 
     // Find user
 
-    const user = await User.findOne({ username: username.toLowerCase() });
+    const user = await User.findOne({ email: email.toLowerCase() });
 
     // Check if user exists
 
     if (!user) {
         res.status(401);
-        throw new Error('Username does not exist')
+        throw new Error('No user with corresponding email exists.')
     }
 
-    // Check if credentials are valid
-
-    if (firstname.toLowerCase() !== cryptr.decrypt(user.firstname)) {
-        res.status(401);
-        throw new Error('Invalid first name')
-    }
-
-    if (username.toLowerCase() !== user.username) {
-        res.status(401);
-        throw new Error('Invalid username')
-    }
-
-    if (!await bcrypt.compare(pin.toString(), user.pin)) {
-        res.status(401);
-        throw new Error('Invalid pin')
-    }
-
-    if (security.question !== cryptr.decrypt(user.security.question)) {
-        res.status(401);
-        throw new Error('Invalid security question')
-    }
-
-    if (!await bcrypt.compare(answer.toLowerCase(), cryptr.decrypt(user.security.answer))) {
-        res.status(401);
-        throw new Error('Invalid security answer')
-    }
+    // Update User Password
 
     const updatedPassword = await hasher(password);
 
-    const resetUserCredentials = await User.findByIdAndUpdate(user._id, {
+    const resetUserPassword = await User.findByIdAndUpdate(user._id, {
         password: cryptr.encrypt(updatedPassword)
     });
 
-    if (!resetUserCredentials) {
+    if (!resetUserPassword) {
         res.status(500);
         throw new Error('Error updating password')
     } else {
-        res.cookie("token", generateToken(user._id), cookieOptions());
+        res.clearCookie("key");
+        res.cookie("token", generateToken(user._id), cookieOptions(null));
         res.status(200).json({ message: 'User password successfully updated'});
     }
 });
@@ -419,15 +358,24 @@ const resetUserPassword = asyncHandler(async (req, res) => {
 
 const deleteUser = asyncHandler(async (req, res) => {
 
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    if (!username) {
+    // Check for empty fields
+
+    if (!email) {
         res.status(400);
-        throw new Error('Please enter a username')
+        throw new Error('Please enter an email')
     }
     if (!password) {
         res.status(400);
         throw new Error('Please enter a password')
+    }
+
+    // Check that email is valid
+
+    if (!verifyValidEmail(email)) {
+        res.status(400);
+        throw new Error('Please enter a valid email')
     }
 
     // User ID
@@ -440,9 +388,9 @@ const deleteUser = asyncHandler(async (req, res) => {
 
     // Check username
 
-    if (username.toLowerCase() !== checkUser.username.toLowerCase()) {
+    if (email.toLowerCase() !== checkUser.email.toLowerCase()) {
         res.status(401);
-        throw new Error('Invalid username')
+        throw new Error('Invalid email')
     }
 
     // Check password
@@ -463,10 +411,13 @@ const deleteUser = asyncHandler(async (req, res) => {
         throw new Error('An error occured when deleting user')
     } else {
         res.status(200).json({
-            _id
+            _id: id
         });
     }
 });
 
 
-module.exports = { registerUser, loginUser, logoutUser, getUserData, verifyUser, resetUserPassword, deleteUser }
+module.exports = { 
+    validateUser, registerUser, loginUser, 
+    logoutUser, getUserData, resetUserPassword, deleteUser 
+}
