@@ -47,6 +47,8 @@ const protect = asyncHandler(async (req, res, next) => {
 const validate = asyncHandler(async (req, res, next) => {
     const { key, email } = req.body;
 
+    // 
+
     if (!key) {
         res.status(401);
         throw new Error('Not authorized, no email validation key parameter provided')
@@ -57,8 +59,6 @@ const validate = asyncHandler(async (req, res, next) => {
         // Decode JWT
 
         const decodedToken = JSON.parse(decodeJWT(req.cookies.key).key);
-
-        console.log(decodedToken);
 
         // If No Key, Time, Or Email Found In Decoded JWT, Throw Error
 

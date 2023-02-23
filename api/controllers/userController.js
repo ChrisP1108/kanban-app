@@ -38,8 +38,8 @@ async function hasher(input) {
 
 // Generate JWT Email Validation Key 
 
-async function generateValidationKey(keyNum, email) {
-    const hashedKey = await hasher(keyNum);
+async function generateValidationKey(keyChars, email) {
+    const hashedKey = await hasher(keyChars);
     const stringified = JSON.stringify({
         key: hashedKey,
         email: email.toLowerCase(),
@@ -55,7 +55,7 @@ function verifyValidEmail(email) {
     return email.match(regex);
 }
 
-// @desc    Check For.  Ensure that user email is valid prior to registering
+// @desc    Validate Email.  Ensure that user email is valid prior to registering
 // @route   POST /api/user/validate
 // @access  Public
 
@@ -89,14 +89,14 @@ const validateUser = asyncHandler(async (req, res) => {
 
     }
 
-    // Generate Random Six Digit Number Key For Email Verification
+    // Generate Random Six Characters Key For Email Verification
 
-    const keyNum = Math.ceil((Math.random() * 899999) + 100000).toString()
+    const keyChars = Math.random().toString(36).substring(2).slice(0, 6).toLowerCase();
 
-    const key = await generateValidationKey(keyNum, email);
+    const key = await generateValidationKey(keyChars, email);
 
     res.cookie("key", key, cookieOptions(300000));
-    res.status(200).json({ message: 'Temporary Number Key Generated And Emailed To User For Verification', keyNum, key });
+    res.status(200).json({ message: 'Temporary Number Key Generated And Emailed To User For Verification', keyChars, key });
 });
 
 
