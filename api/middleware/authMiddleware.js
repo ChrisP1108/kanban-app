@@ -70,17 +70,23 @@ const validate = asyncHandler(async (req, res, next) => {
 
         // Check That Emails Match
 
-        if (decodedToken.email !== email.toLowerCase()) 
-        {
+        if (decodedToken.email !== email.toLowerCase()) {
             res.status(401);
             throw new Error('Not authorized, invalid email provided')
         }
 
-        // Check That User Input Key Matches And Time Interval Is Not Greater Than 300000ms
+        // Check That Time Interval Is Not Greater Than 300000ms
 
-        if (!await bcrypt.compare(key, decodedToken.key) || (Date.now() - Number(decodedToken.time) > 300000)) {
+        if (Date.now() - Number(decodedToken.time) > 300000) {
             res.status(401);
-            throw new Error('Not authorized')
+            throw new Error('Not authorized, cookie expired')
+        }
+
+        // Check That User Input Key Matches 
+
+        if (!await bcrypt.compare(key, decodedToken.key)) {
+            res.status(401);
+            throw new Error('Not authorized, invalid key')
         }
 
         next();

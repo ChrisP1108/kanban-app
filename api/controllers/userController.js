@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr(process.env.ENCRYPTION_KEY);
+const nodemailer = require('nodemailer');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/userModel');
 const Board = require('../models/boardModel');
@@ -55,7 +56,7 @@ function verifyValidEmail(email) {
     return email.match(regex);
 }
 
-// @desc    Validate Email.  Ensure that user email is valid prior to registering
+// @desc    Validate Email.  Ensure that user email is valid prior to registering.  Send Email To User To Validate Key
 // @route   POST /api/user/validate
 // @access  Public
 
@@ -93,9 +94,45 @@ const validateUser = asyncHandler(async (req, res) => {
 
     const keyChars = Math.random().toString(36).substring(2).slice(0, 6).toLowerCase();
 
+    try {
+
+        // Establish Email Connection
+
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465, 
+            secure: true, 
+            auth: {
+                type: 'OAuth2',
+                user: process.env.GMAIL_USER_EMAIL, 
+                pass: process.env.GMAIL_PASSWORD,
+                clientId: process.env.GMAIL_CLIENT_ID,
+                clientSecret: process.env.GMAIL_CLIENT_SECRET
+            },
+        });
+
+        // Send Email
+
+        await transporter.sendMail({
+            from: 'noreply@kanban-app-frontendmentor.herokuapp.com/',
+            to: email, 
+            subject: registering ? "Register Email For Kanban App" : "Reset Password For Kanban App", // Subject line
+            html: `This is your key: <strong>${keyChars}</strong>`
+        });
+
+    } catch(err) {
+        res.status(500);
+        throw new Error(`${err}. Couldn't send email to user.`)
+    } 
+
+    // Generate JWT Token For Cookie 
+
     const key = await generateValidationKey(keyChars, email);
 
     res.cookie("key", key, cookieOptions(300000));
+
+    // Send Success Response
+
     res.status(200).json({ message: 'Temporary Number Key Generated And Emailed To User For Verification', keyChars, key });
 });
 
