@@ -1,13 +1,22 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/userModel');
+
+// Decode JWT
+
+function decodeJWT(input) {
+    return jwt.verify(input, process.env.JWT_SECRET)
+}
+
+// Protect Routes That Require Users To Already Be Logged In
 
 const protect = asyncHandler(async (req, res, next) => {
     const { token } = req.cookies;
 
     if (token) {  
         try {
-            const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+            const decodedToken = decodeJWT(token);
 
             // Get user from decoded token ID
 
@@ -33,4 +42,56 @@ const protect = asyncHandler(async (req, res, next) => {
     }
 });
 
-module.exports = { protect }
+// Verify User Email
+
+const validate = asyncHandler(async (req, res, next) => {
+    const { key, email } = req.body;
+
+    if (!key) {
+        res.status(401);
+        throw new Error('Not authorized, no email validation key parameter provided')
+    }
+
+    if (req.cookies.key) {
+
+        // Decode JWT
+
+        const decodedToken = JSON.parse(decodeJWT(req.cookies.key).key);
+
+        console.log(decodedToken);
+
+        // If No Key, Time, Or Email Found In Decoded JWT, Throw Error
+
+        if (!decodedToken.key || !decodedToken.time || !decodedToken.email) {
+            res.status(401);
+            res.clearCookie("key");
+            throw new Error('Not authorized, invalid validation key cookie')
+        }
+
+        // Check That Emails Match
+
+        if (decodedToken.email !== email.toLowerCase()) 
+        {
+            res.status(401);
+            throw new Error('Not authorized, invalid email provided')
+        }
+
+        // Check That User Input Key Matches And Time Interval Is Not Greater Than 300000ms
+
+        if (!await bcrypt.compare(key, decodedToken.key) || (Date.now() - Number(decodedToken.time) > 300000)) {
+            res.status(401);
+            throw new Error('Not authorized')
+        }
+
+        next();
+
+    } else {
+
+        // No Key Cookie Found.  Throw Error
+
+        res.status(401);
+        throw new Error('Not authorized, no email validation key cookie')
+    }
+});
+
+module.exports = { protect, validate }

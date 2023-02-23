@@ -9,10 +9,16 @@ const Task = require('../models/taskModel');
 
 // Generate JWT (encrypted)
 
-function generateToken(id) {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: '30d'
-    })
+function generateToken(input, validation) {
+    if (!validation) {
+        return jwt.sign({ id: input }, process.env.JWT_SECRET, {
+            expiresIn: '30d'
+        });
+    } else {
+        return jwt.sign({ key: input }, process.env.JWT_SECRET, {
+            expiresIn: '300s'
+        });
+    }
 }
 
 // Cookie Options
@@ -30,10 +36,16 @@ async function hasher(input) {
     return hashedOutput;
 }
 
-// Generate Random Key 
+// Generate JWT Email Validation Key 
 
-function generateKey() {
-    return (Math.ceil(Math.random() * 899999) + 100000).toString();
+async function generateValidationKey(keyNum, email) {
+    const hashedKey = await hasher(keyNum);
+    const stringified = JSON.stringify({
+        key: hashedKey,
+        email: email.toLowerCase(),
+        time: Date.now()
+    });
+    return generateToken(stringified, true);
 }
 
 // Verify Valid Email
@@ -79,28 +91,23 @@ const validateUser = asyncHandler(async (req, res) => {
 
     // Generate Random Six Digit Number Key For Email Verification
 
-    const key = generateKey();
+    const keyNum = Math.ceil((Math.random() * 899999) + 100000).toString()
 
-    const hashedKey = await hasher(key);
+    const key = await generateValidationKey(keyNum, email);
 
-    res.cookie("key", hashedKey, cookieOptions(300000));
-    res.status(200).json({ message: 'Temporary Number Key Generated And Emailed To User For Verification', key });
+    res.cookie("key", key, cookieOptions(300000));
+    res.status(200).json({ message: 'Temporary Number Key Generated And Emailed To User For Verification', keyNum, key });
 });
 
 
 // @desc    Finish Register user
 // @route   POST /api/user/register
-// @access  Public
+// @access  Private
 
 const registerUser = asyncHandler(async (req, res) => {
-    const { key, email, password, password2 } = req.body;
+    const { email, password, password2 } = req.body;
 
     // Check For Empty Or Invalid Fields
-
-    if (!key) {
-        res.status(400);
-        throw new Error('Email verification key must be provided')
-    }
 
     if (!email) {
         res.status(400);
@@ -125,13 +132,6 @@ const registerUser = asyncHandler(async (req, res) => {
     if (!req.cookies.key) {
         res.status(400);
         throw new Error('Could not verify key.  Please try again and do not clear browser cookies.')
-    }
-
-    // Check that key user provided matches with cookie key that was hashed
-
-    if (!await bcrypt.compare(key, req.cookies.key)) {
-        res.status(401);
-        throw new Error('Invalid key provided. Unauthorized. Please try again')
     }
 
     // Check that email is valid
@@ -270,10 +270,10 @@ const getUserData = asyncHandler(async (req, res) => {
 
 // @desc    Reset User Password
 // @route   POST /api/user/reset
-// @access  Public
+// @access  Private
 
 const resetUserPassword = asyncHandler(async (req, res) => {
-    const { key, email, password, password2 } = req.body;
+    const { email, password, password2 } = req.body;
 
     // Check For Empty Or Invalid Fields
 
@@ -298,29 +298,6 @@ const resetUserPassword = asyncHandler(async (req, res) => {
     if (password !== password2) {
         res.status(400);
         throw new Error('Password entries do not match.  Please reenter matching passwords')
-    }
-
-    // Checks that cookie for key exists
-
-    if (!req.cookies.key) {
-        res.status(400);
-        throw new Error('Could not verify key.  Please try again and do not clear browser cookies.')
-    }
-
-    // Check that key user provided matches with cookie key that was hashed
-
-    if (!await bcrypt.compare(key, req.cookies.key)) {
-        res.status(401);
-        throw new Error('Invalid key provided. Unauthorized. Please try again.')
-    }
-
-    // Check that email is valid
-
-    const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-
-    if (!email.match(regex)) {
-        res.status(400);
-        throw new Error('Please provide a valid email')
     }
 
     // Find user
