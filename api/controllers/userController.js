@@ -99,25 +99,27 @@ const validateUser = asyncHandler(async (req, res) => {
         // Establish Email Connection
 
         const transporter = nodemailer.createTransport({
+            service: 'gmail',
             host: 'smtp.gmail.com',
-            port: 465, 
+            port: 587, 
             secure: true, 
             auth: {
-                type: 'OAuth2',
                 user: process.env.GMAIL_USER_EMAIL, 
-                pass: process.env.GMAIL_PASSWORD,
-                clientId: process.env.GMAIL_CLIENT_ID,
-                clientSecret: process.env.GMAIL_CLIENT_SECRET
+                pass: process.env.GMAIL_SMTP_APP_PASSWORD,
             },
         });
 
         // Send Email
 
         await transporter.sendMail({
-            from: 'noreply@kanban-app-frontendmentor.herokuapp.com/',
+            from: process.env.GMAIL_USER_EMAIL,
             to: email, 
-            subject: registering ? "Register Email For Kanban App" : "Reset Password For Kanban App", // Subject line
-            html: `This is your key: <strong>${keyChars}</strong>`
+            subject: registering ? "Register Email For Kanban App" : "Recover Password For Kanban App", // Subject line
+            html: `
+                <h3>Hello From The Kanban Demo App</h3>
+                <p>This is your key ${registering ? `to register` : `to reset your password`}: <strong>${keyChars}</strong></p>
+                <p>Please use the key to ${registering ? `register` : `recover your password`} for the Kanban Demo App.
+            `
         });
 
     } catch(err) {
