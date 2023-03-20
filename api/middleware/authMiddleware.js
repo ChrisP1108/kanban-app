@@ -47,12 +47,14 @@ const protect = asyncHandler(async (req, res, next) => {
 const validate = asyncHandler(async (req, res, next) => {
     const { key, email } = req.body;
 
-    // 
+    // Check That Key Exists In Body. If Not, Throw Error
 
     if (!key) {
         res.status(401);
         throw new Error('Not authorized, no email validation key parameter provided')
     }
+
+    // Check For Browser Cookie
 
     if (req.cookies.key) {
 

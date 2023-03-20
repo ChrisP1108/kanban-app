@@ -114,11 +114,42 @@ const validateUser = asyncHandler(async (req, res) => {
         await transporter.sendMail({
             from: process.env.GMAIL_USER_EMAIL,
             to: email, 
-            subject: registering ? "Register Email For Kanban App" : "Recover Password For Kanban App", // Subject line
+            subject: registering ? "Register For Kanban" : "Recover Password For Kanban", // Subject line
+            attachments: [{
+                filename: "logo.svg",
+                path: __dirname + "../../../static/assets/images/logo.svg",
+                cid: "logo"
+            }],
             html: `
-                <h3>Hello From The Kanban Demo App</h3>
-                <p>This is your key ${registering ? `to register` : `to reset your password`}: <strong>${keyChars}</strong></p>
-                <p>Please use the key to ${registering ? `register` : `recover your password`} for the Kanban Demo App.
+                <table style="width: 100%; background: black; margin: 0; padding: 24px;">
+                    <tbody>
+                        <tr>
+                            <td align="center">
+                                <img src="cid:logo" style="width: 60px; padding-bottom: 16px; color: white;"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <p style="margin: 0; padding-bottom: 24px; font-size: 22px; font-weight: 700; color: white;">Hello From Kanban</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <p style="font-size: 16px; margin: 0; padding-bottom: 4px; color: white;">This is your key ${registering ? `to register` : `to reset your password`} </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <p style="font-size: 18px; margin: 0; margin: 0; color: white;"><strong>${keyChars}</strong></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <p style="font-size: 13px; margin: 0; padding-top: 40px; color: white;">Please use the key to ${registering ? `register` : `recover your password`} for the Kanban App.</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             `
         });
 
@@ -135,7 +166,7 @@ const validateUser = asyncHandler(async (req, res) => {
 
     // Send Success Response
 
-    res.status(200).json({ message: 'Temporary Number Key Generated And Emailed To User For Verification', keyChars, key });
+    res.status(200).json({ message: 'Temporary Number Key Generated And Emailed To User For Verification' });
 });
 
 
