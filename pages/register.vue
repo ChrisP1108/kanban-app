@@ -2,7 +2,7 @@
     <div :class="[darkModeToggled ? 'dark-mode' : 'light-mode', 'root-background']">
         <div class="root-full-container">
             <div class="modals-container">
-                <ModalRegisterUser />
+                <ModalRegisterReset :registering="true" />
             </div>
 
             <!-- Modal Overlay -->

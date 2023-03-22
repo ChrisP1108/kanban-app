@@ -74,7 +74,7 @@ export const state = (): State => ({
         user: {}
     },
     loginRedirect: false,
-    modalErrorMessage: '',
+    modalErrorMessage: ''
 });
 
 // Sort Boards

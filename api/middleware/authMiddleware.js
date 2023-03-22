@@ -72,7 +72,7 @@ const validate = asyncHandler(async (req, res, next) => {
 
         // Check That Emails Match
 
-        if (decodedToken.email !== email.toLowerCase()) {
+        if (!await bcrypt.compare(email.toLowerCase(), decodedToken.email)) {
             res.status(401);
             throw new Error('Not authorized, invalid email provided')
         }
@@ -86,7 +86,7 @@ const validate = asyncHandler(async (req, res, next) => {
 
         // Check That User Input Key Matches 
 
-        if (!await bcrypt.compare(key, decodedToken.key)) {
+        if (!await bcrypt.compare(key + decodedToken.time, decodedToken.key)) {
             res.status(401);
             throw new Error('Not authorized, invalid key')
         }

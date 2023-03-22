@@ -40,11 +40,13 @@ async function hasher(input) {
 // Generate JWT Email Validation Key 
 
 async function generateValidationKey(keyChars, email) {
-    const hashedKey = await hasher(keyChars);
+    const time = Date.now().toString();
+    const hashedKey = await hasher(keyChars + time);
+    const hashedEmail = await hasher(email.toLowerCase());
     const stringified = JSON.stringify({
         key: hashedKey,
-        email: email.toLowerCase(),
-        time: Date.now()
+        email: hashedEmail,
+        time
     });
     return generateToken(stringified, true);
 }
@@ -56,7 +58,7 @@ function verifyValidEmail(email) {
     return email.match(regex);
 }
 
-// @desc    Validate Email.  Ensure that user email is valid prior to registering.  Send Email To User To Validate Key
+// @desc    Validate Email.  Ensure that user email is valid prior to registering or resetting password.  Send Email To User To Validate Key
 // @route   POST /api/user/validate
 // @access  Public
 
@@ -75,6 +77,13 @@ const validateUser = asyncHandler(async (req, res) => {
     if (!verifyValidEmail(email)) {
         res.status(400);
         throw new Error('Please enter a valid email')
+    }
+
+    // Check that registering was passed in as a boolean
+
+    if (typeof registering !== 'boolean' && typeof registering !== 'string') {
+        res.status(400);
+        throw new Error('Please pass in "registering" boolean variable as true or false')
     }
 
     // Check if user with same email exists if user is attempting to register.  If resetting password, no need to check on this route.
