@@ -151,13 +151,16 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
 
                             this.isLoading = false;
                             if (httpStatusCode(emailReq) >= 404) {
-                                this.$store.commit('setModalErrorMessage', `verifying user`)
+                                this.$store.commit('setModalErrorMessage', `registering user`)
                                 this.$store.commit('toggleModal', 'error')
                             } else {
                                 this.errorMessage = httpErrMsg(emailReq);
                                 if (this.errorMessage.includes('email already exists')) {
                                     this.credentials.email.hasError = true;
                                     this.credentials.email.errMsg = 'email already exists';
+                                } else if (this.errorMessage.includes('No such user email exists')) {
+                                    this.credentials.email.hasError = true;
+                                    this.credentials.email.errMsg = 'no user email exists';
                                 } else this.credentials.email.hasError = false;
                             }
                         }
@@ -226,7 +229,7 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
 
                             this.isLoading = false;
                             if (httpStatusCode(validationError) >= 404) {
-                                this.$store.commit('setModalErrorMessage', `resetting user credentials`)
+                                this.$store.commit('setModalErrorMessage', `resetting user password`)
                                 this.$store.commit('toggleModal', 'error')
                             } else {
                                 this.errorMessage = httpErrMsg(validationError);
@@ -242,7 +245,10 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
                                     this.credentials.key.hasError = true;
                                     this.credentials.key.errMsg = 'validation time period expired.';
                                     this.noKeyCookie = true;
-                                } else this.credentials.key.hasError = false;  
+                                } else {
+                                    this.credentials.key.hasError = false;  
+                                    this.credentials.email.hasError = false;  
+                                }
                             }
                         }
                     }

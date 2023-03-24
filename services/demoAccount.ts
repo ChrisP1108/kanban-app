@@ -1,6 +1,6 @@
-// Usernames designated as demo accounts
+// Emails designated as demo accounts
 
-export const testAccountUser: any = { username: process.env.demoUsername, password: process.env.demoPassword };
+export const testAccountUser: any = { email: process.env.demoEmail, password: process.env.demoPassword };
 
 // Demo Delay
 
@@ -11,10 +11,10 @@ export function demoDelay(): Promise<any> {
     return new Promise(res => setTimeout(res, minDelay + Math.floor(Math.random() * offSetMaxDelay)))
 }
 
-// Determines If account is a demo based upon username
+// Determines If account is a demo based upon email
 
-export function isDemo(username: string): Boolean {
-    if (testAccountUser.username.toLowerCase() === username.toLowerCase()) {
+export function isDemo(email: string): Boolean {
+    if (testAccountUser.email.toLowerCase() === email.toLowerCase()) {
         return true
     } else return false
 }

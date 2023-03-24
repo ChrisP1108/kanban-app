@@ -1,4 +1,3 @@
-import { isObjectIdOrHexString } from 'mongoose';
 import { State, Board, Task, TaskItemDragging } from './interface';
 import { isDemo } from '../services/demoAccount';
 
@@ -148,7 +147,7 @@ export const mutations = {
 
         // Demo Mode Only
 
-        if (isDemo(state.userData.user.username)) {
+        if (isDemo(state.userData.user.email)) {
             demoUpdate(state.userData)
         }
     },
@@ -165,7 +164,7 @@ export const mutations = {
 
         // Demo Mode Only
 
-        if (isDemo(state.userData.user.username)) {
+        if (isDemo(state.userData.user.email)) {
             demoUpdate(state.userData)
         }
     },
@@ -178,7 +177,7 @@ export const mutations = {
 
         // Demo Mode Only
 
-        if (isDemo(state.userData.user.username)) {
+        if (isDemo(state.userData.user.email)) {
             demoUpdate(state.userData)
         }
     },
@@ -190,7 +189,7 @@ export const mutations = {
 
         // Demo Mode Only
 
-        if (isDemo(state.userData.user.username)) {
+        if (isDemo(state.userData.user.email)) {
             demoUpdate(state.userData)
         }
     },
@@ -203,7 +202,7 @@ export const mutations = {
 
         // Demo Mode Only
 
-        if (isDemo(state.userData.user.username)) {
+        if (isDemo(state.userData.user.email)) {
             demoUpdate(state.userData)
         }
     },
@@ -219,7 +218,7 @@ export const mutations = {
 
         // Demo Mode Only
 
-        if (isDemo(state.userData.user.username)) {
+        if (isDemo(state.userData.user.email)) {
             demoUpdate(state.userData)
         }
     },
@@ -234,7 +233,7 @@ export const mutations = {
 
         // Demo Mode Only
 
-        if (isDemo(state.userData.user.username)) {
+        if (isDemo(state.userData.user.email)) {
             demoUpdate(state.userData)
         }
     },

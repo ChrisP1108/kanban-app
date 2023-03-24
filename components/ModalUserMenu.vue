@@ -2,7 +2,7 @@
     <div class="modal-styling scrollbar-styling">
         <h2>User Menu</h2>
         <button class="button-primary-s" @click="logout">Logout</button>
-        <button class="button-destructive" @click="deleteUser">Delete Account</button>
+        <button v-if="!isDemo" class="button-destructive" @click="deleteUser">Delete Account</button>
     </div>
 </template>
 
@@ -19,6 +19,11 @@
             },
             deleteUser() {
                 this.$store.commit('toggleModal', 'deleteUser')
+            }
+        },
+        computed: {
+            isDemo() {
+                return localStorage.getItem("demoMode") === "true"
             }
         }
     }

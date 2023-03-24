@@ -8,9 +8,9 @@
             App Developed By Chris Paschall
         </a>
         <h2>Login</h2>
-        <FieldInput class="username" label="Username" type="text" :input="{value: credentials.username.value } " placeholder="" 
-            :empty-check="fieldsEmpty" :error-message="credentials.username.errMsg" :has-error="credentials.username.hasError"
-            @value-change="(value) => credentials.username.value = value" @error-found="(value) => credentials.username.errFound = value" />
+        <FieldInput class="email" label="Email" type="text" :input="{value: credentials.email.value } " placeholder="" 
+            :empty-check="fieldsEmpty" :error-message="credentials.email.errMsg" :has-error="credentials.email.hasError"
+            @value-change="(value) => credentials.email.value = value" @error-found="(value) => credentials.email.errFound = value" />
         <FieldInput class="password" label="Password" type="password" :input="{ value: credentials.password.value }" 
             placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.password.errMsg" :has-error="credentials.password.hasError"
             @value-change="(value) => credentials.password.value = value" @error-found="(value) => credentials.password.errFound = value" />
@@ -46,7 +46,7 @@
         data() {
             return {
                 credentials: {
-                    username: {
+                    email: {
                         value: '',
                         hasError: false,
                         errMsg: '',
@@ -79,12 +79,12 @@
 
                 // Check That No Fields Are Empty
 
-                this.credentials.username.hasError = false;
+                this.credentials.email.hasError = false;
                 this.credentials.password.hasError = false;
 
-                const username = this.credentials.username.value;
+                const email = this.credentials.email.value;
                 const password = this.credentials.password.value;
-                if (!username || !password) {
+                if (!email || !password) {
                     this.fieldsEmpty = true;
                     return null
                 } 
@@ -98,7 +98,7 @@
                 if (!this.loadingDemo) {
                     this.isLoading = true;
                 }
-                const loginReq = await httpPost('/user/login', { username, password });
+                const loginReq = await httpPost('/user/login', { email, password });
                 if (loginReq.status === 200) {
                     if (this.$store.state.loginRedirect) {
                         this.$store.commit('toggleLoginRedirect');
@@ -130,14 +130,14 @@
                         this.$store.commit('toggleModal', 'error')
                     } else {
                         this.errorMessage = httpErrMsg(loginReq);
-                        if (this.errorMessage.includes('enter a username')) {
-                            this.credentials.username.hasError = true;
-                            this.credentials.username.errMsg = 'enter a username';
-                        } else this.credentials.username.hasError = false;
-                        if (this.errorMessage.includes('Username does not exist')) {
-                            this.credentials.username.hasError = true;
-                            this.credentials.username.errMsg = 'username does not exist';
-                        } else this.credentials.username.hasError = false;
+                        if (this.errorMessage.includes('enter a email')) {
+                            this.credentials.email.hasError = true;
+                            this.credentials.email.errMsg = 'enter an email';
+                        } else this.credentials.email.hasError = false;
+                        if (this.errorMessage.includes('email does not exist')) {
+                            this.credentials.email.hasError = true;
+                            this.credentials.email.errMsg = 'email does not exist';
+                        } else this.credentials.email.hasError = false;
                         if (this.errorMessage.includes('enter a password')) {
                             this.credentials.password.hasError = true;
                             this.credentials.password.errMsg = 'enter a password';
@@ -156,7 +156,7 @@
                 this.$router.push('/reset');
             },
             previewDemo() {
-                this.credentials.username.value = testAccountUser.username
+                this.credentials.email.value = testAccountUser.email
                 this.credentials.password.value = testAccountUser.password
                 this.loadingDemo = true;
                 localStorage.setItem("demoMode", "true")

@@ -4,9 +4,9 @@
         <p>Are you sure you want to delete your user account?  This action will remove all of your boards and tasks
              along with your login credentials and cannot be undone.
         </p>
-        <FieldInput class="username" label="Username" type="text" :input="{ value: credentials.username.value }" placeholder="" 
-            :empty-check="fieldsEmpty" :error-message="credentials.username.errMsg" :has-error="credentials.username.hasError"
-            @value-change="(value) => credentials.username.value = value" @error-found="(value) => credentials.username.errFound = value" />
+        <FieldInput class="email" label="Email" type="text" :input="{ value: credentials.email.value }" placeholder="" 
+            :empty-check="fieldsEmpty" :error-message="credentials.email.errMsg" :has-error="credentials.email.hasError"
+            @value-change="(value) => credentials.email.value = value" @error-found="(value) => credentials.email.errFound = value" />
         <FieldInput class="password" label="Password" type="password" :input="{ value: credentials.password.value }" 
             placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.password.errMsg" :has-error="credentials.password.hasError"
             @value-change="(value) => credentials.password.value = value" @error-found="(value) => credentials.password.errFound = value" />
@@ -31,7 +31,7 @@
         data() {
             return {
                 credentials: {
-                    username: {
+                    email: {
                         value: '',
                         hasError: false,
                         errMsg: '',
@@ -74,9 +74,9 @@
 
                 // Check That No Fields Are Empty
 
-                const username = this.credentials.username.value;
+                const email = this.credentials.email.value;
                 const password = this.credentials.password.value;
-                if (!username || !password) {
+                if (!email || !password) {
                     this.fieldsEmpty = true;
                     return null
                 } 
@@ -85,12 +85,12 @@
 
                 // HTTP Post Request Which Actually Deletes User To Work Around Delete Request Limitation In Node Express
 
-                const deleteReq = await httpPost('/user/delete', { username, password });
+                const deleteReq = await httpPost('/user/delete', { email, password });
 
                 // Delete User And Store Commit If No Errors Found
 
                 if (deleteReq.status === 200) {
-                    this.credentials.username.hasError = false;
+                    this.credentials.email.hasError = false;
                     this.credentials.password.hasError = false;
                     if (!this.$store.state.loginRedirect) {
                         this.$store.commit('toggleLoginRedirect');
@@ -110,14 +110,14 @@
                         this.$store.commit('toggleModal', 'error')
                     } else {
                         this.errorMessage = httpErrMsg(deleteReq);
-                        if (this.errorMessage.includes('enter a username')) {
-                            this.credentials.username.hasError = true;
-                            this.credentials.username.errMsg = 'enter a username';
-                        } else this.credentials.username.hasError = false;
-                        if (this.errorMessage.includes('Invalid username')) {
-                            this.credentials.username.hasError = true;
-                            this.credentials.username.errMsg = 'invalid username';
-                        } else this.credentials.username.hasError = false;
+                        if (this.errorMessage.includes('enter an email')) {
+                            this.credentials.email.hasError = true;
+                            this.credentials.email.errMsg = 'enter an email';
+                        } else this.credentials.email.hasError = false;
+                        if (this.errorMessage.includes('Invalid email')) {
+                            this.credentials.email.hasError = true;
+                            this.credentials.email.errMsg = 'invalid email';
+                        } else this.credentials.email.hasError = false;
                         if (this.errorMessage.includes('enter a password')) {
                             this.credentials.password.hasError = true;
                             this.credentials.password.errMsg = 'enter a password';

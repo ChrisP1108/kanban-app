@@ -43,7 +43,7 @@ export async function httpGet(route: string): Promise<any> {
     const parsedData: any = JSON.parse(localData);
     const demoMode: any = localStorage.getItem("demoMode")
  
-    if (parsedData &&  parsedData.user && isDemo(parsedData.user.username) && demoMode === 'true') { 
+    if (parsedData &&  parsedData.user && isDemo(parsedData.user.email) && demoMode === 'true') { 
         await demoDelay();
         return { data: { ...parsedData }, status: 200}
 
@@ -75,8 +75,8 @@ export async function httpPost(route: string, body: any): Promise<any> {
         localStorage.removeItem("demoMode")
     }
 
-    if (parsedData && parsedData.user && !route.includes('/login') 
-        && isDemo(parsedData.user.username) && !route.includes("/user/validate") 
+    if (parsedData && parsedData.user && parsedData.user.email && !route.includes('/login') 
+        && isDemo(parsedData.user.email) && !route.includes("/user/validate") 
         && !route.includes("/user/register") && !route.includes("/user/reset")) {
         await demoDelay();
         if (Object.keys(body).includes('subtasks')) {
@@ -109,7 +109,7 @@ export async function httpPut(route: string, body: any): Promise<any> {
     const localData: any = localStorage.getItem("data");
     const parsedData: any = JSON.parse(localData);
 
-    if (parsedData && parsedData.user && isDemo(parsedData.user.username)) {
+    if (parsedData && parsedData.user && isDemo(parsedData.user.email)) {
         await demoDelay();
         if (Object.keys(body).includes('subtasks')) {
             return { 
@@ -141,7 +141,7 @@ export async function httpDelete(route: string, body: Object): Promise<any> {
     const localData: any = localStorage.getItem("data");
     const parsedData: any = JSON.parse(localData);
 
-    if (parsedData && parsedData.user && isDemo(parsedData.user.username)) {
+    if (parsedData && parsedData.user && isDemo(parsedData.user.email)) {
         await demoDelay();
         return { ...body, status: 200 } 
 

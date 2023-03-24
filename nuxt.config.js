@@ -3,7 +3,7 @@ export default {
   // Environment Variables
   env: {
     baseUrl: process.env.API_BASEURL || '/api',
-    demoUsername: process.env.DEMO_USERNAME,
+    demoEmail: process.env.DEMO_EMAIL,
     demoPassword: process.env.DEMO_PASSWORD
   },
 
@@ -62,7 +62,7 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    baseUrl : process.env.baseUrl
+    baseUrl : process.env.baseUrl,
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa

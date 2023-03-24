@@ -86,17 +86,18 @@ const validateUser = asyncHandler(async (req, res) => {
         throw new Error('Please pass in "registering" boolean variable as true or false')
     }
 
-    // Check if user with same email exists if user is attempting to register.  If resetting password, no need to check on this route.
+    // Check if user with same email exists if user is attempting to register.  If resetting password, check if email entered corresponds to a user.
 
-    if (registering) {
+    const emailExists = await User.findOne({ email: email.toLowerCase() });
+    
+    if (registering && emailExists) {
+        res.status(400);
+        throw new Error('User email already exists.  Please enter another email')
+    }
 
-        const emailExists = await User.findOne({ email: email.toLowerCase() });
-
-        if (emailExists) {
-            res.status(400);
-            throw new Error('User email already exists.  Please enter another email')
-        }
-
+    if (!registering && !emailExists) {
+        res.status(400);
+        throw new Error('No such user email exists')
     }
 
     // Generate Random Six Characters Key For Email Verification

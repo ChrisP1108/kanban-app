@@ -94,7 +94,7 @@ const validate = asyncHandler(async (req, res, next) => {
         // Check That User Input Key Matches 
 
         if (!await bcrypt.compare(process.env.JWT_SECRET + key + decodedToken.time, decodedToken.key)) {
-            if (Number(attempts) >= 2) {
+            if (attempts && Number(attempts) >= 2) {
                 res.clearCookie("key");
                 res.status(401);
                 throw new Error('Not authorized, invalid key & number of attempts exceeded')

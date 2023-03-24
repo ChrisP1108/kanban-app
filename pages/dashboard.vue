@@ -99,7 +99,7 @@
       } 
     },
     created() {
-      if (!this.$store.state.userData.user.firstname) {
+      if (!this.$store.state.userData.user.email) {
         this.$router.push('/')
       } else {
         this.isLoading = false;

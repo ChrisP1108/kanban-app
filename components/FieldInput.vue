@@ -224,7 +224,7 @@
             left: 100%;
             text-align: right;
             top: 50%;
-            width: 40%;
+            width: 30%;
             line-height: 1.25em;
             transform: translate(calc(-100% - 0.9375rem), -50%);
             color: $color-j;
