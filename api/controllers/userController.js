@@ -41,7 +41,7 @@ async function hasher(input) {
 
 async function generateValidationKey(keyChars, email) {
     const time = Date.now().toString();
-    const hashedKey = await hasher(keyChars + time);
+    const hashedKey = await hasher(process.env.JWT_SECRET + keyChars + time);
     const hashedEmail = await hasher(email.toLowerCase());
     const stringified = JSON.stringify({
         key: hashedKey,
@@ -55,7 +55,7 @@ async function generateValidationKey(keyChars, email) {
 
 function verifyValidEmail(email) {
     const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-    return email.match(regex);
+    return email.match(regex) !== null;
 }
 
 // @desc    Validate Email.  Ensure that user email is valid prior to registering or resetting password.  Send Email To User To Validate Key

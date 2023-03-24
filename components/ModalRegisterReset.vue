@@ -6,15 +6,13 @@
                 <FieldInput  class="email" label="Email" type="text" :input="{ value: credentials.email.value }" placeholder="" 
                     :empty-check="fieldsEmpty" :error-message="credentials.email.errMsg" :has-error="credentials.email.hasError"
                     @value-change="(value) => credentials.email.value = value" @error-found="(value) => credentials.email.errFound = value" />
-                <label>A six character validation key will be sent to your email to validate your email prior to {{ registering ? "creating your password to finish your account registration." : "entering a new password."}} You will have five minutes to enter the validation key and password or else you'll need to restart the process again.</label>
+                <label class="disclaimer-text">A six character validation key will be sent to your email to validate your email address prior to {{ registering ? "creating your password to finish your account registration." : "entering a new password."}} You will have five minutes and up to three attempts to enter the validation key and password or else you'll need to restart the process again.</label>
             </div>
             <div class="validate-container">
-                <div class="key-fields-container">
-                    <FieldInput class="key" label="Enter Validation Key That Was Sent To Your Email" type="text" 
-                        :input="{ value: credentials.key.value }" placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.key.errMsg" 
-                        :has-error="credentials.key.hasError" 
-                        @value-change="(value) => credentials.key.value = value" @error-found="(value) => credentials.key.errFound = value" />
-                </div>
+                <FieldInput class="key" label="Enter Validation Key That Was Sent To Your Email" type="text" 
+                    :input="{ value: credentials.key.value }" placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.key.errMsg" 
+                    :has-error="credentials.key.hasError" 
+                    @value-change="(value) => credentials.key.value = value" @error-found="(value) => credentials.key.errFound = value" />
                 <FieldInput class="password" :label="registering ? 'Create New Password' : 'Enter New Password'" type="password" :input="{ value: credentials.password.value }" 
                     placeholder="" :empty-check="fieldsEmpty" :error-message="credentials.password.errMsg" :has-error="credentials.password.hasError"
                     @value-change="(value) => credentials.password.value = value" @error-found="(value) => credentials.password.errFound = value" />
@@ -79,8 +77,6 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
                 isLoading: false,
                 errorMessage: '',
                 keyValidationAttempts: 0,
-                validationAttemptLimit: 3,
-                keyAttemptsMsg: `${this.validationAttemptLimit - this.keyValidationAttempts} attempts remaining.`,
                 noKeyCookie: false
             }
         },
@@ -145,7 +141,6 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
                         this.isLoading = true;
                         emailReq = await httpPost('/user/validate', 
                         { email, registering: this.registering });
-                        console.log(emailReq);
                         if (emailReq.status === 200) {
                             this.fieldsEmpty = false;
                             this.isLoading = false;
@@ -188,11 +183,11 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
                     } else if (!key) { 
                         this.credentials.key.hasError = true;
                         this.keyValidationAttempts++;
-                        this.credentials.key.errMsg = `enter key from email. ${keyAttemptsMsg}`;
+                        this.credentials.key.errMsg = `enter key from email. ${3 - this.keyValidationAttempts} ${this.keyValidationAttempts === 2 ? 'attempt' : 'attempts'} remaining.`;
                     } else if (key.length < 6) { 
                         this.credentials.key.hasError = true;
                         this.keyValidationAttempts++;
-                        this.credentials.key.errMsg = `invalid key. ${keyAttemptsMsg}`;
+                        this.credentials.key.errMsg = `invalid key. ${3 - this.keyValidationAttempts} ${this.keyValidationAttempts === 2 ? 'attempt' : 'attempts'} remaining.`;
                     } else {
 
                         this.isLoading = true;
@@ -203,8 +198,8 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
                             // HTTP Post For Registration
 
                             registerReq = await httpPost('/user/register', 
-                            { email, key, password, password2 });
-
+                            { email, key, password, password2, attempts: this.keyValidationAttempts });
+                            console.log(registerReq);
                             if (registerReq.status !== 201) {
                                 validationError = registerReq;
                             } 
@@ -213,7 +208,7 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
                             // HTTP Post For Resetting Password
 
                             resetPassword = await httpPost('/user/reset', 
-                            { email, key, password, password2 });
+                            { email, key, password, password2, attempts: this.keyValidationAttempts });
 
                             if (resetPassword.status !== 200) {
                                 validationError = resetPassword;
@@ -238,14 +233,12 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
                                 if (this.errorMessage.includes('could not verify key')) {
                                     this.credentials.key.hasError = true;
                                     this.keyValidationAttempts++;
-                                    this.credentials.key.errMsg = `key not found. ${keyAttemptsMsg}`;
-                                } else this.credentials.key.hasError = false;  
-                                if (this.errorMessage.includes('invalid validation key cookie') || this.errorMessage.includes('invalid key')) {
+                                    this.credentials.key.errMsg = `key not found. ${3 - this.keyValidationAttempts} ${this.keyValidationAttempts === 2 ? 'attempt' : 'attempts'} remaining.`;
+                                } else if (this.errorMessage.includes('invalid validation key cookie') || this.errorMessage.includes('Not authorized, invalid key')) {
                                     this.credentials.key.hasError = true;
                                     this.keyValidationAttempts++;
-                                    this.credentials.key.errMsg = `invalid key. ${keyAttemptsMsg}`;
-                                } else this.credentials.key.hasError = false;  
-                                if (this.errorMessage.includes('no email validation key cookie')) {
+                                    this.credentials.key.errMsg = `invalid key. ${3 - this.keyValidationAttempts} ${this.keyValidationAttempts === 2 ? 'attempt' : 'attempts'} remaining.`;
+                                } else if (this.errorMessage.includes('no email validation key cookie')) {
                                     this.credentials.key.hasError = true;
                                     this.credentials.key.errMsg = 'validation time period expired.';
                                     this.noKeyCookie = true;
@@ -257,10 +250,11 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
 
                 // Check If Number Of Key Validation Attempts Was 3 Or If Key Cookie Not Found/Expired.  If So, Force User Back To Reentering Their Email
 
-                if (this.keyValidationAttempts === this.validationAttemptLimit || this.noKeyCookie) {
+                if (this.keyValidationAttempts === 3 || this.noKeyCookie) {
                     this.credentials.key.hasError = true;
-                    if (keyValidationAttemps === this.validationAttemptLimit) {
+                    if (this.keyValidationAttempts === 3) {
                         this.credentials.key.errMsg = 'number of attempts exceeded.';
+                        this.credentials.email.value = '';
                     }
                     setTimeout(() => {
                         this.keyValidationAttempts = 0;
@@ -301,6 +295,11 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
     .mode-toggler {
         max-width: 12.5rem !important;
         margin: 0 auto;
+    }
+
+    .disclaimer-text {
+        font-weight: 400;
+        line-height: 1.125rem;
     }
 
     .fields-container {

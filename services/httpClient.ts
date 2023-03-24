@@ -75,7 +75,9 @@ export async function httpPost(route: string, body: any): Promise<any> {
         localStorage.removeItem("demoMode")
     }
 
-    if (parsedData && parsedData.user && !route.includes('/login') && isDemo(parsedData.user.username) && !route.includes("/user/validate")) {
+    if (parsedData && parsedData.user && !route.includes('/login') 
+        && isDemo(parsedData.user.username) && !route.includes("/user/validate") 
+        && !route.includes("/user/register") && !route.includes("/user/reset")) {
         await demoDelay();
         if (Object.keys(body).includes('subtasks')) {
             return { 

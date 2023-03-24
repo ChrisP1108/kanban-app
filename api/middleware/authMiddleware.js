@@ -42,14 +42,15 @@ const protect = asyncHandler(async (req, res, next) => {
     }
 });
 
-// Verify User Email
+// Verify User Email And Validation Key
 
 const validate = asyncHandler(async (req, res, next) => {
-    const { key, email } = req.body;
+    const { key, email, attempts } = req.body;
 
     // Check That Key Exists In Body. If Not, Throw Error
 
     if (!key) {
+        res.clearCookie("key");
         res.status(401);
         throw new Error('Not authorized, no email validation key parameter provided')
     }
@@ -58,6 +59,10 @@ const validate = asyncHandler(async (req, res, next) => {
 
     if (req.cookies.key) {
 
+        // Create 2 Second Intentional Delay To Reduce Number Of Attempts That Can Be Made In A Certain Time Period
+
+        await new Promise(res => setTimeout(res, 2000));
+
         // Decode JWT
 
         const decodedToken = JSON.parse(decodeJWT(req.cookies.key).key);
@@ -65,14 +70,15 @@ const validate = asyncHandler(async (req, res, next) => {
         // If No Key, Time, Or Email Found In Decoded JWT, Throw Error
 
         if (!decodedToken.key || !decodedToken.time || !decodedToken.email) {
-            res.status(401);
             res.clearCookie("key");
+            res.status(401);
             throw new Error('Not authorized, invalid validation key cookie')
         }
 
         // Check That Emails Match
 
         if (!await bcrypt.compare(email.toLowerCase(), decodedToken.email)) {
+            res.clearCookie("key");
             res.status(401);
             throw new Error('Not authorized, invalid email provided')
         }
@@ -80,16 +86,29 @@ const validate = asyncHandler(async (req, res, next) => {
         // Check That Time Interval Is Not Greater Than 300000ms
 
         if (Date.now() - Number(decodedToken.time) > 300000) {
+            res.clearCookie("key");
             res.status(401);
             throw new Error('Not authorized, cookie expired')
         }
 
         // Check That User Input Key Matches 
 
-        if (!await bcrypt.compare(key + decodedToken.time, decodedToken.key)) {
-            res.status(401);
-            throw new Error('Not authorized, invalid key')
+        if (!await bcrypt.compare(process.env.JWT_SECRET + key + decodedToken.time, decodedToken.key)) {
+            if (Number(attempts) >= 2) {
+                res.clearCookie("key");
+                res.status(401);
+                throw new Error('Not authorized, invalid key & number of attempts exceeded')
+            } else {
+                res.status(401);
+                throw new Error('Not authorized, invalid key')
+            }
         }
+
+        // Clear Cookie If Validated
+
+        res.clearCookie("key");
+
+        // Next
 
         next();
 
