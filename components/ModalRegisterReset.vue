@@ -108,7 +108,7 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
 
                 // Field Declarations
 
-                const email = this.credentials.email.value;
+                const email = this.credentials.email.value.toLowerCase();
                 const key = this.credentials.key.value;
                 const password = this.credentials.password.value;
                 const password2 = this.credentials.password2.value;
@@ -140,7 +140,7 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
 
                         this.isLoading = true;
                         emailReq = await httpPost('/user/validate', 
-                        { email, registering: this.registering });
+                        { email , registering: this.registering });
                         if (emailReq.status === 200) {
                             this.fieldsEmpty = false;
                             this.isLoading = false;

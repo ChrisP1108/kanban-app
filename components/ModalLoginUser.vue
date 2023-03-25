@@ -82,7 +82,7 @@
                 this.credentials.email.hasError = false;
                 this.credentials.password.hasError = false;
 
-                const email = this.credentials.email.value;
+                const email = this.credentials.email.value.toLowerCase();
                 const password = this.credentials.password.value;
                 if (!email || !password) {
                     this.fieldsEmpty = true;
@@ -98,7 +98,7 @@
                 if (!this.loadingDemo) {
                     this.isLoading = true;
                 }
-                const loginReq = await httpPost('/user/login', { email, password });
+                const loginReq = await httpPost('/user/login', { email , password });
                 if (loginReq.status === 200) {
                     if (!isDemo) {
                         localStorage.removeItem("demoMode");
