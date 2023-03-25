@@ -106,7 +106,9 @@ const validateUser = asyncHandler(async (req, res) => {
 
     // Port To Use For SMTP Depending On If In Development Or Production
 
-    const port = process.env.NODE_ENV === 'development' ? process.env.GMAIL_SMTP_PORT_TLS : process.env.GMAIL_SMTP_PORT_SSL;
+    const isDev = process.env.NODE_ENV === 'development';
+
+    const port = isDev ? process.env.GMAIL_SMTP_PORT_TLS : process.env.GMAIL_SMTP_PORT_SSL;
 
     try {
 
@@ -130,8 +132,8 @@ const validateUser = asyncHandler(async (req, res) => {
             to: email, 
             subject: registering ? "Register For Kanban" : "Recover Password For Kanban", // Subject line
             attachments: [{
-                filename: "logo.svg",
-                path: __dirname + "../../../static/assets/images/logo.svg",
+                filename: "logo.png",
+                path: isDev ? `${__dirname}../../../static/assets/images/logo.png` : `${window.location.origin}/assets/images/logo.png`,
                 cid: "logo"
             }],
             html: `
@@ -139,7 +141,7 @@ const validateUser = asyncHandler(async (req, res) => {
                     <tbody>
                         <tr>
                             <td align="center">
-                                <img src="cid:logo" style="width: 60px; padding-bottom: 16px; color: white;"/>
+                                <img src="cid:logo" style="width: 32px; padding-bottom: 16px; color: white;"/>
                             </td>
                         </tr>
                         <tr>
