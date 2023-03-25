@@ -357,11 +357,6 @@ const resetUserPassword = asyncHandler(async (req, res) => {
 
     // Check For Empty Or Invalid Fields
 
-    if (!key) {
-        res.status(400);
-        throw new Error('Email verification key must be provided')
-    }
-
     if (!email) {
         res.status(400);
         throw new Error('Please add an email')
@@ -393,7 +388,7 @@ const resetUserPassword = asyncHandler(async (req, res) => {
 
     // Update User Password
 
-    const updatedPassword = await hasher(password);
+    const updatedPassword = await hasher(password.toLowerCase());
 
     const resetUserPassword = await User.findByIdAndUpdate(user._id, {
         password: cryptr.encrypt(updatedPassword)

@@ -75,7 +75,7 @@
                     this.login();
                 }
             },
-            async login() {
+            async login(isDemo) {
 
                 // Check That No Fields Are Empty
 
@@ -100,6 +100,10 @@
                 }
                 const loginReq = await httpPost('/user/login', { email, password });
                 if (loginReq.status === 200) {
+                    if (!isDemo) {
+                        localStorage.removeItem("demoMode");
+                        localStorage.removeItem("data");
+                    }
                     if (this.$store.state.loginRedirect) {
                         this.$store.commit('toggleLoginRedirect');
                     }
@@ -160,7 +164,7 @@
                 this.credentials.password.value = testAccountUser.password
                 this.loadingDemo = true;
                 localStorage.setItem("demoMode", "true")
-                this.login();
+                this.login(true);
             }
         }
     }

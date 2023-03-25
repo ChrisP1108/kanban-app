@@ -202,7 +202,6 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
 
                             registerReq = await httpPost('/user/register', 
                             { email, key, password, password2, attempts: this.keyValidationAttempts });
-                            console.log(registerReq);
                             if (registerReq.status !== 201) {
                                 validationError = registerReq;
                             } 
@@ -212,7 +211,7 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
 
                             resetPassword = await httpPost('/user/reset', 
                             { email, key, password, password2, attempts: this.keyValidationAttempts });
-
+                            console.log(resetPassword);
                             if (resetPassword.status !== 200) {
                                 validationError = resetPassword;
                             } 

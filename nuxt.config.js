@@ -3,8 +3,8 @@ export default {
   // Environment Variables
   env: {
     baseUrl: process.env.API_BASEURL || '/api',
-    demoEmail: process.env.DEMO_EMAIL,
-    demoPassword: process.env.DEMO_PASSWORD
+    demoEmail: process.env.GMAIL_USER_EMAIL,
+    demoPassword: process.env.GMAIL_USER_PASSWORD
   },
 
   // Target: https://go.nuxtjs.dev/config-target
