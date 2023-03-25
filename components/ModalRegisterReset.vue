@@ -151,6 +151,7 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
 
                             this.isLoading = false;
                             if (httpStatusCode(emailReq) >= 404) {
+                                console.error(emailReq);
                                 this.$store.commit('setModalErrorMessage', `registering user`)
                                 this.$store.commit('toggleModal', 'error')
                             } else {
