@@ -104,6 +104,10 @@ const validateUser = asyncHandler(async (req, res) => {
 
     const keyChars = Math.random().toString(36).substring(2).slice(0, 6).toLowerCase();
 
+    // Port To Use For SMTP Depending On If In Development Or Production
+
+    const port = process.env.NODE_ENV === 'development' ? process.env.GMAIL_SMTP_PORT_TLS : process.env.GMAIL_SMTP_PORT_SSL;
+
     try {
 
         // Establish Email Connection
@@ -111,7 +115,7 @@ const validateUser = asyncHandler(async (req, res) => {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             host: 'smtp.gmail.com',
-            port: 587, 
+            port, 
             secure: true, 
             auth: {
                 user: process.env.GMAIL_USER_EMAIL, 
