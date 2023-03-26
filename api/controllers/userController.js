@@ -266,7 +266,7 @@ const registerUser = asyncHandler(async (req, res) => {
 // @access  Public
 
 const loginUser = asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, isDemo } = req.body;
 
     // Check for empty fields
 
@@ -291,9 +291,13 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new Error('User email does not exist')
     }
 
-    // Check password
+    // Verifies if demo account is being used or not
 
-    if (!await bcrypt.compare(password.toLowerCase(), cryptr.decrypt(user.password))) {
+    const demoAccount = user.email === process.env.GMAIL_USER_EMAIL && password === process.env.GMAIL_USER_DEMO_PASSWORD; 
+
+    // Check password if not demo account
+
+    if (!demoAccount && !await bcrypt.compare(password.toLowerCase(), cryptr.decrypt(user.password))) {
         res.status(401);
         throw new Error('Invalid password')
     } else {

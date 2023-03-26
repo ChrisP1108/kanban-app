@@ -98,7 +98,16 @@
                 if (!this.loadingDemo) {
                     this.isLoading = true;
                 }
-                const loginReq = await httpPost('/user/login', { email , password });
+
+                // Login Data.  Determine If Login Is Demo Or Not
+
+                const loginData = { email, password };
+
+                if (isDemo) {
+                    loginData.isDemo = true;
+                } else loginData.isDemo = false;
+
+                const loginReq = await httpPost('/user/login', loginData);
                 if (loginReq.status === 200) {
                     if (!isDemo) {
                         localStorage.removeItem("demoMode");
