@@ -13,6 +13,7 @@
         methods: {
             async logout() {
                 await httpPost('/user/logout', {});
+                localStorage.removeItem("demoMode");
                 this.$store.commit('toggleLoginRedirect');
                 this.$store.commit('toggleModal');
                 this.$router.push('/login');

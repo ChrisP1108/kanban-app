@@ -1,10 +1,10 @@
 export default {
 
   // Environment Variables
-  
+
   env: {
     baseUrl: process.env.API_BASEURL || '/api',
-    demoEmail: process.env.GMAIL_USER_EMAIL,
+    demoEmail: process.env.GMAIL_USER_DEMO_EMAIL,
     demoPassword: process.env.GMAIL_USER_DEMO_PASSWORD
   },
 

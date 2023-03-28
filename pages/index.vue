@@ -17,7 +17,13 @@ import { httpGet } from '../services/httpClient';
             }
         },
         async created() {
-            const getDataAttempt = await httpGet('/user/data');
+            let dataUrl;
+            if (localStorage.getItem("demoMode") === "true") {
+                dataUrl = '/user/demo'
+            } else { 
+                dataUrl = '/user/data'
+            }
+            const getDataAttempt = await httpGet(dataUrl);
             setTimeout(() => {
                 if (getDataAttempt.status === 200) {
                     this.$store.commit('setUserData', getDataAttempt.data);

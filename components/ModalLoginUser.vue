@@ -99,13 +99,9 @@
                     this.isLoading = true;
                 }
 
-                // Login Data.  Determine If Login Is Demo Or Not
+                // Login Data
 
                 const loginData = { email, password };
-
-                if (isDemo) {
-                    loginData.isDemo = true;
-                } else loginData.isDemo = false;
 
                 const loginReq = await httpPost('/user/login', loginData);
                 if (loginReq.status === 200) {
@@ -119,8 +115,20 @@
 
                 // HTTP Get Request For All User Boards And Corresponding Tasks  And Store Commit If Login Successful
                     
-                    getDataAttempt = await httpGet('/user/data');
+
+                    // Determine If Login Is For Demo Or User.  Adjust Get Data Route Accordingly.
+
+                    let getDataUrl;
+
+                    if (isDemo) {
+                        getDataUrl = '/user/demo';
+                    } else {
+                        getDataUrl = '/user/data';
+                    }
+
+                    getDataAttempt = await httpGet(getDataUrl);
                     if (getDataAttempt.status === 200) {
+                        console.log(getDataAttempt);
                         this.$store.commit('setUserData', getDataAttempt.data);
                         const boards = getDataAttempt.data.boards;
                         if (boards.length) {

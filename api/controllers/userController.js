@@ -266,7 +266,7 @@ const registerUser = asyncHandler(async (req, res) => {
 // @access  Public
 
 const loginUser = asyncHandler(async (req, res) => {
-    const { email, password, isDemo } = req.body;
+    const { email, password } = req.body;
 
     // Check for empty fields
 
@@ -280,9 +280,15 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new Error('Please enter a password')
     }
 
+    // Verifies if demo account is being used or not
+
+    const demoAccount = email === process.env.GMAIL_USER_DEMO_EMAIL && password === process.env.GMAIL_USER_DEMO_PASSWORD; 
+
+    const emailSearch = demoAccount ? process.env.GMAIL_USER_EMAIL.toLowerCase() : email.toLowerCase();
+    
     // Find user
 
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const user = await User.findOne({ email: emailSearch  });
 
     // Check if user exists
 
@@ -291,18 +297,16 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new Error('User email does not exist')
     }
 
-    // Verifies if demo account is being used or not
-
-    const demoAccount = user.email === process.env.GMAIL_USER_EMAIL && password === process.env.GMAIL_USER_DEMO_PASSWORD; 
-
     // Check password if not demo account
 
     if (!demoAccount && !await bcrypt.compare(password.toLowerCase(), cryptr.decrypt(user.password))) {
         res.status(401);
         throw new Error('Invalid password')
-    } else {
+    } else if (!demoAccount) {
         res.cookie("token", generateToken(user._id), cookieOptions(null));
         res.status(200).json({ message: 'User successfully logged In'});
+    } else if (demoAccount) {
+        res.status(200).json({ message: 'Demo Account Login Successful'});
     }
 });
 
@@ -355,6 +359,48 @@ const getUserData = asyncHandler(async (req, res) => {
         }
 
         res.status(200).json(userData)
+    }
+});
+
+// @desc    Get demo user data
+// @route   GET /api/user/demo
+// @access  Public
+
+const getDemoData = asyncHandler(async (req, res) => {
+
+    // Get demo boards from demo account
+
+    const demoAccount = await User.findOne({ email: process.env.GMAIL_USER_EMAIL })
+
+    const demoBoards = await Board.find({ user: demoAccount._id })
+
+    const demoData = {
+        user: {
+            email: process.env.GMAIL_USER_DEMO_EMAIL,
+            _id: demoAccount._id,
+            createdAt: demoAccount.createdAt,
+            updatedAt: demoAccount.updatedAt,
+            __v: demoAccount.__v
+        },
+        boards: []
+    }
+
+    // Check if user has any boards saved
+
+    if (!demoBoards.length) {
+        res.status(200).json(demoData);
+    } else {
+    
+        // Map tasks pertaining to each board if boards found for user
+
+        for (board of demoBoards) {
+            demoData.boards.push({ name: board.name, columns: board.columns, 
+                _id: board._id, user: board.user, createdAt: board.createdAt,
+                updatedAt: board.updatedAt, __v: board.__v,
+                tasks: await Task.find({ board: board._id }) })
+        }
+
+        res.status(200).json(demoData)
     }
 });
 
@@ -481,5 +527,5 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 module.exports = { 
     validateUser, registerUser, loginUser, 
-    logoutUser, getUserData, resetUserPassword, deleteUser 
+    logoutUser, getUserData, getDemoData, resetUserPassword, deleteUser 
 }

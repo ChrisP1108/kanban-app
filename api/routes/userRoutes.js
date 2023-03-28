@@ -1,6 +1,6 @@
 const express = require ('express');
 const router = express.Router();
-const { validateUser, registerUser, loginUser, logoutUser, getUserData, 
+const { validateUser, registerUser, loginUser, logoutUser, getUserData, getDemoData,
     resetUserPassword, deleteUser } = require('../controllers/userController')
 const { protect, validate } = require('../middleware/authMiddleware');
 
@@ -13,6 +13,8 @@ router.post('/login', loginUser); // Login User
 router.post('/logout', protect, logoutUser) // Logout User
 
 router.get('/data', protect, getUserData); // Get User Data (Protected)
+
+router.get('/demo', getDemoData); // Get Demo Data
 
 router.post('/reset', validate, resetUserPassword); // Reset Password (Validation)
 

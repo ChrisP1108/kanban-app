@@ -147,6 +147,8 @@ export const mutations = {
 
         // Demo Mode Only
 
+        console.log(state.userData.user.email);
+
         if (isDemo(state.userData.user.email)) {
             demoUpdate(state.userData)
         }
