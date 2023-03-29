@@ -22,7 +22,7 @@ export default {
       { name: 'theme-color', content: '#20212C'}
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/assets/images/logo.svg' }
+      { rel: 'icon', type: 'image/x-icon', href: 'favicon.ico' }
     ]
   },
 
