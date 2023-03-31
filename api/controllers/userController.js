@@ -133,7 +133,7 @@ const validateUser = asyncHandler(async (req, res) => {
             subject: registering ? "Register For Kanban" : "Recover Password For Kanban", // Subject line
             attachments: [{
                 filename: "logo.png",
-                path: isDev ? `${__dirname}../../../static/icon.png` : `https://kanban-app-frontendmentor.herokuapp.com/icon.png`,
+                path: isDev ? `${__dirname}../../../static/icon_full.png` : `https://kanban-app-frontendmentor.herokuapp.com/icon_full.png`,
                 cid: "logo"
             }],
             html: `
