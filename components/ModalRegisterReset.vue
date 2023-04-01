@@ -212,7 +212,6 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
 
                             resetPassword = await httpPost('/user/reset', 
                             { email, key, password, password2, attempts: this.keyValidationAttempts });
-                            console.log(resetPassword);
                             if (resetPassword.status !== 200) {
                                 validationError = resetPassword;
                             } 

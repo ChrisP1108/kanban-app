@@ -128,7 +128,6 @@
 
                     getDataAttempt = await httpGet(getDataUrl);
                     if (getDataAttempt.status === 200) {
-                        console.log(getDataAttempt);
                         this.$store.commit('setUserData', getDataAttempt.data);
                         const boards = getDataAttempt.data.boards;
                         if (boards.length) {
