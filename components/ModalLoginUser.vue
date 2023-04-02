@@ -89,10 +89,6 @@
                     return null
                 } 
 
-                // Define HTTP Data Variables
-
-                let getDataAttempt;
-
                 // HTTP Post Request For Login Authentication
 
                 if (!this.loadingDemo) {
@@ -104,37 +100,23 @@
                 const loginData = { email, password };
 
                 const loginReq = await httpPost('/user/login', loginData);
+
                 if (loginReq.status === 200) {
+
+                    await new Promise(res => setTimeout(res, 1000))
+
                     if (!isDemo) {
                         localStorage.removeItem("demoMode");
                         localStorage.removeItem("data");
-                    }
+                    } 
+
                     if (this.$store.state.loginRedirect) {
                         this.$store.commit('toggleLoginRedirect');
                     }
 
-                // HTTP Get Request For All User Boards And Corresponding Tasks  And Store Commit If Login Successful
-                    
+                    // Redirect Back To Index To Get Data After Login
 
-                    // Determine If Login Is For Demo Or User.  Adjust Get Data Route Accordingly.
-
-                    let getDataUrl;
-
-                    if (isDemo) {
-                        getDataUrl = '/user/demo';
-                    } else {
-                        getDataUrl = '/user/data';
-                    }
-
-                    getDataAttempt = await httpGet(getDataUrl);
-                    if (getDataAttempt.status === 200) {
-                        this.$store.commit('setUserData', getDataAttempt.data);
-                        const boards = getDataAttempt.data.boards;
-                        if (boards.length) {
-                            this.$store.commit('selectBoard', boards[0]._id)
-                        }
-                        this.$router.push('/dashboard')
-                    }
+                    this.$router.push('/')
                 } 
 
                 // Error Handling If Login Authentication Fails
@@ -144,9 +126,6 @@
                     this.loadingDemo = false;
                     if (httpStatusCode(loginReq) >= 404) {
                         this.$store.commit('setModalErrorMessage', `logging in`)
-                        this.$store.commit('toggleModal', 'error')
-                    } else if (loginReq.status === 200 && httpStatusCode(getDataAttempt) >= 404) {
-                        this.$store.commit('setModalErrorMessage', `getting user data`)
                         this.$store.commit('toggleModal', 'error')
                     } else {
                         this.errorMessage = httpErrMsg(loginReq);
