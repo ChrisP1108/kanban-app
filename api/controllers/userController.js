@@ -156,12 +156,12 @@ const validateUser = asyncHandler(async (req, res) => {
                         </tr>
                         <tr>
                             <td align="center">
-                                <p style="font-size: 18px; margin: 0; margin: 0; color: white;"><strong>${keyChars}</strong></p>
+                                <p style="font-size: 18px; padding-top: 24px; color: white;"><strong>${keyChars}</strong></p>
                             </td>
                         </tr>
                         <tr>
                             <td align="center">
-                                <p style="font-size: 13px; margin: 0; padding-top: 40px; color: white;">Please use the key to ${registering ? `register` : `recover your password`} for the Kanban App.</p>
+                                <p style="font-size: 13px; margin: 0; padding-top: 24px; color: white;">Please use the key to ${registering ? `register` : `recover your password`} for the Kanban App.</p>
                             </td>
                         </tr>
                     </tbody>

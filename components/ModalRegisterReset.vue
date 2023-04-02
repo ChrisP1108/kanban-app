@@ -36,6 +36,7 @@
 
 <script>
 import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
+import { validEmail } from '../services/validEmail';
 
     export default {
         props: {
@@ -127,11 +128,9 @@ import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
 
                     // Check That Email Is Entered And Valid
 
-                    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-
                     if (!email) {
                         this.fieldsEmpty = true;
-                    } else if (!email.match(emailRegex)) { 
+                    } else if (!validEmail(email)) { 
                         this.credentials.email.hasError = true;
                         this.credentials.email.errMsg = 'invalid email';
                     } else {

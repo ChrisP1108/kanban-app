@@ -1,0 +1,4 @@
+export function validEmail(email: string): Boolean {
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+    return email.match(emailRegex) !== null
+}

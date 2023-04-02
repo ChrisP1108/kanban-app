@@ -26,6 +26,7 @@
 
 <script>
     import { httpPost, httpErrMsg, httpStatusCode } from '../services/httpClient';
+    import { validEmail } from '../services/validEmail';
 
     export default {
         data() {
@@ -82,6 +83,11 @@
                     return null
                 } 
 
+                if (!validEmail(email)) {
+                    this.credentials.email.hasError = true;
+                    this.credentials.email.errMsg = 'invalid email';
+                }
+
                 this.isLoading = true;
 
                 // HTTP Post Request Which Actually Deletes User To Work Around Delete Request Limitation In Node Express
@@ -111,15 +117,15 @@
                         if (this.errorMessage.includes('enter an email')) {
                             this.credentials.email.hasError = true;
                             this.credentials.email.errMsg = 'enter an email';
-                        } else this.credentials.email.hasError = false;
-                        if (this.errorMessage.includes('Invalid email')) {
+                        }
+                        if (this.errorMessage.includes('Invalid email') || this.errorMessage.includes('enter a valid email')) {
                             this.credentials.email.hasError = true;
                             this.credentials.email.errMsg = 'invalid email';
                         } else this.credentials.email.hasError = false;
                         if (this.errorMessage.includes('enter a password')) {
                             this.credentials.password.hasError = true;
                             this.credentials.password.errMsg = 'enter a password';
-                        } else this.credentials.password.hasError = false;  
+                        } 
                         if (this.errorMessage.includes('Invalid password')) {
                             this.credentials.password.hasError = true;
                             this.credentials.password.errMsg = 'invalid password';
