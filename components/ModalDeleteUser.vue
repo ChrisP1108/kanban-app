@@ -103,7 +103,7 @@
                         this.$store.commit('toggleLoginRedirect');
                     }
                     this.$store.commit('toggleModal');
-                    this.$router.push('/login')
+                    this.$router.push('/')
 
                 // Error Handling
                 
