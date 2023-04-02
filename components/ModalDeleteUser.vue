@@ -113,33 +113,27 @@
                         this.$store.commit('setModalErrorMessage', `deleting user account`)
                         this.$store.commit('toggleModal', 'error')
                     } else {
-                        let errorCaught = false;
                         this.errorMessage = httpErrMsg(deleteReq);
                         if (this.errorMessage.includes('enter an email')) {
                             this.credentials.email.hasError = true;
                             this.credentials.email.errMsg = 'enter an email';
-                            errorCaught = true;
+                        }
+                        if (this.errorMessage.includes('No user with email found')) {
+                            this.credentials.email.hasError = true;
+                            this.credentials.email.errMsg = 'no user email exists';
                         }
                         if (this.errorMessage.includes('Invalid email') || this.errorMessage.includes('enter a valid email')) {
                             this.credentials.email.hasError = true;
                             this.credentials.email.errMsg = 'invalid email';
-                            errorCaught = true;
                         } else this.credentials.email.hasError = false;
                         if (this.errorMessage.includes('enter a password')) {
                             this.credentials.password.hasError = true;
                             this.credentials.password.errMsg = 'enter a password';
-                            errorCaught = true;
                         } 
                         if (this.errorMessage.includes('Invalid password')) {
                             this.credentials.password.hasError = true;
                             this.credentials.password.errMsg = 'invalid password';
-                            errorCaught = true;
                         } else this.credentials.password.hasError = false;  
-
-                        if (!errorCaught) {
-                            this.credentials.password.hasError = true;
-                            this.credentials.password.errMsg = this.errorMessage;
-                        }
                     }
                 }
             },

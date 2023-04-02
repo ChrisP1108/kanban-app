@@ -488,11 +488,25 @@ const deleteUser = asyncHandler(async (req, res) => {
 
     // User ID
 
-    const id = req.user._id;
+    let id = req.user._id;
 
     // Verify User Credentials
 
-    const checkUser = await User.findById(id);
+    let checkUser;
+
+    if (id) {
+        checkUser = await User.findById(id);
+    }  
+    
+    if (!id || !checkUser){
+        checkUser = await User.findOne({ email: email.toLowerCase() });
+        id = checkUser._id || null;
+    }
+
+    if (!checkUser || !id) {
+        res.status(400);
+        throw new Error('No user with email found')
+    }
 
     // Check username
 
@@ -518,6 +532,7 @@ const deleteUser = asyncHandler(async (req, res) => {
         res.status(500);
         throw new Error('An error occured when deleting user')
     } else {
+        res.clearCookie("token");
         res.status(200).json({
             _id: id
         });
