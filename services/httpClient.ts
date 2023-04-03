@@ -77,7 +77,7 @@ export async function httpPost(route: string, body: any): Promise<any> {
 
     if (parsedData && parsedData.user && parsedData.user.email && !route.includes('/login') 
         && isDemo(parsedData.user.email) && !route.includes("/user/validate") 
-        && !route.includes("/user/register") && !route.includes("/user/reset")) {
+        && !route.includes("/user/register") && !route.includes("/user/reset") && !route.includes("/user/delete")) {
         await demoDelay();
         if (Object.keys(body).includes('subtasks')) {
             return { 
