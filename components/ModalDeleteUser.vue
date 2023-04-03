@@ -21,6 +21,7 @@
             </button>
             <button class="button-secondary" @click="cancelDelete">Cancel</button>
         </div>
+        <p class="unknown-error" v-if="unknownError !== ''">{{ unknownError }}</p>
     </div>
 </template>
 
@@ -47,6 +48,7 @@
                 },
                 fieldsEmpty: false,
                 isLoading: false,
+                unknownError: ""
             }
         },
         computed: {
@@ -114,26 +116,36 @@
                         this.$store.commit('toggleModal', 'error')
                     } else {
                         this.errorMessage = httpErrMsg(deleteReq);
+                        let errorCaught = false;
                         if (this.errorMessage.includes('enter an email')) {
                             this.credentials.email.hasError = true;
                             this.credentials.email.errMsg = 'enter an email';
+                            errorCaught = true;
                         }
                         if (this.errorMessage.includes('No user with email found')) {
                             this.credentials.email.hasError = true;
                             this.credentials.email.errMsg = 'no user email exists';
+                            errorCaught = true;
                         }
                         if (this.errorMessage.includes('Invalid email') || this.errorMessage.includes('enter a valid email')) {
                             this.credentials.email.hasError = true;
                             this.credentials.email.errMsg = 'invalid email';
+                            errorCaught = true;
                         } else this.credentials.email.hasError = false;
                         if (this.errorMessage.includes('enter a password')) {
                             this.credentials.password.hasError = true;
                             this.credentials.password.errMsg = 'enter a password';
+                            errorCaught = true;
                         } 
                         if (this.errorMessage.includes('Invalid password')) {
                             this.credentials.password.hasError = true;
                             this.credentials.password.errMsg = 'invalid password';
+                            errorCaught = true;
                         } else this.credentials.password.hasError = false;  
+
+                        if (!errorCaught) {
+                            this.unknownError = deleteReq;
+                        }
                     }
                 }
             },
@@ -154,6 +166,10 @@
     p {
         color: $color-g !important;
         margin-bottom: 1rem;
+    }
+    .unknown-error {
+        color: $color-j !important;
+        margin: 2rem 0 0;
     }
     .button-destructive {
         margin: 1.5rem 0 1rem !important;
