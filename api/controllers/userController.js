@@ -161,8 +161,20 @@ const validateUser = asyncHandler(async (req, res) => {
                         </tr>
                         <tr>
                             <td align="center">
-                                <p style="font-size: 13px; margin: 0; padding-top: 24px; color: white;">Please use the key to ${registering ? `register` : `recover your password`} for the Kanban App.</p>
+                                <p style="font-size: 16px; margin: 0; padding-top: 24px; padding-bottom: 24px; color: white;">Please use the key to ${registering ? `register` : `recover your password`} for the Kanban App.</p>
                             </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <a style="font-size: 13px; margin: 0; color: #818ea2" href="https://www.frontendmentor.io/challenges/kanban-task-management-web-app-wgQLt-HlbB" target="_blank">
+                                    UI Design By Frontendmentor.io
+                                </a>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <a style="font-size: 13px; margin: 0; color: #818ea2" href="https://www.linkedin.com/in/christopher-paschall/" target="_blank">
+                                    App Developed By Chris Paschall
+                                </a>
                         </tr>
                     </tbody>
                 </table>
